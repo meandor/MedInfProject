@@ -26,11 +26,10 @@ jobs:
       - checkout
       - restore-sbt-cache
       - run:
-          name: Switch directory to backend
-          command: cd backend
-      - run:
           name: Run scapegoat
-          command: sbt scapegoat
+          command: |
+            cd backend
+            sbt scapegoat
       - save-sbt-cache
 
 workflows:

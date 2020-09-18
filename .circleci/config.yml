@@ -75,6 +75,7 @@ jobs:
           name: Run linter
           command: |
             cd frontend
+            npm install
             npm run lint
       - save-npm-cache
       - store_test_results:

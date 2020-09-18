@@ -34,7 +34,26 @@ jobs:
       - store_artifacts:
           path: ~/repo/backend/target/scala-2.12/scapegoat-report/scapegoat.html
 
+  unit_test_backend:
+    working_directory: ~/repo
+    docker:
+      - image: mozilla/sbt:latest
+    steps:
+      - checkout
+      - restore-sbt-cache
+      - run:
+          name: Run unit tests
+          command: |
+            cd backend
+            sbt test
+      - save-sbt-cache
+      - store_test_results:
+          path: ~/repo/backend/target/test-reports
+
 workflows:
   backend:
     jobs:
       - scapegoat
+      - unit_test_backend:
+          requires:
+            - scapegoat

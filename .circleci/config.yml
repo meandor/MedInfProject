@@ -17,6 +17,20 @@ commands:
             - "~/.m2"
           key: v1-sbt-cache-{{ checksum "backend/build.sbt" }}
 
+  restore-npm-cache:
+    description: "Restore npm cache"
+    steps:
+      - restore_cache:
+          key: v1-npm-cache-{{ checksum "frontend/package-lock.json" }}
+
+  save-npm-cache:
+    description: "Save npm cache"
+    steps:
+      - save_cache:
+          paths:
+            - "frontend/node_modules"
+          key: v1-npm-cache-{{ checksum "frontend/package-lock.json" }}
+
 jobs:
   scapegoat:
     working_directory: ~/repo
@@ -50,9 +64,26 @@ jobs:
       - store_test_results:
           path: ~/repo/backend/target/test-reports
 
+  lint:
+    working_directory: ~/repo
+    docker:
+      - image: node:14-alpine
+    steps:
+      - checkout
+      - restore-npm-cache
+      - run:
+          name: Run linter
+          command: |
+            cd frontend
+            npm run lint
+      - save-npm-cache
+      - store_test_results:
+          path: ~/repo/backend/target/test-reports
+
 workflows:
-  backend:
+  pipeline:
     jobs:
+      - lint
       - scapegoat
       - unit_test_backend:
           requires:

@@ -1,0 +1,36 @@
+version: 2.1
+
+commands:
+  restore-sbt-cache:
+    description: "Restore sbt cache"
+    steps:
+      - restore_cache:
+          key: v1-sbt-cache-{{ checksum "build.sbt" }}
+
+  save-sbt-cache:
+    description: "Save sbt cache"
+    steps:
+      - save_cache:
+          paths:
+            - "~/.ivy2/cache"
+            - "~/.sbt"
+            - "~/.m2"
+          key: v1-sbt-cache-{{ checksum "build.sbt" }}
+
+jobs:
+  scapegoat:
+    working_directory: ~/repo/backend
+    docker:
+      - image: mozilla/sbt:latest
+    steps:
+      - checkout
+      - restore-sbt-cache
+      - run:
+          name: Run scapegoat
+          command: sbt scapegoat
+      - save-sbt-cache
+
+workflows:
+  backend:
+    jobs:
+      - scapegoat

@@ -31,6 +31,8 @@ jobs:
             cd backend
             sbt scapegoat
       - save-sbt-cache
+      - store_artifacts:
+          path: ~/repo/backend/target/scala-2.12/scapegoat-report/scapegoat.html
 
 workflows:
   backend:

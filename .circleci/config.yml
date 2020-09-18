@@ -5,7 +5,7 @@ commands:
     description: "Restore sbt cache"
     steps:
       - restore_cache:
-          key: v1-sbt-cache-{{ checksum "build.sbt" }}
+          key: v1-sbt-cache-{{ checksum "backend/build.sbt" }}
 
   save-sbt-cache:
     description: "Save sbt cache"
@@ -15,7 +15,7 @@ commands:
             - "~/.ivy2/cache"
             - "~/.sbt"
             - "~/.m2"
-          key: v1-sbt-cache-{{ checksum "build.sbt" }}
+          key: v1-sbt-cache-{{ checksum "backend/build.sbt" }}
 
 jobs:
   scapegoat:

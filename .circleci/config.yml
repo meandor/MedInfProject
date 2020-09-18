@@ -19,12 +19,15 @@ commands:
 
 jobs:
   scapegoat:
-    working_directory: ~/repo/backend
+    working_directory: ~/repo
     docker:
       - image: mozilla/sbt:latest
     steps:
       - checkout
       - restore-sbt-cache
+      - run:
+          name: Switch directory to backend
+          command: cd backend
       - run:
           name: Run scapegoat
           command: sbt scapegoat

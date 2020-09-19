@@ -72,14 +72,16 @@ jobs:
       - checkout
       - restore-npm-cache
       - run:
-          name: Run linter
+          name: Install deps
           command: |
             cd frontend
             npm install
-            npm run lint
       - save-npm-cache
-      - store_test_results:
-          path: ~/repo/backend/target/test-reports
+      - run:
+          name: Run linter
+          command: |
+            cd frontend
+            npm run lint
 
   unit_test_frontend:
     working_directory: ~/repo
@@ -100,7 +102,7 @@ jobs:
             cd frontend
             npm test
       - store_test_results:
-          path: ~/repo/backend/target/test-reports
+          path: ~/repo/frontend/junit.xml
 
 workflows:
   pipeline:

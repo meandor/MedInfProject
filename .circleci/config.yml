@@ -100,13 +100,13 @@ jobs:
           name: Run tests
           command: |
             cd frontend
-            npm run test:report
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: ~/repo/frontend/reports/junit/
+            JEST_JUNIT_OUTPUT_DIR=~/repo/frontend/reports/junit/ npm run test:report
       - store_test_results:
           path: ~/repo/frontend/reports/junit/
       - store_artifacts:
           path: ~/repo/frontend/reports/junit
+      - store_artifacts:
+          path: ~/repo/frontend/coverage/lcov-report
 
 workflows:
   pipeline:

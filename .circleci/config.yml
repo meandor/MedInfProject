@@ -81,7 +81,7 @@ jobs:
       - store_test_results:
           path: ~/repo/backend/target/test-reports
 
-  frontend_unit_test:
+  unit_test_frontend:
     working_directory: ~/repo
     docker:
       - image: node:14-alpine
@@ -107,6 +107,6 @@ workflows:
   pipeline:
     jobs:
       - lint
-      - frontend_unit_test
+      - unit_test_frontend
       - scapegoat
       - unit_test_backend

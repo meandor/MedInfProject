@@ -100,7 +100,7 @@ jobs:
           name: Run tests
           command: |
             cd frontend
-            npm test
+            npx react-scripts test --reporters='jest-junit'
       - store_test_results:
           path: ~/repo/frontend/junit.xml
 

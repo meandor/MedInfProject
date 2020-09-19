@@ -101,8 +101,12 @@ jobs:
           command: |
             cd frontend
             npm run test:report
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ~/repo/frontend/reports/junit/
       - store_test_results:
-          path: ~/repo/frontend/junit.xml
+          path: ~/repo/frontend/reports/junit/
+      - store_artifacts:
+          path: ~/repo/frontend/reports/junit
 
 workflows:
   pipeline:

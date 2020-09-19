@@ -81,11 +81,32 @@ jobs:
       - store_test_results:
           path: ~/repo/backend/target/test-reports
 
+  frontend_unit_test:
+    working_directory: ~/repo
+    docker:
+      - image: node:14-alpine
+    steps:
+      - checkout
+      - restore-npm-cache
+      - run:
+          name: install deps
+          command: |
+            cd frontend
+            npm install
+      - save-npm-cache
+      - run:
+          name: install deps
+          command: |
+            cd frontend
+            npm install
+            npm test
+      - store_test_results:
+          path: ~/repo/backend/target/test-reports
+
 workflows:
   pipeline:
     jobs:
       - lint
+      - frontend_unit_test
       - scapegoat
-      - unit_test_backend:
-          requires:
-            - scapegoat
+      - unit_test_backend

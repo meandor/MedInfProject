@@ -95,7 +95,7 @@ jobs:
             npm install
       - save-npm-cache
       - run:
-          name: install deps
+          name: Run tests
           command: |
             cd frontend
             npm install

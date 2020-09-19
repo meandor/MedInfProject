@@ -98,7 +98,6 @@ jobs:
           name: Run tests
           command: |
             cd frontend
-            npm install
             npm test
       - store_test_results:
           path: ~/repo/backend/target/test-reports

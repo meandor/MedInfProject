@@ -45,6 +45,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:report": "react-scripts test  --reporters='jest-junit' --coverage",
     "eject": "react-scripts eject",
     "format": "prettier --write src/**",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --ignore-pattern serviceWorker.ts ./src",

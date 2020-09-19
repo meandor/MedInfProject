@@ -91,7 +91,7 @@ jobs:
       - checkout
       - restore-npm-cache
       - run:
-          name: install deps
+          name: Install deps
           command: |
             cd frontend
             npm install
@@ -100,7 +100,7 @@ jobs:
           name: Run tests
           command: |
             cd frontend
-            npx react-scripts test --reporters='jest-junit'
+            npm run test:report
       - store_test_results:
           path: ~/repo/frontend/junit.xml
 

@@ -161,7 +161,7 @@ workflows:
       - build_frontend:
           requires:
             - unit_test_frontend
-      - release_image_frontend:
+      - deploy_staging_frontend:
           requires:
             - build_frontend
       - scapegoat

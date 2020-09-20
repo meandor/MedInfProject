@@ -147,9 +147,9 @@ jobs:
             sudo curl https://cli-assets.heroku.com/install.sh | sh
             heroku container:login
             cd ~/repo/frontend/docker
-            heroku container:push -a meandor-nabu-staging web
-            heroku container:release -a meandor-nabu-staging web
-            curl https://meandor-nabu-staging.herokuapp.com
+            heroku container:push -a menstra-staging web
+            heroku container:release -a menstra-staging web
+            curl https://menstra-staging.herokuapp.com
 
 workflows:
   pipeline:

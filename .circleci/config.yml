@@ -138,20 +138,20 @@ jobs:
           paths:
             - frontend/docker
 
-  release_image_frontend:
+  deploy_staging_frontend:
     machine: true
     steps:
       - attach_workspace:
           at: ~/repo
       - run:
-          name: Build and push container
+          name: Build and push Docker image to Heroku
           command: |
+            sudo curl https://cli-assets.heroku.com/install.sh | sh
+            heroku container:login
             cd ~/repo/frontend/docker
-            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-            docker build -t meandor/nabu:$CIRCLE_SHA1 .
-            docker tag meandor/nabu:$CIRCLE_SHA1 meandor/nabu:latest
-            docker push meandor/nabu:$CIRCLE_SHA1
-            docker push meandor/nabu:latest
+            heroku container:push -a meandor-nabu-staging web
+            heroku container:release -a meandor-nabu-staging web
+            curl https://meandor-nabu-staging.herokuapp.com
 
 workflows:
   pipeline:

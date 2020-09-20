@@ -1,0 +1,4 @@
+{
+  "baseUrl": "https://menstra-staging.herokuapp.com",
+  "reporter": "junit"
+}

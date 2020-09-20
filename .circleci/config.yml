@@ -31,6 +31,20 @@ commands:
             - "frontend/node_modules"
           key: v1-npm-cache-{{ checksum "frontend/package-lock.json" }}
 
+  restore-e2e-cache:
+    description: "Restore npm e2e cache"
+    steps:
+      - restore_cache:
+          key: v1-npm-cache-{{ checksum "e2e/package-lock.json" }}
+
+  save-e2e-cache:
+    description: "Save npm e2e cache"
+    steps:
+      - save_cache:
+          paths:
+            - "e2e/node_modules"
+          key: v1-npm-cache-{{ checksum "e2e/package-lock.json" }}
+
 jobs:
   scapegoat:
     working_directory: ~/repo
@@ -151,6 +165,29 @@ jobs:
             heroku container:release -a menstra-staging web
             curl https://menstra-staging.herokuapp.com
 
+  e2e_test:
+    working_directory: ~/repo
+    docker:
+      - image: node:14-alpine
+    steps:
+      - checkout
+      - restore-e2e-cache
+      - run:
+          name: Install deps
+          command: |
+            cd e2e
+            npm install
+      - save-e2e-cache
+      - run:
+          name: Run tests
+          command: |
+            cd e2e
+            npm test
+      - store_test_results:
+          path: ~/repo/e2e/test-results.xml
+      - store_artifacts:
+          path: ~/repo/e2e/cypress/video
+
 workflows:
   pipeline:
     jobs:
@@ -163,5 +200,8 @@ workflows:
       - deploy_staging_frontend:
           requires:
             - build_frontend
+      - e2e_test:
+          requires:
+            - deploy_staging_frontend
       - scapegoat
       - unit_test_backend

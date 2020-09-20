@@ -1,0 +1,13 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "e2e tests",
+  "scripts": {
+    "test": "cypress run"
+  },
+  "author": "Daniel Schruhl <danielschruhl@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "cypress": "^5.2.0"
+  }
+}

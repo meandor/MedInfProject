@@ -1,0 +1,26 @@
+@import 'variables';
+@import 'base';
+@import 'forms';
+@import 'buttons';
+
+header {
+  height: 48px;
+  background-color: $primary-dark;
+
+  .logo {
+    padding: 1.2rem 15px;
+    color: $white;
+    text-decoration: none;
+    display: inline-block;
+    outline: none;
+  }
+
+  .logo:hover {
+    color: $gray-light;
+  }
+}
+
+main {
+  display: flex;
+  justify-content: flex-start;
+}

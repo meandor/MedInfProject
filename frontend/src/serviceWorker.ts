@@ -1,4 +1,4 @@
-import {logger} from "./logger";
+import { logger } from './logger';
 
 export function unregister(): void {
   if ('serviceWorker' in navigator) {

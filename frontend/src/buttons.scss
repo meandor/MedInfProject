@@ -1,0 +1,28 @@
+@import 'variables';
+
+.button {
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  padding: 0.6rem 1.2rem;
+  font-size: $font-size-normal;
+  line-height: 2.4rem;
+  border-radius: 0.3rem;
+  box-sizing: border-box;
+  text-decoration: none;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.button-primary {
+  color: $black;
+  background-color: $secondary;
+
+  &:hover {
+    background-color: $secondary-dark;
+    color: $black;
+  }
+}

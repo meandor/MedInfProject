@@ -1,0 +1,27 @@
+@import '../../variables';
+
+.login {
+  width: 100%;
+  height: calc(100vh - 48px);
+  display: flex;
+
+  &__information {
+    width: 50%;
+    height: 100%;
+    padding: 15rem;
+    background-color: $secondary-light;
+    color: $black;
+  }
+
+  &__login {
+    width: 50%;
+    height: 100%;
+    padding: 15rem $space;
+    background-color: $white;
+
+    &__form {
+      width: 38rem;
+      margin: auto;
+    }
+  }
+}

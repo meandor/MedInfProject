@@ -1,1 +1,9 @@
-listen       ${PORT};
+server {
+    listen       ${PORT};
+    server_name  _;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html;
+    }
+}

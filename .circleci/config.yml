@@ -108,10 +108,61 @@ jobs:
       - store_artifacts:
           path: ~/repo/frontend/coverage/lcov-report
 
+  build_frontend:
+    working_directory: ~/repo
+    docker:
+      - image: node:14-alpine
+    steps:
+      - checkout
+      - restore-npm-cache
+      - run:
+          name: Install deps
+          command: |
+            cd frontend
+            npm install
+      - save-npm-cache
+      - run:
+          name: Build static files
+          command: |
+            cd frontend
+            npm run build
+      - run:
+          name: Move docker related files
+          command: |
+            cd frontend
+            mkdir -p docker
+            mv build docker/
+            mv Dockerfile docker/
+      - persist_to_workspace:
+          root: ~/repo/
+          paths:
+            - frontend/docker
+
+  release_image_frontend:
+    machine: true
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Build and push container
+          command: |
+            cd ~/repo/frontend/docker
+            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+            docker build -t meandor/nabu:$CIRCLE_SHA1 .
+            docker tag meandor/nabu:$CIRCLE_SHA1 meandor/nabu:latest
+            docker push meandor/nabu:$CIRCLE_SHA1
+            docker push meandor/nabu:latest
+
 workflows:
   pipeline:
     jobs:
       - lint
       - unit_test_frontend
+      - build_frontend:
+          requires:
+            - unit_test_frontend
+      - release_image_frontend:
+          requires:
+            - build_frontend
       - scapegoat
       - unit_test_backend

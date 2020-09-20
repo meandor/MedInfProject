@@ -161,6 +161,7 @@ workflows:
       - build_frontend:
           requires:
             - unit_test_frontend
+            - lint
       - deploy_staging_frontend:
           requires:
             - build_frontend

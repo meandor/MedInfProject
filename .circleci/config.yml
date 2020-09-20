@@ -35,7 +35,7 @@ commands:
     description: "Restore npm e2e cache"
     steps:
       - restore_cache:
-          key: v1-npm-cache-{{ checksum "e2e/package-lock.json" }}
+          key: v2-npm-cache-{{ checksum "e2e/package-lock.json" }}
 
   save-e2e-cache:
     description: "Save npm e2e cache"
@@ -43,7 +43,7 @@ commands:
       - save_cache:
           paths:
             - "e2e/node_modules"
-          key: v1-npm-cache-{{ checksum "e2e/package-lock.json" }}
+          key: v2-npm-cache-{{ checksum "e2e/package-lock.json" }}
 
 jobs:
   scapegoat:

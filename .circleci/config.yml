@@ -130,9 +130,7 @@ jobs:
           name: Move docker related files
           command: |
             cd frontend
-            mkdir -p docker
             mv build docker/
-            mv Dockerfile docker/
       - persist_to_workspace:
           root: ~/repo/
           paths:

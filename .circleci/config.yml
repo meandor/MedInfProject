@@ -168,7 +168,7 @@ jobs:
   e2e_test:
     working_directory: ~/repo
     docker:
-      - image: node:14
+      - image: cypress/included:5.2.0
     steps:
       - checkout
       - restore-e2e-cache

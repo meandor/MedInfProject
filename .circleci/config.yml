@@ -171,13 +171,6 @@ jobs:
       - image: cypress/included:5.2.0
     steps:
       - checkout
-      - restore-e2e-cache
-      - run:
-          name: Install deps
-          command: |
-            cd e2e
-            npm install
-      - save-e2e-cache
       - run:
           name: Run tests
           command: |
@@ -186,7 +179,9 @@ jobs:
       - store_test_results:
           path: ~/repo/e2e/test-results.xml
       - store_artifacts:
-          path: ~/repo/e2e/cypress/video
+          path: ~/repo/e2e/test-results.xml
+      - store_artifacts:
+          path: ~/repo/e2e/cypress/videos
 
 workflows:
   pipeline:

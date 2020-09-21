@@ -78,6 +78,59 @@ jobs:
       - store_test_results:
           path: ~/repo/backend/target/test-reports
 
+  build_backend:
+    working_directory: ~/repo
+    docker:
+      - image: mozilla/sbt:latest
+    steps:
+      - checkout
+      - restore-sbt-cache
+      - run:
+          name: Build jar
+          command: |
+            cd backend
+            sbt assembly
+      - save-sbt-cache
+      - run:
+          name: Move docker related files
+          command: |
+            cd backend
+            mv target/scala-2.12/*.jar docker/app.jar
+      - persist_to_workspace:
+          root: ~/repo/
+          paths:
+            - backend/docker
+
+  deploy_staging_backend:
+    machine: true
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Build and push Docker image to Heroku
+          command: |
+            sudo curl https://cli-assets.heroku.com/install.sh | sh
+            heroku container:login
+            cd ~/repo/backend/docker
+            heroku container:push -a doctor-fate-staging web
+            heroku container:release -a doctor-fate-staging web
+            curl https://doctor-fate-staging.herokuapp.com/health
+
+  deploy_production_backend:
+    machine: true
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Build and push Docker image to Heroku
+          command: |
+            sudo curl https://cli-assets.heroku.com/install.sh | sh
+            heroku container:login
+            cd ~/repo/backend/docker
+            heroku container:push -a doctor-fate web
+            heroku container:release -a doctor-fate web
+            curl https://doctor-fate.herokuapp.com/health
+
   lint:
     working_directory: ~/repo
     docker:
@@ -238,14 +291,25 @@ workflows:
       - deploy_staging_frontend:
           requires:
             - build_staging_frontend
+
+      - scapegoat
+      - unit_test_backend
+      - build_backend:
+          requires:
+            - scapegoat
+            - unit_test_backend
+      - deploy_staging_backend:
+          requires:
+            - build_backend
+
       - e2e_test:
           requires:
             - deploy_staging_frontend
+            - deploy_staging_backend
+
       - build_production_frontend:
           requires:
             - e2e_test
       - deploy_production_frontend:
           requires:
             - build_production_frontend
-      - scapegoat
-      - unit_test_backend

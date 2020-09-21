@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {logger} from "../../logger";
+import { logger } from '../../logger';
 
 export interface TokenDTO {
   idToken: string;
@@ -16,9 +16,9 @@ const config = { withCredentials: true };
 export function errorLogging(error: any): any {
   if (error.response) {
     logger.error(
-        `Request failed with status: ${
-            error.response.status
-        }, body: ${JSON.stringify(error.response.data)}`
+      `Request failed with status: ${
+        error.response.status
+      }, body: ${JSON.stringify(error.response.data)}`
     );
   } else if (error.request) {
     logger.error(JSON.stringify(error.request));
@@ -29,7 +29,9 @@ export function errorLogging(error: any): any {
   return Promise.reject(error);
 }
 
-
 export function createToken(dto: CreateTokenDTO): Promise<TokenDTO> {
-  return axios.post(`${baseUrl}token`, dto, config).then(({ data }) => data).catch(errorLogging);
+  return axios
+    .post(`${baseUrl}token`, dto, config)
+    .then(({ data }) => data)
+    .catch(errorLogging);
 }

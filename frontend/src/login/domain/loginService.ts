@@ -2,8 +2,22 @@ import { verify } from 'jsonwebtoken';
 import { createToken } from '../data/loginClient';
 import { logger } from '../../logger';
 
+const ID_TOKEN_KEY = 'idToken';
+
 export function isAuthenticated(): boolean {
-  return false;
+  const idToken = localStorage.getItem(ID_TOKEN_KEY) || '';
+  if (idToken === '') {
+    return false;
+  }
+
+  const idTokenSecret: string = process.env.REACT_APP_ID_TOKEN_SECRET || '';
+  try {
+    verify(idToken, idTokenSecret);
+    return true;
+  } catch (error) {
+    logger.error(error);
+    return false;
+  }
 }
 
 export interface IDToken {
@@ -19,7 +33,9 @@ export function authenticate(
   const idTokenSecret: string = process.env.REACT_APP_ID_TOKEN_SECRET || '';
   return createToken({ email, password }).then((token) => {
     try {
-      return verify(token.idToken, idTokenSecret) as IDToken;
+      const decodedIdToken = verify(token.idToken, idTokenSecret) as IDToken;
+      localStorage.setItem(ID_TOKEN_KEY, token.idToken);
+      return decodedIdToken;
     } catch (error) {
       logger.error('Error verifying idToken', error);
       throw new Error('Was not able to login. Please try again.');

@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { authenticate } from '../domain/loginService';
 import './login.scss';
-import {logger} from "../../logger";
+import { logger } from '../../logger';
 
 function signIn(
   email: string,
@@ -12,12 +12,11 @@ function signIn(
   return (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     return authenticate(email, password)
-      .then((idToken) => {
-        localStorage.setItem('idToken', JSON.stringify(idToken));
+      .then((_) => {
         return successFn();
       })
       .catch((error: Error) => {
-        logger.error('Was not able to authenticate',error);
+        logger.error('Was not able to authenticate', error);
         errorFn('E-Mail or password invalid. Please try again.');
       });
   };

@@ -1,3 +1,7 @@
+import { verify } from 'jsonwebtoken';
+import { createToken } from '../data/loginClient';
+import { logger } from '../../logger';
+
 export function isAuthenticated(): boolean {
   return false;
 }
@@ -12,5 +16,13 @@ export function authenticate(
   email: string,
   password: string
 ): Promise<IDToken> {
-  return Promise.reject(new Error('login error'));
+  const idTokenSecret: string = process.env.REACT_APP_ID_TOKEN_SECRET || '';
+  return createToken({ email, password }).then((token) => {
+    try {
+      return verify(token.idToken, idTokenSecret) as IDToken;
+    } catch (error) {
+      logger.error('Error verifying idToken', error);
+      throw new Error('Was not able to login. Please try again.');
+    }
+  });
 }

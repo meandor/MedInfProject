@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { authenticate } from '../domain/loginService';
 import './login.scss';
+import {logger} from "../../logger";
 
 function signIn(
   email: string,
@@ -16,7 +17,8 @@ function signIn(
         return successFn();
       })
       .catch((error: Error) => {
-        errorFn(error.message);
+        logger.error('Was not able to authenticate',error);
+        errorFn('E-Mail or password invalid. Please try again.');
       });
   };
 }

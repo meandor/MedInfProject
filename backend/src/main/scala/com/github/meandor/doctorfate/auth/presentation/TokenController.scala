@@ -23,8 +23,8 @@ class TokenController(secret: String, tokenService: TokenService) extends Contro
   }
 
   def isValid(tokenRequest: TokenRequestDTO): Boolean = {
-    !tokenRequest.email.isBlank &&
-    !tokenRequest.password.isBlank &&
+    !tokenRequest.email.trim.isEmpty &&
+    !tokenRequest.password.trim.isEmpty &&
     tokenRequest.email.contains("@")
   }
 

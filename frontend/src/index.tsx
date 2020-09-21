@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import { HashRouter as Router, Link } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-import { PrivateRoute } from './Routes';
+import { PrivateRoute, PublicRoute } from './Routes';
+import { Login } from './login/presentation/Login';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -15,6 +16,7 @@ ReactDOM.render(
       </header>
       <main>
         <PrivateRoute path="/" exact component={() => <></>} />
+        <PublicRoute path="/login" exact component={Login} />
       </main>
     </Router>
   </React.StrictMode>,

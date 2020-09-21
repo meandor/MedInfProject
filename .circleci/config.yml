@@ -237,7 +237,7 @@ workflows:
             - lint
       - deploy_staging_frontend:
           requires:
-            - build_frontend
+            - build_staging_frontend
       - e2e_test:
           requires:
             - deploy_staging_frontend

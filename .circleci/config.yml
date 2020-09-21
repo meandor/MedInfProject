@@ -139,7 +139,7 @@ jobs:
           name: Build static files
           command: |
             cd frontend
-            npm run build
+            REACT_APP_BACKEND=$STAGING_BACKEND;REACT_APP_ID_TOKEN_SECRET=$STAGING_SECRET; npm run build
       - run:
           name: Move docker related files
           command: |

@@ -180,8 +180,8 @@ jobs:
     docker:
       - image: node:14-alpine
     environment:
-      REACT_APP_BACKEND: $STAGING_BACKEND
-      REACT_APP_ID_TOKEN_SECRET: $STAGING_SECRET
+      REACT_APP_BACKEND: "$STAGING_BACKEND"
+      REACT_APP_ID_TOKEN_SECRET: "$STAGING_SECRET"
     steps:
       - checkout
       - restore-npm-cache
@@ -244,8 +244,8 @@ jobs:
     docker:
       - image: node:14-alpine
     environment:
-      REACT_APP_BACKEND: $PRODUCTION_BACKEND
-      REACT_APP_ID_TOKEN_SECRET: $PRODUCTION_SECRET
+      REACT_APP_BACKEND: "$PRODUCTION_BACKEND"
+      REACT_APP_ID_TOKEN_SECRET: "$PRODUCTION_SECRET"
     steps:
       - checkout
       - restore-npm-cache

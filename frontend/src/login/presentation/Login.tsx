@@ -1,7 +1,55 @@
-import React from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { authenticate } from '../domain/loginService';
 import './login.scss';
 
-export function Login(_props: any): JSX.Element {
+function signIn(
+  email: string,
+  password: string,
+  errorFn: React.Dispatch<React.SetStateAction<string>>,
+  successFn: any
+) {
+  return (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    return authenticate(email, password)
+      .then((idToken) => {
+        localStorage.setItem('idToken', JSON.stringify(idToken));
+        return successFn();
+      })
+      .catch((error: Error) => {
+        errorFn(error.message);
+      });
+  };
+}
+
+function updateState(setStateFn: React.Dispatch<React.SetStateAction<string>>) {
+  return (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    setStateFn(event.target.value);
+  };
+}
+
+function ErrorInfo({ errorMessage }: { errorMessage: string }): JSX.Element {
+  if (errorMessage !== '') {
+    return (
+      <section className="error" data-testid="error-info">
+        {errorMessage}
+      </section>
+    );
+  }
+  return <></>;
+}
+
+interface LoginProps {
+  history: { push: any };
+}
+
+export function Login({ history }: LoginProps): JSX.Element {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const redirectToRoot: () => any = () => history.push('/');
+
   return (
     <section className="login">
       <section className="login__information">
@@ -16,7 +64,8 @@ export function Login(_props: any): JSX.Element {
         <section className="login__login__form">
           <h2>Use the period tracker that respects your privacy.</h2>
           <p>Please sign in:</p>
-          <form>
+          <ErrorInfo errorMessage={error} />
+          <form onSubmit={signIn(email, password, setError, redirectToRoot)}>
             <div className="group">
               <label htmlFor="email">
                 E-Mail<sup>*</sup>
@@ -25,6 +74,8 @@ export function Login(_props: any): JSX.Element {
                   name="email"
                   id="email"
                   data-testid="email"
+                  value={email}
+                  onChange={updateState(setEmail)}
                   required
                 />
               </label>
@@ -37,6 +88,8 @@ export function Login(_props: any): JSX.Element {
                   name="password"
                   id="password"
                   data-testid="password"
+                  value={password}
+                  onChange={updateState(setPassword)}
                   required
                 />
               </label>

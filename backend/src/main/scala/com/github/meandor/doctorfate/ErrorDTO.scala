@@ -1,3 +1,3 @@
 package com.github.meandor.doctorfate
 
-case class ErrorDTO(error: String)
+final case class ErrorDTO(error: String)

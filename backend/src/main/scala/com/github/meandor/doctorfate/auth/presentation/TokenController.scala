@@ -1,6 +1,6 @@
 package com.github.meandor.doctorfate.auth.presentation
 
-import java.time.{LocalDateTime, ZoneId, ZoneOffset}
+import java.time.{LocalDateTime, ZoneId}
 import java.util.Date
 
 import akka.http.scaladsl.model.StatusCodes
@@ -8,8 +8,8 @@ import akka.http.scaladsl.server.Directives.{as, complete, entity, onSuccess, pa
 import akka.http.scaladsl.server.Route
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.github.meandor.doctorfate.{Controller, ErrorDTO}
 import com.github.meandor.doctorfate.auth.domain.{IDToken, TokenService, Tokens}
+import com.github.meandor.doctorfate.{Controller, ErrorDTO}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 

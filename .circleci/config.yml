@@ -179,6 +179,9 @@ jobs:
     working_directory: ~/repo
     docker:
       - image: node:14-alpine
+    environment:
+      REACT_APP_BACKEND: $STAGING_BACKEND
+      REACT_APP_ID_TOKEN_SECRET: $STAGING_SECRET
     steps:
       - checkout
       - restore-npm-cache
@@ -192,7 +195,7 @@ jobs:
           name: Build static files
           command: |
             cd frontend
-            REACT_APP_BACKEND=$STAGING_BACKEND;REACT_APP_ID_TOKEN_SECRET=$STAGING_SECRET; npm run build
+            npm run build
       - run:
           name: Move docker related files
           command: |
@@ -240,6 +243,9 @@ jobs:
     working_directory: ~/repo
     docker:
       - image: node:14-alpine
+    environment:
+      REACT_APP_BACKEND: $PRODUCTION_BACKEND
+      REACT_APP_ID_TOKEN_SECRET: $PRODUCTION_SECRET
     steps:
       - checkout
       - restore-npm-cache
@@ -253,7 +259,7 @@ jobs:
           name: Build static files
           command: |
             cd frontend
-            REACT_APP_BACKEND=$PRODUCTION_BACKEND;REACT_APP_ID_TOKEN_SECRET=$PRODUCTION_SECRET; npm run build
+            npm run build
       - run:
           name: Move docker related files
           command: |

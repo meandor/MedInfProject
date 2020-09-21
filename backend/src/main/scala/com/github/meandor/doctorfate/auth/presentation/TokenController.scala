@@ -8,7 +8,7 @@ import akka.http.scaladsl.server.Directives.{as, complete, entity, onSuccess, pa
 import akka.http.scaladsl.server.Route
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.github.meandor.doctorfate.Controller
+import com.github.meandor.doctorfate.{Controller, ErrorDTO}
 import com.github.meandor.doctorfate.auth.domain.{IDToken, TokenService, Tokens}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
@@ -22,12 +22,22 @@ class TokenController(secret: String, tokenService: TokenService) extends Contro
     }
   }
 
+  def isValid(tokenRequest: TokenRequestDTO): Boolean = {
+    !tokenRequest.email.isBlank &&
+    !tokenRequest.password.isBlank &&
+    tokenRequest.email.contains("@")
+  }
+
   def handleTokenRequest(tokenRequest: TokenRequestDTO): Route = {
-    val createdToken: Future[Tokens] =
-      tokenService.createToken(tokenRequest.email, tokenRequest.password)
-    onSuccess(createdToken) { token =>
-      val jwtIdToken = generateJWT(token.idToken)
-      complete(StatusCodes.Created, TokenDTO(jwtIdToken))
+    if (!isValid(tokenRequest)) {
+      complete(StatusCodes.BadRequest, ErrorDTO("Invalid Request"))
+    } else {
+      val createdToken: Future[Tokens] =
+        tokenService.createToken(tokenRequest.email, tokenRequest.password)
+      onSuccess(createdToken) { token =>
+        val jwtIdToken = generateJWT(token.idToken)
+        complete(StatusCodes.Created, TokenDTO(jwtIdToken))
+      }
     }
   }
 

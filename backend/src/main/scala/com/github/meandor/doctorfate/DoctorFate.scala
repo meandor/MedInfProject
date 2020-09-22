@@ -38,8 +38,7 @@ object DoctorFate extends LazyLogging with CORSHandler {
     val settings = ConnectionPoolSettings(
       initialSize = 5,
       maxSize = 20,
-      connectionTimeoutMillis = 3000L,
-      validationQuery = "select 1 from dual"
+      connectionTimeoutMillis = 3000L
     )
     ConnectionPool.add('default, dbUrl, username, password, settings)
     val databaseEC               = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))

@@ -1,25 +1,21 @@
 package com.github.meandor.auth.presentation
+import java.util.UUID
+
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.github.meandor.auth.UnitTestSpec
 import com.github.meandor.doctorfate.ErrorDTO
 import com.github.meandor.doctorfate.auth.domain.{AccessToken, IDToken, TokenService, Tokens}
 import com.github.meandor.doctorfate.auth.presentation.{TokenController, TokenDTO, TokenRequestDTO}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
-import org.mockito.IdiomaticMockito
-import org.scalatest.featurespec.AnyFeatureSpec
-import org.scalatest.matchers.should.Matchers
 
 import scala.concurrent.Future
 
-class TokenControllerSpec
-    extends AnyFeatureSpec
-    with Matchers
-    with IdiomaticMockito
-    with ScalatestRouteTest {
+class TokenControllerSpec extends UnitTestSpec with ScalatestRouteTest {
   val tokenServiceMock: TokenService = mock[TokenService]
   val secret: String                 = "secret"
   val controller: TokenController    = new TokenController(secret, tokenServiceMock)

@@ -32,7 +32,11 @@ class TokenRepository(executionContext: ExecutionContext) {
             SELECT *
             FROM users, tokens
             WHERE users.id = $userID AND tokens.user_id = $userID AND tokens.created_at = $now
-          """.map(toEntity).single().apply().get
+          """
+            .map(toEntity)
+            .single()
+            .apply()
+            .getOrElse(throw new Exception("Not able to create token"))
         }
       }
     }(executionContext)

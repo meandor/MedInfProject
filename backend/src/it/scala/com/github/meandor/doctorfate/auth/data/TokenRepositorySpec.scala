@@ -3,10 +3,8 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import com.github.meandor.doctorfate.DatabaseIntegrationSpec
-import org.mockito.ArgumentMatchers.any
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class TokenRepositorySpec extends DatabaseIntegrationSpec {
   val tokenRepository = new TokenRepository(global)

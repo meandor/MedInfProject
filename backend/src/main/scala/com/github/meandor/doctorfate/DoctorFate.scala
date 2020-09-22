@@ -1,18 +1,19 @@
 package com.github.meandor.doctorfate
 
+import java.net.URI
 import java.util.concurrent.Executors
 
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
 import com.github.meandor.doctorfate.auth.data.{AuthenticationRepository, TokenRepository}
 import com.github.meandor.doctorfate.auth.domain.TokenService
 import com.github.meandor.doctorfate.auth.presentation.TokenController
 import com.typesafe.scalalogging.LazyLogging
-import org.apache.commons.dbcp2.BasicDataSource
 import org.flywaydb.core.Flyway
+import scalikejdbc.{ConnectionPool, ConnectionPoolSettings}
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
@@ -24,14 +25,23 @@ object DoctorFate extends LazyLogging {
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
     logger.info("Start db migrations")
-    val dbURI                       = System.getenv("DATABASE_URL")
-    val dataSource: BasicDataSource = new BasicDataSource()
-    dataSource.setUrl(dbURI)
-    val flyway = Flyway.configure.dataSource(dataSource).load
+    val dbUri    = new URI(System.getenv("DATABASE_URL"))
+    val username = dbUri.getUserInfo.split(":")(0)
+    val password = dbUri.getUserInfo.split(":")(1)
+    val dbUrl =
+      s"jdbc:postgresql://${dbUri.getHost}:${dbUri.getPort}${dbUri.getPath}?sslmode=require"
+    val flyway = Flyway.configure.dataSource(dbUrl, username, password).load
     flyway.migrate()
     logger.info("Done db migrations")
 
     logger.info("Start connecting to DB")
+    val settings = ConnectionPoolSettings(
+      initialSize = 5,
+      maxSize = 20,
+      connectionTimeoutMillis = 3000L,
+      validationQuery = "select 1 from dual"
+    )
+    ConnectionPool.add('default, dbUrl, username, password, settings)
     val databaseEC               = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
     val authenticationRepository = new AuthenticationRepository(databaseEC)
     val tokenRepository          = new TokenRepository(databaseEC)

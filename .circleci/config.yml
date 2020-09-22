@@ -154,6 +154,8 @@ jobs:
     working_directory: ~/repo
     docker:
       - image: node:14-alpine
+    environment:
+      REACT_APP_ID_TOKEN_SECRET: secret
     steps:
       - checkout
       - restore-npm-cache
@@ -228,8 +230,6 @@ jobs:
       - checkout
       - run:
           name: Run tests
-          environment:
-            REACT_APP_ID_TOKEN_SECRET: "secret"
           command: |
             cd e2e
             npm test

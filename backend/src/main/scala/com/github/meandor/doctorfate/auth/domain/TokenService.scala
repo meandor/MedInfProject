@@ -6,12 +6,13 @@ import com.github.meandor.doctorfate.auth.data.{
   TokenEntity,
   TokenRepository
 }
+import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class TokenService(authRepository: AuthenticationRepository, tokenRepository: TokenRepository)(
     implicit ec: ExecutionContext
-) {
+) extends LazyLogging {
   def toTokens(tokenEntity: TokenEntity): Tokens = {
     val idToken =
       IDToken(tokenEntity.userID, tokenEntity.name, tokenEntity.email, tokenEntity.emailIsVerified)
@@ -25,9 +26,11 @@ class TokenService(authRepository: AuthenticationRepository, tokenRepository: To
       case None    => Future.successful(None)
     }
 
-  def createToken(email: String, password: String): Future[Option[Tokens]] =
+  def createToken(email: String, password: String): Future[Option[Tokens]] = {
+    logger.info("Creating token for email: {}, password: {}", email, password)
     for {
       maybeUserId: Option[UUID] <- authRepository.findUserId(email, password)
       maybeToken                <- lift(maybeUserId.map(tokenRepository.create))
     } yield maybeToken.map(toTokens)
+  }
 }

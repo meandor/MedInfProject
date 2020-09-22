@@ -2,11 +2,12 @@ package com.github.meandor.doctorfate.auth.data
 import java.time.LocalDateTime
 import java.util.UUID
 
+import com.typesafe.scalalogging.LazyLogging
 import scalikejdbc.{DB, DBSession, WrappedResultSet, scalikejdbcSQLInterpolationImplicitDef}
 
 import scala.concurrent.{ExecutionContext, Future, blocking}
 
-class TokenRepository(executionContext: ExecutionContext) {
+class TokenRepository(executionContext: ExecutionContext) extends LazyLogging {
   implicit val ec: ExecutionContext = executionContext
   def toEntity(result: WrappedResultSet): TokenEntity = {
     TokenEntity(
@@ -26,6 +27,7 @@ class TokenRepository(executionContext: ExecutionContext) {
   )(implicit session: DBSession): Future[Int] = {
     Future {
       blocking {
+        logger.info("Inserting Token into DB")
         sql"""
             INSERT INTO tokens (user_id, created_at, expires_at) VALUES ($userID, $createdAt, $expiresAt)
           """.update().apply()
@@ -38,6 +40,7 @@ class TokenRepository(executionContext: ExecutionContext) {
   ): Future[TokenEntity] = {
     Future {
       blocking {
+        logger.info("Get token entity from DB")
         sql"""
             SELECT *
             FROM users, tokens
@@ -53,6 +56,7 @@ class TokenRepository(executionContext: ExecutionContext) {
 
   def create(userID: UUID): Future[TokenEntity] =
     DB futureLocalTx { implicit session =>
+      logger.info("Start token creation in DB")
       val now      = LocalDateTime.now()
       val tomorrow = now.plusDays(1)
       for {

@@ -13,10 +13,13 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.meandor.doctorfate.auth.domain.{IDToken, TokenService, Tokens}
 import com.github.meandor.doctorfate.{Controller, ErrorDTO}
+import com.typesafe.scalalogging.LazyLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
-class TokenController(secret: String, salt: String, tokenService: TokenService) extends Controller {
+class TokenController(secret: String, salt: String, tokenService: TokenService)
+    extends Controller
+    with LazyLogging {
   val invalidRequestResponse: StandardRoute =
     complete(StatusCodes.BadRequest, ErrorDTO("Invalid Request"))
   val failedResponse: StandardRoute =
@@ -35,6 +38,7 @@ class TokenController(secret: String, salt: String, tokenService: TokenService) 
   }
 
   def handleTokenRequest(tokenRequest: TokenRequestDTO): Route = {
+    logger.info("Got token creation request")
     if (!isValid(tokenRequest)) {
       invalidRequestResponse
     } else {

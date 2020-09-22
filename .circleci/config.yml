@@ -78,6 +78,26 @@ jobs:
       - store_test_results:
           path: ~/repo/backend/target/test-reports
 
+  integration_test_backend:
+    working_directory: ~/repo
+    docker:
+      - image: mozilla/sbt:latest
+      - image: postgres:latest
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: mysecretpassword
+    steps:
+      - checkout
+      - restore-sbt-cache
+      - run:
+          name: Run unit tests
+          command: |
+            cd backend
+            sbt it:test
+      - save-sbt-cache
+      - store_test_results:
+          path: ~/repo/backend/target/test-reports
+
   build_backend:
     working_directory: ~/repo
     docker:
@@ -290,9 +310,11 @@ workflows:
     jobs:
       - lint
       - unit_test_frontend
+      - integration_test_backend
       - build_staging_frontend:
           requires:
             - unit_test_frontend
+            - integration_test_backend
             - lint
       - deploy_staging_frontend:
           requires:

@@ -50,7 +50,8 @@ object DoctorFate extends LazyLogging {
     logger.info("Start loading Token Module")
     val tokenService    = new TokenService(authenticationRepository, tokenRepository)
     val jwtIDSecret     = System.getenv("JWT_ID_SECRET")
-    val tokenController = new TokenController(jwtIDSecret, tokenService)
+    val passwordSalt    = System.getenv("PASSWORD_SALT")
+    val tokenController = new TokenController(jwtIDSecret, passwordSalt, tokenService)
     logger.info("Done loading Token Module")
 
     logger.info("Start composing routes")

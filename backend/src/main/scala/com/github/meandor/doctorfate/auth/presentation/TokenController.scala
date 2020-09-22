@@ -1,5 +1,8 @@
 package com.github.meandor.doctorfate.auth.presentation
 
+import java.math.BigInteger
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import java.time.{LocalDateTime, ZoneId}
 import java.util.Date
 
@@ -13,7 +16,7 @@ import com.github.meandor.doctorfate.{Controller, ErrorDTO}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
-class TokenController(secret: String, tokenService: TokenService) extends Controller {
+class TokenController(secret: String, salt: String, tokenService: TokenService) extends Controller {
   val invalidRequestResponse: StandardRoute =
     complete(StatusCodes.BadRequest, ErrorDTO("Invalid Request"))
   val failedResponse: StandardRoute =
@@ -35,7 +38,8 @@ class TokenController(secret: String, tokenService: TokenService) extends Contro
     if (!isValid(tokenRequest)) {
       invalidRequestResponse
     } else {
-      val createdToken = tokenService.createToken(tokenRequest.email, tokenRequest.password)
+      val hashedPassword = hashPassword(tokenRequest.password)
+      val createdToken   = tokenService.createToken(tokenRequest.email, hashedPassword)
       onSuccess(createdToken)(processTokens)
     }
   }
@@ -67,5 +71,12 @@ class TokenController(secret: String, tokenService: TokenService) extends Contro
       .withExpiresAt(Date.from(tomorrow.toInstant(berlinTimeZone)))
       .sign(algorithm)
     JWTSignedTokens(idJWT, accessJWT)
+  }
+
+  def hashPassword(password: String): String = {
+    val messageDigest = MessageDigest.getInstance("SHA-512")
+    messageDigest.update(salt.getBytes(StandardCharsets.UTF_8))
+    val hashedPassword = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8))
+    String.format("%032X", new BigInteger(1, hashedPassword))
   }
 }

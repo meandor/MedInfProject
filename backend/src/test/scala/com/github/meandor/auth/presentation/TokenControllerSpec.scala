@@ -12,13 +12,15 @@ import com.github.meandor.doctorfate.auth.domain.{AccessToken, IDToken, TokenSer
 import com.github.meandor.doctorfate.auth.presentation.{TokenController, TokenDTO, TokenRequestDTO}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
+import org.mockito.ArgumentMatchers.any
 
 import scala.concurrent.Future
 
 class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
   val tokenServiceMock: TokenService = mock[TokenService]
   val secret: String                 = "secret"
-  val controller: TokenController    = new TokenController(secret, tokenServiceMock)
+  val salt: String                   = "salt"
+  val controller: TokenController    = new TokenController(secret, salt, tokenServiceMock)
 
   Feature("createToken") {
     val email           = "foo@bar.com"
@@ -31,7 +33,7 @@ class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
     val verifier        = JWT.require(algorithm).withIssuer("doctor-fate").acceptLeeway(1).build()
 
     Scenario("should return idToken for valid user") {
-      tokenServiceMock.createToken(email, password) shouldReturn Future.successful(Some(token))
+      tokenServiceMock.createToken(email, any()) shouldReturn Future.successful(Some(token))
       Post("/token", tokenRequestDTO) ~> Route.seal(controller.routes) ~> check {
         val actualToken   = responseAs[TokenDTO]
         val actualIDToken = verifier.verify(actualToken.idToken)
@@ -77,7 +79,7 @@ class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
     }
 
     Scenario("should 400 when creating token is empty") {
-      tokenServiceMock.createToken(email, password) shouldReturn Future.successful(None)
+      tokenServiceMock.createToken(email, any()) shouldReturn Future.successful(None)
       Post("/token", tokenRequestDTO) ~> Route.seal(controller.routes) ~> check {
         val actual   = responseAs[ErrorDTO]
         val expected = ErrorDTO("Invalid Request")
@@ -88,7 +90,7 @@ class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
     }
 
     Scenario("should 500 when creating token fails") {
-      tokenServiceMock.createToken(email, password) shouldReturn Future.failed(
+      tokenServiceMock.createToken(email, any()) shouldReturn Future.failed(
         new Exception("expected exception")
       )
       Post("/token", tokenRequestDTO) ~> Route.seal(controller.routes) ~> check {

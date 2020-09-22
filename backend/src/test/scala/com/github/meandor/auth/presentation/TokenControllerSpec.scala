@@ -24,8 +24,8 @@ class TokenControllerSpec extends UnitTestSpec with ScalatestRouteTest {
     val email           = "foo@bar.com"
     val password        = "password"
     val tokenRequestDTO = TokenRequestDTO(email, password)
-    val accessToken     = AccessToken()
-    val idToken         = IDToken("foo bar", "foo@bar.com", emailIsVerified = true)
+    val accessToken     = AccessToken(UUID.randomUUID())
+    val idToken         = IDToken(UUID.randomUUID(), "foo bar", "foo@bar.com", emailIsVerified = true)
     val token           = Tokens(idToken, accessToken)
     val algorithm       = Algorithm.HMAC512(secret)
     val verifier        = JWT.require(algorithm).withIssuer("doctor-fate").acceptLeeway(1).build()

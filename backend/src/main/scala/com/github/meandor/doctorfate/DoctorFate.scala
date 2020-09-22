@@ -18,7 +18,7 @@ import scalikejdbc.{ConnectionPool, ConnectionPoolSettings}
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
-object DoctorFate extends LazyLogging {
+object DoctorFate extends LazyLogging with CORSHandler {
   def main(args: Array[String]): Unit = {
     logger.info("Starting System")
     implicit val system: ActorSystem[Nothing]               = ActorSystem(Behaviors.empty, "doctorFate")
@@ -55,7 +55,7 @@ object DoctorFate extends LazyLogging {
     logger.info("Done loading Token Module")
 
     logger.info("Start composing routes")
-    val route: Route = BaseRoutes.routes ~ tokenController.routes
+    val route: Route = corsHandler(BaseRoutes.routes ~ tokenController.routes)
     logger.info("Done composing routes")
 
     val maybePort: Option[String] = Option(System.getenv("PORT"))

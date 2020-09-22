@@ -11,7 +11,6 @@ export interface CreateTokenDTO {
 }
 
 const baseUrl = process.env.REACT_APP_BACKEND;
-const config = { withCredentials: true };
 
 export function errorLogging(error: any): any {
   if (error.response) {
@@ -31,7 +30,7 @@ export function errorLogging(error: any): any {
 
 export function createToken(dto: CreateTokenDTO): Promise<TokenDTO> {
   return axios
-    .post(`${baseUrl}token`, dto, config)
+    .post(`${baseUrl}token`, dto)
     .then(({ data }) => data)
     .catch(errorLogging);
 }

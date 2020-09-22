@@ -310,11 +310,9 @@ workflows:
     jobs:
       - lint
       - unit_test_frontend
-      - integration_test_backend
       - build_staging_frontend:
           requires:
             - unit_test_frontend
-            - integration_test_backend
             - lint
       - deploy_staging_frontend:
           requires:
@@ -322,10 +320,12 @@ workflows:
 
       - scapegoat
       - unit_test_backend
+      - integration_test_backend
       - build_backend:
           requires:
             - scapegoat
             - unit_test_backend
+            - integration_test_backend
       - deploy_staging_backend:
           requires:
             - build_backend

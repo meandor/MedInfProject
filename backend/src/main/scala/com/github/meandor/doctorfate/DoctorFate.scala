@@ -6,7 +6,10 @@ import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
-import com.github.meandor.doctorfate.auth.data.AuthenticationRepository
+import akka.http.scaladsl.server.Directives._
+import com.github.meandor.doctorfate.auth.data.{AuthenticationRepository, TokenRepository}
+import com.github.meandor.doctorfate.auth.domain.TokenService
+import com.github.meandor.doctorfate.auth.presentation.TokenController
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.dbcp2.BasicDataSource
 import org.flywaydb.core.Flyway
@@ -29,12 +32,19 @@ object DoctorFate extends LazyLogging {
     logger.info("Done db migrations")
 
     logger.info("Start connecting to DB")
-    val databaseEC = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
-    new AuthenticationRepository(databaseEC)
+    val databaseEC               = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
+    val authenticationRepository = new AuthenticationRepository(databaseEC)
+    val tokenRepository          = new TokenRepository(databaseEC)
     logger.info("Done connecting to DB")
 
+    logger.info("Start loading Token Module")
+    val tokenService    = new TokenService(authenticationRepository, tokenRepository)
+    val jwtIDSecret     = System.getenv("JWT_ID_SECRET")
+    val tokenController = new TokenController(jwtIDSecret, tokenService)
+    logger.info("Done loading Token Module")
+
     logger.info("Start composing routes")
-    val route: Route = BaseRoutes.routes
+    val route: Route = BaseRoutes.routes ~ tokenController.routes
     logger.info("Done composing routes")
 
     val maybePort: Option[String] = Option(System.getenv("PORT"))

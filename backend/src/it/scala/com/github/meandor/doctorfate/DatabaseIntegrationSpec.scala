@@ -16,10 +16,12 @@ trait DatabaseIntegrationSpec extends FixtureAnyFeatureSpec with Matchers with S
       "jdbc:postgresql://127.0.0.1:5432/postgres?user=postgres&password=mysecretpassword"
     )
     val flyway = Flyway.configure.dataSource(dataSource).load
-    flyway.clean()
     flyway.migrate()
     ConnectionPool.add('default, new DataSourceConnectionPool(dataSource))
-    withFixture(test.toNoArgTest(FixtureParam(dataSource)))
+    try {
+      withFixture(test.toNoArgTest(FixtureParam(dataSource)))
+    } finally {
+      flyway.clean()
+    }
   }
-
 }

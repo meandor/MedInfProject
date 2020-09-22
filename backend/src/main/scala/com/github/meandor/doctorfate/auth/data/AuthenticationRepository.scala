@@ -5,11 +5,12 @@ import scalikejdbc.{DB, scalikejdbcSQLInterpolationImplicitDef}
 
 import scala.concurrent.{ExecutionContext, Future, blocking}
 
-class AuthenticationRepository(ec: ExecutionContext) {
+class AuthenticationRepository(executionContext: ExecutionContext) {
+  implicit val ec: ExecutionContext = executionContext
   def findUserId(email: String, password: String): Future[Option[UUID]] =
     Future {
       blocking {
-        DB readOnly { implicit session =>
+        DB localTx { implicit session =>
           sql"""
       SELECT id
       FROM users
@@ -17,5 +18,5 @@ class AuthenticationRepository(ec: ExecutionContext) {
       """.map(result => UUID.fromString(result.get("id"))).single.apply()
         }
       }
-    }(ec)
+    }
 }

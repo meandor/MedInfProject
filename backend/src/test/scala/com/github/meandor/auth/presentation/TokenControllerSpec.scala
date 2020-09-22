@@ -6,7 +6,7 @@ import akka.http.scaladsl.server._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.github.meandor.auth.UnitTestSpec
+import com.github.meandor.auth.UnitSpec
 import com.github.meandor.doctorfate.ErrorDTO
 import com.github.meandor.doctorfate.auth.domain.{AccessToken, IDToken, TokenService, Tokens}
 import com.github.meandor.doctorfate.auth.presentation.{TokenController, TokenDTO, TokenRequestDTO}
@@ -15,7 +15,7 @@ import io.circe.generic.auto._
 
 import scala.concurrent.Future
 
-class TokenControllerSpec extends UnitTestSpec with ScalatestRouteTest {
+class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
   val tokenServiceMock: TokenService = mock[TokenService]
   val secret: String                 = "secret"
   val controller: TokenController    = new TokenController(secret, tokenServiceMock)

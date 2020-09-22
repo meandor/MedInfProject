@@ -12,6 +12,7 @@ lazy val app = (project in file("."))
     name := "DoctorFate",
     version := "0.1.0-SNAPSHOT",
     Defaults.itSettings,
+    parallelExecution in IntegrationTest := false,
     mainClass in assembly := Some("com.github.meandor.doctorfate.DoctorFate"),
     test in assembly := {},
     libraryDependencies += "com.typesafe.akka"          %% "akka-actor-typed"    % akkaVersion,

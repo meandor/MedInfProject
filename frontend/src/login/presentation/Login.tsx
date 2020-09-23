@@ -12,8 +12,9 @@ function signIn(
   return (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     return authenticate(email, password)
-      .then((_) => {
-        return successFn();
+      .then((token) => {
+        successFn();
+        return token;
       })
       .catch((error: Error) => {
         logger.error('Was not able to authenticate', error);
@@ -40,16 +41,15 @@ function ErrorInfo({ errorMessage }: { errorMessage: string }): JSX.Element {
   return <></>;
 }
 
-interface LoginProps {
-  history: { push: any };
-}
-
-export function Login({ history }: LoginProps): JSX.Element {
+export function Login(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const redirectToRoot: () => any = () => history.push('/');
+  const redirect: () => any = () => {
+    window.location.href = '/dashboard';
+    return true;
+  };
 
   return (
     <section className="login">
@@ -66,7 +66,7 @@ export function Login({ history }: LoginProps): JSX.Element {
           <h2>Use the period tracker that respects your privacy.</h2>
           <p>Please sign in:</p>
           <ErrorInfo errorMessage={error} />
-          <form onSubmit={signIn(email, password, setError, redirectToRoot)}>
+          <form onSubmit={signIn(email, password, setError, redirect)}>
             <div className="group">
               <label htmlFor="email">
                 E-Mail<sup>*</sup>

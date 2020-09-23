@@ -13,12 +13,10 @@ describe('render component', () => {
   let emailField: HTMLElement;
   let passwordField: HTMLElement;
   let errorInfo: HTMLElement | null;
-  let pushMock: jest.Mock;
 
   beforeEach(() => {
-    pushMock = jest.fn();
     const { getByTestId, queryByTestId } = render(
-      <Login history={{ push: pushMock }} />
+      <Login />
     );
     signInButton = getByTestId(/sign-in/i);
     emailField = getByTestId(/email/i);
@@ -56,6 +54,5 @@ describe('render component', () => {
     await fireEvent.click(signInButton);
 
     await expect(authenticateMock).toHaveBeenCalledWith(email, password);
-    await expect(pushMock).toHaveBeenCalledWith('/');
   });
 });

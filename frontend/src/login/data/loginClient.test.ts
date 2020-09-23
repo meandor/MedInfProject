@@ -4,6 +4,7 @@ import { createToken } from './loginClient';
 jest.mock('axios');
 
 const axiosMock: jest.Mocked<AxiosInstance> = axios as any;
+const AXIOS_CONFIG = { withCredentials: true };
 
 describe('createToken', () => {
   const validToken = {
@@ -24,6 +25,6 @@ describe('createToken', () => {
     const expected = validToken;
 
     await expect(actual).resolves.toBe(expected);
-    await expect(axiosMock.post).toHaveBeenCalledWith('backend/token', given);
+    await expect(axiosMock.post).toHaveBeenCalledWith('backend/token', given, AXIOS_CONFIG);
   });
 });

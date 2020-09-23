@@ -2,6 +2,7 @@ package com.github.meandor.auth.presentation
 import java.util.UUID
 
 import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.headers.{HttpCookie, `Set-Cookie`}
 import akka.http.scaladsl.server._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.auth0.jwt.JWT
@@ -20,7 +21,7 @@ class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
   val tokenServiceMock: TokenService = mock[TokenService]
   val secret: String                 = "secret"
   val salt: String                   = "salt"
-  val controller: TokenController    = new TokenController(secret, salt, tokenServiceMock)
+  val controller: TokenController    = new TokenController(secret, secret, salt, tokenServiceMock)
 
   Feature("createToken") {
     val email           = "foo@bar.com"
@@ -32,16 +33,23 @@ class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
     val algorithm       = Algorithm.HMAC512(secret)
     val verifier        = JWT.require(algorithm).withIssuer("doctor-fate").acceptLeeway(1).build()
 
-    Scenario("should return idToken for valid user") {
+    Scenario("should return 201 and tokens for valid user") {
       tokenServiceMock.createToken(email, any()) shouldReturn Future.successful(Some(token))
       Post("/token", tokenRequestDTO) ~> Route.seal(controller.routes) ~> check {
-        val actualToken   = responseAs[TokenDTO]
-        val actualIDToken = verifier.verify(actualToken.idToken)
+        val actualToken             = responseAs[TokenDTO]
+        val actualIDToken           = verifier.verify(actualToken.idToken)
+        val actualAccessTokenCookie = header[`Set-Cookie`].get.cookie
+        val actualAccessToken       = verifier.verify(actualAccessTokenCookie.value())
 
         status shouldBe StatusCodes.Created
         actualIDToken.getClaim("name").asString() shouldBe idToken.name
         actualIDToken.getClaim("email").asString() shouldBe idToken.email
         actualIDToken.getClaim("email_verified").asBoolean() shouldBe idToken.emailIsVerified
+        actualIDToken.getSubject shouldBe idToken.userID.toString
+        actualAccessTokenCookie.secure() shouldBe true
+        actualAccessTokenCookie.httpOnly() shouldBe true
+        actualAccessTokenCookie.name() shouldBe "ACCESS_TOKEN"
+        actualAccessToken.getSubject shouldBe accessToken.userID.toString
       }
     }
 

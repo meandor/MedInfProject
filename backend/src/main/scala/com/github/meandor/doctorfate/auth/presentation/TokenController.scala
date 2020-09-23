@@ -7,22 +7,27 @@ import java.time.{LocalDateTime, ZoneId}
 import java.util.Date
 
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.Directives.{as, complete, entity, onSuccess, path, post}
-import akka.http.scaladsl.server.{Route, StandardRoute}
+import akka.http.scaladsl.model.headers.HttpCookie
+import akka.http.scaladsl.server.Directives.{as, complete, entity, onSuccess, path, post, setCookie}
+import akka.http.scaladsl.server.Route
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.github.meandor.doctorfate.auth.domain.{IDToken, TokenService, Tokens}
+import com.github.meandor.doctorfate.auth.domain.{TokenService, Tokens}
 import com.github.meandor.doctorfate.{Controller, ErrorDTO}
 import com.typesafe.scalalogging.LazyLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
-class TokenController(secret: String, salt: String, tokenService: TokenService)
-    extends Controller
+class TokenController(
+    idTokenSecret: String,
+    accessTokenSecret: String,
+    salt: String,
+    tokenService: TokenService
+) extends Controller
     with LazyLogging {
-  val invalidRequestResponse: StandardRoute =
+  val invalidRequestResponse: Route =
     complete(StatusCodes.BadRequest, ErrorDTO("Invalid Request"))
-  val failedResponse: StandardRoute =
+  val failedResponse: Route =
     complete(StatusCodes.InternalServerError)
 
   override def routes: Route = path("token") {
@@ -48,32 +53,42 @@ class TokenController(secret: String, salt: String, tokenService: TokenService)
     }
   }
 
-  def processTokens(maybeTokens: Option[Tokens]): StandardRoute = {
+  def processTokens(maybeTokens: Option[Tokens]): Route = {
     maybeTokens.map(generateJWT).fold(invalidRequestResponse) { tokens =>
-      complete(StatusCodes.Created, TokenDTO(tokens.idToken))
+      val accessTokenCookie = HttpCookie(
+        "ACCESS_TOKEN",
+        value = tokens.accessToken,
+        secure = true,
+        httpOnly = true
+      )
+      setCookie(accessTokenCookie) {
+        complete(StatusCodes.Created, TokenDTO(tokens.idToken))
+      }
     }
   }
 
   def generateJWT(tokens: Tokens): JWTSignedTokens = {
-    val algorithm      = Algorithm.HMAC512(secret)
-    val now            = LocalDateTime.now()
-    val in10Hours      = now.plusHours(10L)
-    val tomorrow       = now.plusHours(24L)
-    val zone           = ZoneId.of("Europe/Berlin")
-    val berlinTimeZone = zone.getRules.getOffset(in10Hours)
+    val idTokenAlgorithm     = Algorithm.HMAC512(idTokenSecret)
+    val accessTokenAlgorithm = Algorithm.HMAC512(accessTokenSecret)
+    val now                  = LocalDateTime.now()
+    val in10Hours            = now.plusHours(10L)
+    val tomorrow             = now.plusHours(24L)
+    val zone                 = ZoneId.of("Europe/Berlin")
+    val berlinTimeZone       = zone.getRules.getOffset(in10Hours)
     val jwtBuilder = JWT
       .create()
       .withIssuer("doctor-fate")
-      .withSubject(tokens.idToken.userID.toString)
     val idJWT = jwtBuilder
+      .withSubject(tokens.idToken.userID.toString)
       .withExpiresAt(Date.from(in10Hours.toInstant(berlinTimeZone)))
       .withClaim("name", tokens.idToken.name)
       .withClaim("email", tokens.idToken.email)
       .withClaim("email_verified", tokens.idToken.emailIsVerified)
-      .sign(algorithm)
+      .sign(idTokenAlgorithm)
     val accessJWT = jwtBuilder
+      .withSubject(tokens.accessToken.userID.toString)
       .withExpiresAt(Date.from(tomorrow.toInstant(berlinTimeZone)))
-      .sign(algorithm)
+      .sign(accessTokenAlgorithm)
     JWTSignedTokens(idJWT, accessJWT)
   }
 

@@ -10,9 +10,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{ExceptionHandler, RejectionHandler}
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
-import com.github.meandor.doctorfate.auth.data.{AuthenticationRepository, TokenRepository}
-import com.github.meandor.doctorfate.auth.domain.TokenService
-import com.github.meandor.doctorfate.auth.presentation.TokenController
+import com.github.meandor.doctorfate.auth.AuthModule
 import com.typesafe.scalalogging.LazyLogging
 import org.flywaydb.core.Flyway
 import scalikejdbc.{ConnectionPool, ConnectionPoolSettings}
@@ -43,19 +41,13 @@ object DoctorFate extends LazyLogging {
       connectionTimeoutMillis = 3000L
     )
     ConnectionPool.add('default, dbUrl, username, password, settings)
-    val databaseEC               = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
-    val authenticationRepository = new AuthenticationRepository(databaseEC)
-    val tokenRepository          = new TokenRepository(databaseEC)
     logger.info("Done connecting to DB")
 
-    logger.info("Start loading Token Module")
-    val tokenService    = new TokenService(authenticationRepository, tokenRepository)
+    val databaseEC      = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
     val jwtIDSecret     = System.getenv("JWT_ID_SECRET")
     val jwtAccessSecret = System.getenv("JWT_ACCESS_SECRET")
     val passwordSalt    = System.getenv("PASSWORD_SALT")
-    val tokenController =
-      new TokenController(jwtIDSecret, jwtAccessSecret, passwordSalt, tokenService)
-    logger.info("Done loading Token Module")
+    val tokenController = AuthModule.start(jwtIDSecret, jwtAccessSecret, passwordSalt, databaseEC)
 
     logger.info("Start composing routes")
     val rejectionHandler = corsRejectionHandler.withFallback(RejectionHandler.default)

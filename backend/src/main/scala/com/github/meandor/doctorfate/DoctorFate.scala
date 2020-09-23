@@ -6,8 +6,10 @@ import java.util.concurrent.Executors
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.{ExceptionHandler, RejectionHandler}
+import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 import com.github.meandor.doctorfate.auth.data.{AuthenticationRepository, TokenRepository}
 import com.github.meandor.doctorfate.auth.domain.TokenService
 import com.github.meandor.doctorfate.auth.presentation.TokenController
@@ -18,7 +20,7 @@ import scalikejdbc.{ConnectionPool, ConnectionPoolSettings}
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
-object DoctorFate extends LazyLogging with CORSHandler {
+object DoctorFate extends LazyLogging {
   def main(args: Array[String]): Unit = {
     logger.info("Starting System")
     implicit val system: ActorSystem[Nothing]               = ActorSystem(Behaviors.empty, "doctorFate")
@@ -54,7 +56,20 @@ object DoctorFate extends LazyLogging with CORSHandler {
     logger.info("Done loading Token Module")
 
     logger.info("Start composing routes")
-    val route: Route = corsHandler(BaseRoutes.routes ~ tokenController.routes)
+    val rejectionHandler = corsRejectionHandler.withFallback(RejectionHandler.default)
+
+    val exceptionHandler = ExceptionHandler {
+      case e: NoSuchElementException => complete(StatusCodes.NotFound -> e.getMessage)
+    }
+
+    val handleErrors = handleRejections(rejectionHandler) & handleExceptions(exceptionHandler)
+    val route = handleErrors {
+      cors() {
+        handleErrors {
+          BaseRoutes.routes ~ tokenController.routes
+        }
+      }
+    }
     logger.info("Done composing routes")
 
     val maybePort: Option[String] = Option(System.getenv("PORT"))

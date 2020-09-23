@@ -18,6 +18,7 @@ lazy val app = (project in file("."))
     libraryDependencies += "com.typesafe.akka"          %% "akka-actor-typed"    % akkaVersion,
     libraryDependencies += "com.typesafe.akka"          %% "akka-stream"         % akkaVersion,
     libraryDependencies += "com.typesafe.akka"          %% "akka-http"           % akkaHttpVersion,
+    libraryDependencies += "ch.megard"                  %% "akka-http-cors"      % "1.1.0",
     libraryDependencies += "ch.qos.logback"             % "logback-classic"      % "1.2.3",
     libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging"       % "3.9.2",
     libraryDependencies += "io.circe"                   %% "circe-core"          % circeVersion,

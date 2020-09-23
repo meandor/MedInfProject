@@ -27,7 +27,7 @@ class TokenService(authRepository: AuthenticationRepository, tokenRepository: To
     }
 
   def createToken(email: String, password: String): Future[Option[Tokens]] = {
-    logger.info("Creating token for email: {}, password: {}", email, password)
+    logger.info("Creating token for user")
     for {
       maybeUserId: Option[UUID] <- authRepository.findUserId(email, password)
       maybeToken                <- lift(maybeUserId.map(tokenRepository.create))

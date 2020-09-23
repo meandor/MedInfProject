@@ -8,9 +8,9 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.meandor.auth.UnitSpec
-import com.github.meandor.doctorfate.ErrorDTO
 import com.github.meandor.doctorfate.auth.domain.{AccessToken, IDToken, TokenService, Tokens}
 import com.github.meandor.doctorfate.auth.presentation.{TokenController, TokenDTO, TokenRequestDTO}
+import com.github.meandor.doctorfate.presentation.ErrorDTO
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 import org.mockito.ArgumentMatchers.any

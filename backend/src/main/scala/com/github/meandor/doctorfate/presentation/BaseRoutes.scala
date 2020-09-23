@@ -1,4 +1,4 @@
-package com.github.meandor.doctorfate
+package com.github.meandor.doctorfate.presentation
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives.{complete, get, path}
 import akka.http.scaladsl.server.Route

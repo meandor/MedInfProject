@@ -1,8 +1,5 @@
 package com.github.meandor.doctorfate
 
-import java.net.URI
-import java.util.concurrent.Executors
-
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
@@ -12,11 +9,9 @@ import akka.http.scaladsl.server.{ExceptionHandler, RejectionHandler}
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 import com.github.meandor.doctorfate.auth.AuthModule
 import com.typesafe.scalalogging.LazyLogging
-import org.flywaydb.core.Flyway
-import scalikejdbc.{ConnectionPool, ConnectionPoolSettings}
 
+import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.DurationInt
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 object DoctorFate extends LazyLogging {
   def main(args: Array[String]): Unit = {
@@ -24,30 +19,13 @@ object DoctorFate extends LazyLogging {
     implicit val system: ActorSystem[Nothing]               = ActorSystem(Behaviors.empty, "doctorFate")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-    logger.info("Start db migrations")
-    val dbUri    = new URI(System.getenv("DATABASE_URL"))
-    val username = dbUri.getUserInfo.split(":")(0)
-    val password = dbUri.getUserInfo.split(":")(1)
-    val dbUrl =
-      s"jdbc:postgresql://${dbUri.getHost}:${dbUri.getPort}${dbUri.getPath}?sslmode=require"
-    val flyway = Flyway.configure.dataSource(dbUrl, username, password).load
-    flyway.migrate()
-    logger.info("Done db migrations")
-
-    logger.info("Start connecting to DB")
-    val settings = ConnectionPoolSettings(
-      initialSize = 5,
-      maxSize = 20,
-      connectionTimeoutMillis = 3000L
-    )
-    ConnectionPool.add('default, dbUrl, username, password, settings)
-    logger.info("Done connecting to DB")
-
-    val databaseEC      = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
+    val databaseModule = DatabaseModule()
+    databaseModule.start()
     val jwtIDSecret     = System.getenv("JWT_ID_SECRET")
     val jwtAccessSecret = System.getenv("JWT_ACCESS_SECRET")
     val passwordSalt    = System.getenv("PASSWORD_SALT")
-    val tokenController = AuthModule.start(jwtIDSecret, jwtAccessSecret, passwordSalt, databaseEC)
+    val tokenController =
+      AuthModule(jwtIDSecret, jwtAccessSecret, passwordSalt, databaseModule).start
 
     logger.info("Start composing routes")
     val rejectionHandler = corsRejectionHandler.withFallback(RejectionHandler.default)

@@ -1,3 +1,8 @@
 package com.github.meandor.doctorfate.user.domain
 
-final case class User(email: String, password: String, name: Option[String])
+final case class User(
+    email: String,
+    password: String,
+    name: Option[String],
+    hasVerifiedEmail: Boolean
+)

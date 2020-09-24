@@ -29,7 +29,9 @@ class UserController(salt: String, userService: UserService)
       invalidRequestResponse
     } else {
       val hashedPassword = hashPassword(userDTO.password, salt)
-      val createdToken   = userService.registerUser(User(userDTO.email, hashedPassword, userDTO.name))
+      val createdToken = userService.registerUser(
+        User(userDTO.email, hashedPassword, userDTO.name, hasVerifiedEmail = false)
+      )
       onSuccess(createdToken) {
         case Some(user) =>
           val registeredUser = UserDTO(user.email, user.password, user.name)

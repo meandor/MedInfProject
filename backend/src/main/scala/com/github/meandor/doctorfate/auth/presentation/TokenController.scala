@@ -1,8 +1,5 @@
 package com.github.meandor.doctorfate.auth.presentation
 
-import java.math.BigInteger
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 import java.time.{LocalDateTime, ZoneId}
 import java.util.Date
 
@@ -13,7 +10,7 @@ import akka.http.scaladsl.server.Route
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.meandor.doctorfate.auth.domain.{TokenService, Tokens}
-import com.github.meandor.doctorfate.core.presentation.Controller
+import com.github.meandor.doctorfate.core.presentation.{Controller, PasswordEncryption}
 import com.typesafe.scalalogging.LazyLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
@@ -24,7 +21,10 @@ class TokenController(
     salt: String,
     tokenService: TokenService
 ) extends Controller
+    with PasswordEncryption
     with LazyLogging {
+  val ACCESS_TOKEN_COOKIE_NAME = "ACCESS_TOKEN"
+
   override def routes: Route = path("token") {
     post {
       entity(as[TokenRequestDTO]) { handleTokenRequest }
@@ -40,9 +40,10 @@ class TokenController(
   def handleTokenRequest(tokenRequest: TokenRequestDTO): Route = {
     logger.info("Got token creation request")
     if (!isValid(tokenRequest)) {
+      logger.info("Request is invalid")
       invalidRequestResponse
     } else {
-      val hashedPassword = hashPassword(tokenRequest.password)
+      val hashedPassword = hashPassword(tokenRequest.password, salt)
       val createdToken   = tokenService.createToken(tokenRequest.email, hashedPassword)
       onSuccess(createdToken)(processTokens)
     }
@@ -51,7 +52,7 @@ class TokenController(
   def processTokens(maybeTokens: Option[Tokens]): Route = {
     maybeTokens.map(generateJWT).fold(invalidRequestResponse) { tokens =>
       val accessTokenCookie = HttpCookie(
-        "ACCESS_TOKEN",
+        ACCESS_TOKEN_COOKIE_NAME,
         value = tokens.accessToken,
         secure = true,
         httpOnly = true
@@ -85,12 +86,5 @@ class TokenController(
       .withExpiresAt(Date.from(tomorrow.toInstant(berlinTimeZone)))
       .sign(accessTokenAlgorithm)
     JWTSignedTokens(idJWT, accessJWT)
-  }
-
-  def hashPassword(password: String): String = {
-    val messageDigest = MessageDigest.getInstance("SHA-512")
-    messageDigest.update(salt.getBytes(StandardCharsets.UTF_8))
-    val hashedPassword = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8))
-    String.format("%032X", new BigInteger(1, hashedPassword))
   }
 }

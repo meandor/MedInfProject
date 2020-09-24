@@ -13,7 +13,7 @@ import akka.http.scaladsl.server.Route
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.meandor.doctorfate.auth.domain.{TokenService, Tokens}
-import com.github.meandor.doctorfate.core.presentation.{Controller, ErrorDTO}
+import com.github.meandor.doctorfate.core.presentation.Controller
 import com.typesafe.scalalogging.LazyLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
@@ -25,11 +25,6 @@ class TokenController(
     tokenService: TokenService
 ) extends Controller
     with LazyLogging {
-  val invalidRequestResponse: Route =
-    complete(StatusCodes.BadRequest, ErrorDTO("Invalid Request"))
-  val failedResponse: Route =
-    complete(StatusCodes.InternalServerError)
-
   override def routes: Route = path("token") {
     post {
       entity(as[TokenRequestDTO]) { handleTokenRequest }

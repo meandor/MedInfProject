@@ -7,15 +7,13 @@ import akka.http.scaladsl.server.{ExceptionHandler, RejectionHandler, Route}
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.{cors, corsRejectionHandler}
 import com.github.meandor.doctorfate.auth.presentation.TokenController
 import com.github.meandor.doctorfate.presentation.BaseRoutes
+import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.DurationInt
 
-final case class WebServer(tokenController: TokenController)(
-    implicit executionContext: ExecutionContextExecutor,
-    system: ActorSystem[Nothing]
-) extends LazyLogging {
+final case class WebServer(config: Config, tokenController: TokenController) extends LazyLogging {
   val rejectionHandler: RejectionHandler =
     corsRejectionHandler.withFallback(RejectionHandler.default)
 
@@ -37,11 +35,12 @@ final case class WebServer(tokenController: TokenController)(
     route
   }
 
-  def start(): Unit = {
-    val maybePort: Option[String] = Option(System.getenv("PORT"))
-    val defaultPort: Int          = 8080
-    val port: Int                 = maybePort.fold(defaultPort)(p => p.toInt)
-    val interface: String         = "0.0.0.0"
+  def start(
+      implicit executionContext: ExecutionContextExecutor,
+      system: ActorSystem[Nothing]
+  ): Unit = {
+    val port: Int         = config.getInt("app.port")
+    val interface: String = "0.0.0.0"
     logger.info(s"Starting Server at: ${interface} on port: ${port}")
     Http()
       .newServerAt(interface, port)

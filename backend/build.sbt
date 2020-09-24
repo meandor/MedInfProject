@@ -15,6 +15,7 @@ lazy val app = (project in file("."))
     parallelExecution in IntegrationTest := false,
     mainClass in assembly := Some("com.github.meandor.doctorfate.DoctorFate"),
     test in assembly := {},
+    libraryDependencies += "com.typesafe"               % "config"               % "1.4.0",
     libraryDependencies += "com.typesafe.akka"          %% "akka-actor-typed"    % akkaVersion,
     libraryDependencies += "com.typesafe.akka"          %% "akka-stream"         % akkaVersion,
     libraryDependencies += "com.typesafe.akka"          %% "akka-http"           % akkaHttpVersion,

@@ -1,4 +1,4 @@
-package com.github.meandor.doctorfate
+package com.github.meandor.doctorfate.core
 import java.net.URI
 import java.util.concurrent.Executors
 

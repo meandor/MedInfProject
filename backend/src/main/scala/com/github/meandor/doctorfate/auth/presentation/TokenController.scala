@@ -13,7 +13,7 @@ import akka.http.scaladsl.server.Route
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.meandor.doctorfate.auth.domain.{TokenService, Tokens}
-import com.github.meandor.doctorfate.presentation.{Controller, ErrorDTO}
+import com.github.meandor.doctorfate.core.presentation.{Controller, ErrorDTO}
 import com.typesafe.scalalogging.LazyLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._

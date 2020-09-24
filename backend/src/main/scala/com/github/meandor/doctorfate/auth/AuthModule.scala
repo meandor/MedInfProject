@@ -1,8 +1,8 @@
 package com.github.meandor.doctorfate.auth
-import com.github.meandor.doctorfate.DatabaseModule
 import com.github.meandor.doctorfate.auth.data.{AuthenticationRepository, TokenRepository}
 import com.github.meandor.doctorfate.auth.domain.TokenService
 import com.github.meandor.doctorfate.auth.presentation.TokenController
+import com.github.meandor.doctorfate.core.DatabaseModule
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 

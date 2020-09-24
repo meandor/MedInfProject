@@ -1,12 +1,12 @@
-package com.github.meandor.doctorfate
+package com.github.meandor.doctorfate.core
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.Directives.{complete, handleExceptions, handleRejections, _}
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{ExceptionHandler, RejectionHandler, Route}
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.{cors, corsRejectionHandler}
 import com.github.meandor.doctorfate.auth.presentation.TokenController
-import com.github.meandor.doctorfate.presentation.BaseRoutes
+import com.github.meandor.doctorfate.core.presentation.BaseRoutes
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 

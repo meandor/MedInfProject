@@ -3,6 +3,7 @@ package com.github.meandor.doctorfate
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import com.github.meandor.doctorfate.auth.AuthModule
+import com.github.meandor.doctorfate.core.{DatabaseModule, WebServer}
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
 

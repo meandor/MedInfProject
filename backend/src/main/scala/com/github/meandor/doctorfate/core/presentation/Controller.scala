@@ -1,4 +1,4 @@
-package com.github.meandor.doctorfate.presentation
+package com.github.meandor.doctorfate.core.presentation
 import akka.http.scaladsl.server.Route
 
 trait Controller {

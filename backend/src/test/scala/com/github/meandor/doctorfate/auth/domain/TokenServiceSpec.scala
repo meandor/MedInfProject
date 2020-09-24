@@ -1,14 +1,13 @@
-package com.github.meandor.auth.domain
+package com.github.meandor.doctorfate.auth.domain
 import java.time.LocalDateTime
 import java.util.UUID
 
-import com.github.meandor.auth.UnitWithFixtureSpec
+import com.github.meandor.doctorfate.UnitWithFixtureSpec
 import com.github.meandor.doctorfate.auth.data.{
   AuthenticationRepository,
   TokenEntity,
   TokenRepository
 }
-import com.github.meandor.doctorfate.auth.domain.{AccessToken, IDToken, TokenService, Tokens}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.Outcome
 import org.scalatest.concurrent.ScalaFutures

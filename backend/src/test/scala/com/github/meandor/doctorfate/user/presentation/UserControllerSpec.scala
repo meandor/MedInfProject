@@ -18,12 +18,14 @@ class UserControllerSpec extends UnitSpec with ScalatestRouteTest {
   val controller: UserController   = new UserController(salt, userServiceMock)
 
   Feature("POST /user") {
+    val hashedPassword =
+      "2908D2C28DFC047741FC590A026FFADE237AB2BA7E1266F010FE49BDE548B5987A534A86655A0D17F336588E540CD66F67234B152BBB645B4BB85758A1325D64"
+    val password = "password"
+    val email    = "foo@bar.com"
+    val name     = None
     Scenario("should return 201 for created user") {
-      val email       = "foo@bar.com"
-      val password    = "password"
-      val name        = None
       val createdUser = User(email, password, name)
-      userServiceMock.createUser(email, any(), name) shouldReturn Future.successful(
+      userServiceMock.registerUser(any()) shouldReturn Future.successful(
         Some(createdUser)
       )
 
@@ -33,14 +35,12 @@ class UserControllerSpec extends UnitSpec with ScalatestRouteTest {
 
         status shouldBe StatusCodes.Created
         actual shouldBe expected
-        userServiceMock.createUser(email, any(), name) was called
+        userServiceMock.registerUser(User(email, hashedPassword, name)) was called
       }
     }
 
     Scenario("should return 400 for empty email") {
       val invalidEmail = " "
-      val password     = "password"
-      val name         = None
 
       Post("/user", UserDTO(invalidEmail, password, name)) ~> Route.seal(controller.routes) ~> check {
         val actual   = responseAs[ErrorDTO]
@@ -48,14 +48,13 @@ class UserControllerSpec extends UnitSpec with ScalatestRouteTest {
 
         status shouldBe StatusCodes.BadRequest
         actual shouldBe expected
-        userServiceMock.createUser(invalidEmail, any(), name) wasNever called
+        userServiceMock.registerUser(User(invalidEmail, hashedPassword, name)) wasNever called
       }
     }
 
     Scenario("should return 400 for empty password") {
       val email           = "foo@bar1.com"
       val invalidPassword = "  "
-      val name            = None
 
       Post("/user", UserDTO(email, invalidPassword, name)) ~> Route.seal(controller.routes) ~> check {
         val actual   = responseAs[ErrorDTO]
@@ -63,33 +62,31 @@ class UserControllerSpec extends UnitSpec with ScalatestRouteTest {
 
         status shouldBe StatusCodes.BadRequest
         actual shouldBe expected
-        userServiceMock.createUser(email, any(), name) wasNever called
+        userServiceMock.registerUser(User(email, hashedPassword, name)) wasNever called
       }
     }
 
     Scenario("should return 500 when registering fails") {
-      val email    = "foo@bar2.com"
-      val password = "password"
-      val name     = Option("foo bar")
-      userServiceMock.createUser(email, any(), name) shouldReturn Future.successful(None)
+      val email = "foo@bar2.com"
+      val name  = Option("foo bar")
+      userServiceMock.registerUser(any()) shouldReturn Future.successful(None)
 
       Post("/user", UserDTO(email, password, name)) ~> Route.seal(controller.routes) ~> check {
         status shouldBe StatusCodes.InternalServerError
-        userServiceMock.createUser(email, any(), name) was called
+        userServiceMock.registerUser(User(email, hashedPassword, name)) was called
       }
     }
 
     Scenario("should return 500 when future fails") {
-      val email    = "foo@bar3.com"
-      val password = "password"
-      val name     = Option("foo bar")
-      userServiceMock.createUser(email, any(), name) shouldReturn Future.failed(
+      val email = "foo@bar3.com"
+      val name  = Option("foo bar")
+      userServiceMock.registerUser(any()) shouldReturn Future.failed(
         new Exception("expected exception")
       )
 
       Post("/user", UserDTO(email, password, name)) ~> Route.seal(controller.routes) ~> check {
         status shouldBe StatusCodes.InternalServerError
-        userServiceMock.createUser(email, any(), name) was called
+        userServiceMock.registerUser(User(email, hashedPassword, name)) was called
       }
     }
   }

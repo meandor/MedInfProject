@@ -8,8 +8,6 @@ import com.typesafe.scalalogging.LazyLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
-import scala.concurrent.Future
-
 class UserController(salt: String, userService: UserService)
     extends Controller
     with PasswordEncryption
@@ -31,7 +29,7 @@ class UserController(salt: String, userService: UserService)
       invalidRequestResponse
     } else {
       val hashedPassword = hashPassword(userDTO.password, salt)
-      val createdToken   = userService.createUser(userDTO.email, hashedPassword, userDTO.name)
+      val createdToken   = userService.registerUser(User(userDTO.email, hashedPassword, userDTO.name))
       onSuccess(createdToken) {
         case Some(user) =>
           val registeredUser = UserDTO(user.email, user.password, user.name)

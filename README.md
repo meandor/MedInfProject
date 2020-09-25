@@ -9,3 +9,5 @@
 A [_Monorepo_](https://en.wikipedia.org/wiki/Monorepo) that holds a _frontend_ and a _backend_.
 
 This is a project for the Medical Computer Science major at the Beuth Hochschule für Technik Berlin.
+
+The deployed version can be found here: https://menstra.herokuapp.com

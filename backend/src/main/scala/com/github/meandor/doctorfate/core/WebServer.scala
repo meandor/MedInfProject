@@ -18,7 +18,11 @@ final case class WebServer(config: Config, tokenController: TokenController) ext
     corsRejectionHandler.withFallback(RejectionHandler.default)
 
   val exceptionHandler: ExceptionHandler = ExceptionHandler {
-    case e: NoSuchElementException => complete(StatusCodes.NotFound -> e.getMessage)
+    case e: NoSuchElementException =>
+      complete(StatusCodes.NotFound -> e.getMessage)
+    case e: Exception =>
+      logger.error("Error processing request", e)
+      complete(StatusCodes.InternalServerError)
   }
 
   def routes(): Route = {

@@ -9,6 +9,7 @@ import scala.concurrent.{ExecutionContext, Future, blocking}
 
 class TokenRepository(executionContext: ExecutionContext) extends LazyLogging {
   implicit val ec: ExecutionContext = executionContext
+
   def toEntity(result: WrappedResultSet): TokenEntity = {
     TokenEntity(
       UUID.fromString(result.get("id")),

@@ -11,7 +11,7 @@ class AuthenticationRepositorySpec extends DatabaseIntegrationSpec {
   val authenticationRepository = new AuthenticationRepository(global)
 
   Feature("findUserId") {
-    Scenario("should return empty result when no user exists") { f =>
+    Scenario("should return empty result when no user exists") { _ =>
       val actual   = authenticationRepository.findUserId("foo@bar.com", "password")
       val expected = Future.successful(None)
 

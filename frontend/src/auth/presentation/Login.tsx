@@ -1,8 +1,11 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { authenticate } from '../domain/loginService';
 import './login.scss';
 import { logger } from '../../logger';
 import { ErrorInfo } from './ErrorInfo';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 function signIn(
   email: string,
@@ -50,10 +53,26 @@ export function Login(): JSX.Element {
           and track you and follow you around. Menstra was build having your
           data privacy in mind and is completely open source and free.
         </p>
+        <p>
+          If you are interested, feel free to check out the{' '}
+          <a
+            href="https://github.com/meandor/tower-of-fate"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon icon={faGithub} />&nbsp;
+            Github repository
+          </a>
+          .
+        </p>
       </section>
       <section className="login__login">
         <section className="login__login__form">
           <h2>Use the period tracker that respects your privacy.</h2>
+          <p>
+            Don&apos;t have an account yet? Register{' '}
+            <Link to="/register">here</Link>.
+          </p>
           <p>Please sign in:</p>
           <ErrorInfo errorMessage={error} />
           <form onSubmit={signIn(email, password, setError, redirect)}>

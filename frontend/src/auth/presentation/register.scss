@@ -1,0 +1,27 @@
+@import '../../variables';
+
+.register {
+  width: 100%;
+  height: calc(100vh - 48px);
+  display: flex;
+
+  &__information {
+    width: 50%;
+    height: 100%;
+    padding: 15rem;
+    background-color: $surface;
+    color: $black;
+  }
+
+  &__register {
+    width: 50%;
+    height: 100%;
+    padding: 15rem $space;
+    background-color: $secondary-light;
+
+    &__form {
+      width: 38rem;
+      margin: auto;
+    }
+  }
+}

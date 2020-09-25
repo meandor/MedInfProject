@@ -1,8 +1,8 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { Register } from './Register';
-import {MemoryRouter} from "react-router";
 
 describe('Register component', () => {
   let registerButton: HTMLElement;
@@ -11,7 +11,11 @@ describe('Register component', () => {
   let nameField: HTMLElement;
 
   beforeEach(() => {
-    const { getByTestId } = render(<MemoryRouter><Register /></MemoryRouter>);
+    const { getByTestId } = render(
+      <MemoryRouter>
+        <Register />
+      </MemoryRouter>
+    );
     registerButton = getByTestId(/register/i);
     emailField = getByTestId(/email/i);
     passwordField = getByTestId(/password/i);

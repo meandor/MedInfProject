@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ErrorInfo } from './ErrorInfo';
 import './register.scss';
 
 export function Register(_props: any): JSX.Element {
@@ -37,12 +36,7 @@ export function Register(_props: any): JSX.Element {
             <div className="group">
               <label htmlFor="name">
                 Name
-                <input
-                    type="text"
-                    name="text"
-                    id="name"
-                    data-testid="name"
-                />
+                <input type="text" name="text" id="name" data-testid="name" />
               </label>
             </div>
             <div className="group">

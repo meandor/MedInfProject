@@ -1,11 +1,11 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { authenticate } from '../domain/loginService';
 import './login.scss';
 import { logger } from '../../logger';
 import { ErrorInfo } from './ErrorInfo';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 function signIn(
   email: string,
@@ -60,8 +60,8 @@ export function Login(): JSX.Element {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FontAwesomeIcon icon={faGithub} />&nbsp;
-            Github repository
+            <FontAwesomeIcon icon={faGithub} />
+            &nbsp; Github repository
           </a>
           .
         </p>

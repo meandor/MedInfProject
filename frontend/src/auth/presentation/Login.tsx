@@ -50,7 +50,7 @@ export function Login(): JSX.Element {
         <h1>Menstra is the period tracker that respects your privacy.</h1>
         <p>
           We are not sending your data to 3rd party systems in order to analyze
-          and track you and follow you around. Menstra was build having your
+          and track you and follow you around. Menstra was built having your
           data privacy in mind and is completely open source and free.
         </p>
         <p>

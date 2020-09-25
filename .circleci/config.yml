@@ -335,6 +335,9 @@ workflows:
             - deploy_staging_frontend
             - deploy_staging_backend
 
+      - deploy_production_backend:
+          requires:
+            - e2e_test
       - build_production_frontend:
           requires:
             - e2e_test

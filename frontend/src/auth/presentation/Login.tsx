@@ -2,6 +2,7 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { authenticate } from '../domain/loginService';
 import './login.scss';
 import { logger } from '../../logger';
+import { ErrorInfo } from './ErrorInfo';
 
 function signIn(
   email: string,
@@ -28,17 +29,6 @@ function updateState(setStateFn: React.Dispatch<React.SetStateAction<string>>) {
     event.preventDefault();
     setStateFn(event.target.value);
   };
-}
-
-function ErrorInfo({ errorMessage }: { errorMessage: string }): JSX.Element {
-  if (errorMessage !== '') {
-    return (
-      <section className="error" data-testid="error-info">
-        {errorMessage}
-      </section>
-    );
-  }
-  return <></>;
 }
 
 export function Login(): JSX.Element {

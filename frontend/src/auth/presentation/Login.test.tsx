@@ -1,6 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { Login } from './Login';
 import { authenticate, IDToken } from '../domain/loginService';
 
@@ -8,14 +9,18 @@ jest.mock('../domain/loginService');
 
 const authenticateMock = authenticate as jest.Mock<Promise<IDToken>>;
 
-describe('render component', () => {
+describe('Login component', () => {
   let signInButton: HTMLElement;
   let emailField: HTMLElement;
   let passwordField: HTMLElement;
   let errorInfo: HTMLElement | null;
 
   beforeEach(() => {
-    const { getByTestId, queryByTestId } = render(<Login />);
+    const { getByTestId, queryByTestId } = render(
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>
+    );
     signInButton = getByTestId(/sign-in/i);
     emailField = getByTestId(/email/i);
     passwordField = getByTestId(/password/i);

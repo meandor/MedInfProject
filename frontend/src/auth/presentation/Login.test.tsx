@@ -15,9 +15,7 @@ describe('render component', () => {
   let errorInfo: HTMLElement | null;
 
   beforeEach(() => {
-    const { getByTestId, queryByTestId } = render(
-      <Login />
-    );
+    const { getByTestId, queryByTestId } = render(<Login />);
     signInButton = getByTestId(/sign-in/i);
     emailField = getByTestId(/email/i);
     passwordField = getByTestId(/password/i);

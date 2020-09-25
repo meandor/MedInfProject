@@ -25,6 +25,10 @@ describe('createToken', () => {
     const expected = validToken;
 
     await expect(actual).resolves.toBe(expected);
-    await expect(axiosMock.post).toHaveBeenCalledWith('backend/token', given, AXIOS_CONFIG);
+    await expect(axiosMock.post).toHaveBeenCalledWith(
+      'backend/token',
+      given,
+      AXIOS_CONFIG
+    );
   });
 });

@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import { PrivateRoute, PublicRoute } from './Routes';
-import { Login } from './login/presentation/Login';
+import { Login } from './auth/presentation/Login';
 
 ReactDOM.render(
   <React.StrictMode>

@@ -20,7 +20,7 @@ final case class AuthModule(config: Config, databaseModule: DatabaseModule)(
     val authenticationRepository = new AuthenticationRepository(databaseModule.executionContext)
     val tokenService             = new TokenService(authenticationRepository, tokenRepository)
     val controller               = new TokenController(jwtIDSecret, jwtAccessSecret, passwordSalt, tokenService)
-    logger.info("Done loading Token Module")
+    logger.info("Done loading AuthModule")
     Option(controller)
   }
 }

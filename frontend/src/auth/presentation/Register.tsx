@@ -36,7 +36,7 @@ export function Register({
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const redirectToConfirmationPage = () => {
+  const redirectToConfirmationPage: () => void = () => {
     history.push(`/register/confirmation?email=${email}`);
   };
 

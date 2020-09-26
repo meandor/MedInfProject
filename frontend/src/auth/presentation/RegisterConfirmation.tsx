@@ -16,7 +16,12 @@ export function RegisterConfirmation({
 
   return (
     <section className="register-confirmation">
-      <h1>Thank you for registering 🎉</h1>
+      <h1>
+        Thank you for registering{' '}
+        <span role="img" aria-label="party popper emoji">
+          🎉
+        </span>
+      </h1>
       <p>
         We will be sending you a confirmation email to{' '}
         <span className="register-confirmation__email" data-testid="email">

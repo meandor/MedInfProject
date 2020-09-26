@@ -2,18 +2,18 @@ package com.github.meandor.doctorfate.core
 import java.net.URI
 import java.util.concurrent.Executors
 
+import com.github.meandor.doctorfate.core.presentation.Controller
 import com.typesafe.config.Config
-import com.typesafe.scalalogging.LazyLogging
 import org.flywaydb.core.Flyway
 import scalikejdbc.{ConnectionPool, ConnectionPoolSettings}
 
 import scala.concurrent.ExecutionContext
 
-final case class DatabaseModule(config: Config) extends LazyLogging {
+final case class DatabaseModule(config: Config) extends Module {
   val executionContext: ExecutionContext =
     ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
 
-  def start(): Unit = {
+  override def start(): Option[Controller] = {
     logger.info("Start db migrations")
     val dbUri    = new URI(config.getString("database.url"))
     val username = dbUri.getUserInfo.split(":")(0)
@@ -35,5 +35,6 @@ final case class DatabaseModule(config: Config) extends LazyLogging {
     )
     ConnectionPool.add('default, dbUrl, username, password, settings)
     logger.info("Done loading DB Connection Pool")
+    None
   }
 }

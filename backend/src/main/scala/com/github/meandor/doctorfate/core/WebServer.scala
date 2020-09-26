@@ -5,15 +5,16 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{ExceptionHandler, RejectionHandler, Route}
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.{cors, corsRejectionHandler}
-import com.github.meandor.doctorfate.auth.presentation.TokenController
-import com.github.meandor.doctorfate.core.presentation.BaseRoutes
+import com.github.meandor.doctorfate.core.presentation.{BaseRoutes, Controller}
 import com.typesafe.config.Config
-import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.DurationInt
 
-final case class WebServer(config: Config, tokenController: TokenController) extends LazyLogging {
+final case class WebServer(config: Config, tokenController: Controller, userController: Controller)(
+    implicit executionContext: ExecutionContextExecutor,
+    system: ActorSystem[Nothing]
+) extends Module {
   val rejectionHandler: RejectionHandler =
     corsRejectionHandler.withFallback(RejectionHandler.default)
 
@@ -31,7 +32,7 @@ final case class WebServer(config: Config, tokenController: TokenController) ext
     val route = handleErrors {
       cors() {
         handleErrors {
-          BaseRoutes.routes ~ tokenController.routes
+          BaseRoutes.routes ~ tokenController.routes ~ userController.routes
         }
       }
     }
@@ -39,10 +40,7 @@ final case class WebServer(config: Config, tokenController: TokenController) ext
     route
   }
 
-  def start(
-      implicit executionContext: ExecutionContextExecutor,
-      system: ActorSystem[Nothing]
-  ): Unit = {
+  override def start(): Option[Controller] = {
     val port: Int         = config.getInt("app.port")
     val interface: String = "0.0.0.0"
     logger.info(s"Starting Server at: ${interface} on port: ${port}")
@@ -51,5 +49,6 @@ final case class WebServer(config: Config, tokenController: TokenController) ext
       .bind(routes())
       .map(_.addToCoordinatedShutdown(hardTerminationDeadline = 10.seconds))
     logger.info(s"Server started")
+    None
   }
 }

@@ -1,8 +1,9 @@
 package com.github.meandor.doctorfate.user.domain
 import java.util.UUID
 
+import akka.Done
 import com.github.meandor.doctorfate.UnitSpec
-import com.github.meandor.doctorfate.user.data.{UserEntity, UserRepository}
+import com.github.meandor.doctorfate.user.data.{MailClient, UserEntity, UserRepository}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.ScalaFutures
 
@@ -12,7 +13,8 @@ import scala.concurrent.Future
 class UserServiceSpec extends UnitSpec with ScalaFutures {
   Feature("registerUser") {
     val userRepositoryMock = mock[UserRepository]
-    val service            = new UserService(userRepositoryMock)
+    val mailClientMock     = mock[MailClient]
+    val service            = new UserService(userRepositoryMock, mailClientMock, "salt", "http://")
 
     Scenario("should return None when user already exists") {
       val user = User("foo@bar.com", "password", None, hasVerifiedEmail = false)
@@ -42,6 +44,7 @@ class UserServiceSpec extends UnitSpec with ScalaFutures {
       )
       userRepositoryMock.findByMail(any()) shouldReturn Future.successful(None)
       userRepositoryMock.create(any()) shouldReturn Future.successful(createdUser)
+      mailClientMock.sendConfirmationMail(any(), any()) shouldReturn Future.successful(Done)
 
       val actual = service.registerUser(user)
       val expectedCreatedUser = User(

@@ -27,6 +27,7 @@ lazy val app = (project in file("."))
     libraryDependencies += "io.circe"                   %% "circe-parser"        % circeVersion,
     libraryDependencies += "de.heikoseeberger"          %% "akka-http-circe"     % "1.34.0",
     libraryDependencies += "com.auth0"                  % "java-jwt"             % "3.3.0",
+    libraryDependencies += "com.github.daddykotex"      %% "courier"             % "2.0.0",
     libraryDependencies += "org.flywaydb"               % "flyway-core"          % "6.5.6",
     libraryDependencies += "org.postgresql"             % "postgresql"           % "42.2.16",
     libraryDependencies += "org.scalikejdbc"            %% "scalikejdbc"         % "3.5.0",

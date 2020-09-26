@@ -4,6 +4,7 @@ import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import com.github.meandor.doctorfate.auth.AuthModule
 import com.github.meandor.doctorfate.core.{DatabaseModule, WebServer}
+import com.github.meandor.doctorfate.user.UserModule
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
 
@@ -20,8 +21,14 @@ object DoctorFate extends LazyLogging {
     logger.info("Done loading config")
     val databaseModule = DatabaseModule(config)
     databaseModule.start()
-    val authModule      = AuthModule(config, databaseModule)
-    val tokenController = authModule.start
-    WebServer(config, tokenController).start
+    val authModule      = AuthModule(config, databaseModule).start()
+    val tokenController = authModule.getOrElse(throw new NoSuchElementException("TokenController"))
+    val userModule      = UserModule(config, databaseModule).start()
+    val userController  = userModule.getOrElse(throw new NoSuchElementException("UserController"))
+    WebServer(
+      config,
+      tokenController,
+      userController
+    ).start()
   }
 }

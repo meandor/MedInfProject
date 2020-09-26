@@ -1,0 +1,34 @@
+package com.github.meandor.doctorfate.user
+
+import com.github.meandor.doctorfate.core.{DatabaseModule, Module}
+import com.github.meandor.doctorfate.core.presentation.Controller
+import com.github.meandor.doctorfate.user.data.{MailClient, UserRepository}
+import com.github.meandor.doctorfate.user.domain.UserService
+import com.github.meandor.doctorfate.user.presentation.UserController
+import com.typesafe.config.Config
+
+import scala.concurrent.ExecutionContext
+
+final case class UserModule(config: Config, databaseModule: DatabaseModule)(
+    implicit ec: ExecutionContext
+) extends Module {
+  override def start(): Option[Controller] = {
+    logger.info("Start loading UserModule")
+    val userRepository           = new UserRepository(databaseModule.executionContext)
+    val mailUserName             = config.getString("mail.username")
+    val mailPassword             = config.getString("mail.password")
+    val mailClient               = new MailClient(mailUserName, mailPassword)
+    val confirmationSalt         = config.getString("confirmation.salt")
+    val confirmationLinkTemplate = config.getString("confirmation.linkTemplate")
+    val userPasswordSalt         = config.getString("auth.passwordSalt")
+    val userService = new UserService(
+      userRepository,
+      mailClient,
+      confirmationSalt,
+      confirmationLinkTemplate
+    )
+    val userController = new UserController(userPasswordSalt, userService)
+    logger.info("Done loading UserModule")
+    Option(userController)
+  }
+}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { confirm } from '../domain/registerService';
 import { logger } from '../../logger';
+import './confirm.scss';
 
 function renderFailure(): JSX.Element {
   return (

@@ -1,0 +1,11 @@
+@import "../../variables";
+
+.confirmation {
+  text-align: center;
+  margin: 15rem auto auto;
+  max-width: 100rem;
+
+  &__email {
+    color: $primary;
+  }
+}

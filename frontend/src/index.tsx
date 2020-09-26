@@ -12,6 +12,7 @@ import { Login } from './auth/presentation/Login';
 import { Register } from './auth/presentation/Register';
 import { PrivateRoute, PublicRoute } from './core/presentation/Routes';
 import { RegisterConfirmation } from './auth/presentation/RegisterConfirmation';
+import {Confirm} from "./auth/presentation/Confirm";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -34,6 +35,11 @@ ReactDOM.render(
           path="/register/confirmation"
           exact
           component={withRouter(RegisterConfirmation)}
+        />
+        <PublicRoute
+          path="/register/confirm"
+          exact
+          component={withRouter(Confirm)}
         />
       </main>
     </Router>

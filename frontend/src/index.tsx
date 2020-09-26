@@ -11,6 +11,7 @@ import * as serviceWorker from './serviceWorker';
 import { Login } from './auth/presentation/Login';
 import { Register } from './auth/presentation/Register';
 import { PrivateRoute, PublicRoute } from './core/presentation/Routes';
+import { RegisterConfirmation } from './auth/presentation/RegisterConfirmation';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,6 +30,11 @@ ReactDOM.render(
         <PrivateRoute path="/dashboard" exact component={() => <></>} />
         <PublicRoute path="/login" exact component={withRouter(Login)} />
         <PublicRoute path="/register" exact component={withRouter(Register)} />
+        <PublicRoute
+          path="/register/confirmation"
+          exact
+          component={withRouter(RegisterConfirmation)}
+        />
       </main>
     </Router>
   </React.StrictMode>,

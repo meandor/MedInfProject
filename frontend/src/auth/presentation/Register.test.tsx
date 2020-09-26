@@ -14,11 +14,14 @@ describe('Register component', () => {
   let emailField: HTMLElement;
   let passwordField: HTMLElement;
   let nameField: HTMLElement;
+  let pushMock: jest.Mock;
+  const emailValue = 'foo@bar.com';
 
   beforeEach(() => {
+    pushMock = jest.fn();
     const { getByTestId } = render(
       <MemoryRouter>
-        <Register />
+        <Register history={{ push: pushMock }} />
       </MemoryRouter>
     );
     registerButton = getByTestId(/register/i);
@@ -35,32 +38,35 @@ describe('Register component', () => {
   });
 
   it('should set state accordingly', () => {
-    fireEvent.change(emailField, { target: { value: 'foo@bar.com' } });
+    fireEvent.change(emailField, { target: { value: emailValue } });
     fireEvent.change(passwordField, { target: { value: 'password' } });
     fireEvent.change(nameField, { target: { value: 'foo bar' } });
 
-    expect(emailField).toHaveValue('foo@bar.com');
+    expect(emailField).toHaveValue(emailValue);
     expect(passwordField).toHaveValue('password');
     expect(nameField).toHaveValue('foo bar');
   });
 
   it('should send state to service', async () => {
     registerMock.mockResolvedValue({
-      email: 'foo@bar.com',
+      email: emailValue,
       password: '',
       name: 'foo bar',
-      emailIsVerified: false
-    })
-    fireEvent.change(emailField, { target: { value: 'foo@bar.com' } });
+      emailIsVerified: false,
+    });
+    fireEvent.change(emailField, { target: { value: emailValue } });
     fireEvent.change(passwordField, { target: { value: 'password' } });
     fireEvent.change(nameField, { target: { value: 'foo bar' } });
 
     await fireEvent.click(registerButton);
 
     expect(registerMock).toHaveBeenCalledWith(
-      'foo@bar.com',
+      emailValue,
       'password',
       'foo bar'
+    );
+    expect(pushMock).toHaveBeenCalledWith(
+      `/register/confirmation?email=${emailValue}`
     );
   });
 });

@@ -4,7 +4,7 @@ import './register.scss';
 import { updateState } from '../../core/presentation/formHelper';
 import { logger } from '../../logger';
 import { register } from '../domain/registerService';
-import {ErrorInfo} from "../../core/presentation/ErrorInfo";
+import { ErrorInfo } from '../../core/presentation/ErrorInfo';
 
 function createAccount(
   name: string,
@@ -27,11 +27,18 @@ function createAccount(
   };
 }
 
-export function Register(_props: any): JSX.Element {
+export function Register({
+  history,
+}: {
+  history: { push: (_: string) => any };
+}): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const redirectToConfirmationPage = () => {
+    history.push(`/register/confirmation?email=${email}`);
+  };
 
   return (
     <section className="register">
@@ -69,7 +76,7 @@ export function Register(_props: any): JSX.Element {
               email,
               password,
               setError,
-              () => {}
+              redirectToConfirmationPage
             )}
           >
             <div className="group">

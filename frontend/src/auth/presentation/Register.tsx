@@ -4,6 +4,7 @@ import './register.scss';
 import { updateState } from '../../core/presentation/formHelper';
 import { logger } from '../../logger';
 import { register } from '../domain/registerService';
+import {ErrorInfo} from "../../core/presentation/ErrorInfo";
 
 function createAccount(
   name: string,
@@ -30,6 +31,7 @@ export function Register(_props: any): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
 
   return (
     <section className="register">
@@ -60,12 +62,13 @@ export function Register(_props: any): JSX.Element {
             Already have an account? Then sign in <Link to="/login">here</Link>.
           </p>
           <p>Please register:</p>
+          <ErrorInfo errorMessage={error} />
           <form
             onSubmit={createAccount(
               name,
               email,
               password,
-              () => {},
+              setError,
               () => {}
             )}
           >

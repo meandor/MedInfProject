@@ -12,3 +12,7 @@ export function register(
 ): Promise<User> {
   return Promise.reject(new Error());
 }
+
+export function confirm(_id: string): Promise<User> {
+  return Promise.reject(new Error());
+}

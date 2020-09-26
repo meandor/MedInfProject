@@ -1,4 +1,5 @@
 import React from 'react';
+import './registerConfirmation.scss';
 
 export function RegisterConfirmation({
   history,
@@ -15,11 +16,15 @@ export function RegisterConfirmation({
 
   return (
     <section className="register-confirmation">
-      Thank your for registering. We will be sending you a confirmation email to{' '}
-      <span className="email" data-testid="email">
-        {emailFromQuery}
-      </span>{' '}
-      so you can confirm your registration.
+      <h1>Thank you for registering 🎉</h1>
+      <p>
+        We will be sending you a confirmation email to{' '}
+        <span className="register-confirmation__email" data-testid="email">
+          {emailFromQuery}
+        </span>{' '}
+        so you can confirm your registration.
+      </p>
+      <p>Please make sure to check your inbox for the confirmation mail.</p>
     </section>
   );
 }

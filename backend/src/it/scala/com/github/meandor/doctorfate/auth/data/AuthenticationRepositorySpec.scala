@@ -18,7 +18,22 @@ class AuthenticationRepositorySpec extends DatabaseIntegrationSpec {
       actual.futureValue shouldBe expected.futureValue
     }
 
-    Scenario("should return user when user exists") { f =>
+    Scenario("should return user when user exists and is verified") { f =>
+      val stmt     = f.dataSource.getConnection.createStatement
+      val userID   = UUID.randomUUID()
+      val email    = "foo@bar.com"
+      val password = "password"
+      val sql =
+        s"INSERT INTO users (id, name, email, password, email_is_verified) VALUES ('${userID.toString}', 'foo bar', '${email}', '${password}', true)"
+      stmt.executeUpdate(sql)
+
+      val actual   = authenticationRepository.findUserId(email, password)
+      val expected = Future.successful(Option(userID))
+
+      actual.futureValue shouldBe expected.futureValue
+    }
+
+    Scenario("should return empty result when user exists and is not verified") { f =>
       val stmt     = f.dataSource.getConnection.createStatement
       val userID   = UUID.randomUUID()
       val email    = "foo@bar.com"
@@ -28,7 +43,7 @@ class AuthenticationRepositorySpec extends DatabaseIntegrationSpec {
       stmt.executeUpdate(sql)
 
       val actual   = authenticationRepository.findUserId(email, password)
-      val expected = Future.successful(Option(userID))
+      val expected = Future.successful(None)
 
       actual.futureValue shouldBe expected.futureValue
     }

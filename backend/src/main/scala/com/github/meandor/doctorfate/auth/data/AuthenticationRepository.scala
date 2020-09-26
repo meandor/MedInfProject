@@ -14,7 +14,7 @@ class AuthenticationRepository(executionContext: ExecutionContext) {
           sql"""
       SELECT id
       FROM users
-      WHERE email = $email AND password = $password 
+      WHERE email = $email AND password = $password AND email_is_verified = true
       """.map(result => UUID.fromString(result.get("id"))).single.apply()
         }
       }

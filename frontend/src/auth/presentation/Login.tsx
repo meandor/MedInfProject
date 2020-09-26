@@ -1,11 +1,12 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { authenticate } from '../domain/loginService';
 import './login.scss';
 import { logger } from '../../logger';
-import { ErrorInfo } from './ErrorInfo';
+import { updateState } from '../../core/presentation/formHelper';
+import { ErrorInfo } from '../../core/presentation/ErrorInfo';
 
 function signIn(
   email: string,
@@ -24,13 +25,6 @@ function signIn(
         logger.error('Was not able to authenticate', error);
         errorFn('E-Mail or password invalid. Please try again.');
       });
-  };
-}
-
-function updateState(setStateFn: React.Dispatch<React.SetStateAction<string>>) {
-  return (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    setStateFn(event.target.value);
   };
 }
 

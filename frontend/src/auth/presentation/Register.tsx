@@ -1,8 +1,36 @@
-import React from 'react';
+import React, { FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './register.scss';
+import { updateState } from '../../core/presentation/formHelper';
+import { logger } from '../../logger';
+import { register } from '../domain/registerService';
+
+function createAccount(
+  name: string,
+  email: string,
+  password: string,
+  errorFn: React.Dispatch<React.SetStateAction<string>>,
+  successFn: any
+) {
+  return (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    return register(email, password, name)
+      .then((user) => {
+        successFn();
+        return user;
+      })
+      .catch((error: Error) => {
+        logger.error('Was not able to register', error);
+        errorFn('E-Mail or password invalid. Please try again.');
+      });
+  };
+}
 
 export function Register(_props: any): JSX.Element {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+
   return (
     <section className="register">
       <section className="register__information">
@@ -32,11 +60,26 @@ export function Register(_props: any): JSX.Element {
             Already have an account? Then sign in <Link to="/login">here</Link>.
           </p>
           <p>Please register:</p>
-          <form>
+          <form
+            onSubmit={createAccount(
+              name,
+              email,
+              password,
+              () => {},
+              () => {}
+            )}
+          >
             <div className="group">
               <label htmlFor="name">
                 Name
-                <input type="text" name="text" id="name" data-testid="name" />
+                <input
+                  type="text"
+                  name="text"
+                  id="name"
+                  data-testid="name"
+                  value={name}
+                  onChange={updateState(setName)}
+                />
               </label>
             </div>
             <div className="group">
@@ -47,6 +90,8 @@ export function Register(_props: any): JSX.Element {
                   name="email"
                   id="email"
                   data-testid="email"
+                  value={email}
+                  onChange={updateState(setEmail)}
                   required
                 />
               </label>
@@ -59,6 +104,8 @@ export function Register(_props: any): JSX.Element {
                   name="password"
                   id="password"
                   data-testid="password"
+                  value={password}
+                  onChange={updateState(setPassword)}
                   required
                 />
               </label>

@@ -15,7 +15,7 @@ describe('Confirm', () => {
       email: 'foo@bar.com',
       password: 'password',
       name: 'foo bar',
-      emailIsVerified: true,
+      isVerified: true,
     });
     const id = '42';
     const location = {

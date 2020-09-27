@@ -1,18 +1,16 @@
 import axios from 'axios';
 import { baseUrl, config, errorLogging } from '../../core/data/client';
 
-export interface TokenDTO {
-  idToken: string;
-}
-
-export interface CreateTokenDTO {
+export interface UserDTO {
   email: string;
   password: string;
+  name: string | undefined;
+  isVerified: boolean;
 }
 
-export function createToken(dto: CreateTokenDTO): Promise<TokenDTO> {
+export function createUser(dto: UserDTO): Promise<UserDTO> {
   return axios
-    .post(`${baseUrl}token`, dto, config)
+    .post(`${baseUrl}user`, dto, config)
     .then(({ data }) => data)
     .catch(errorLogging);
 }

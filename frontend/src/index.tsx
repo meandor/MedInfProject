@@ -12,7 +12,7 @@ import { Login } from './auth/presentation/Login';
 import { Register } from './auth/presentation/Register';
 import { PrivateRoute, PublicRoute } from './core/presentation/Routes';
 import { RegisterConfirmation } from './auth/presentation/RegisterConfirmation';
-import {Confirm} from "./auth/presentation/Confirm";
+import { Confirm } from './auth/presentation/Confirm';
 
 ReactDOM.render(
   <React.StrictMode>

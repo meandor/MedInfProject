@@ -52,7 +52,7 @@ describe('Register component', () => {
       email: emailValue,
       password: '',
       name: 'foo bar',
-      emailIsVerified: false,
+      isVerified: false,
     });
     fireEvent.change(emailField, { target: { value: emailValue } });
     fireEvent.change(passwordField, { target: { value: 'password' } });

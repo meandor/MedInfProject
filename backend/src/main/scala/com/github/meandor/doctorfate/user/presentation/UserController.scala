@@ -34,7 +34,7 @@ class UserController(salt: String, userService: UserService)
       )
       onSuccess(createdToken) {
         case Some(user) =>
-          val registeredUser = UserDTO(user.email, user.password, user.name)
+          val registeredUser = UserDTO(user.email, user.password, user.name, user.hasVerifiedEmail)
           complete(StatusCodes.Created, registeredUser)
         case None => failedResponse
       }

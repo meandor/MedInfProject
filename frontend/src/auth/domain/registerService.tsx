@@ -1,4 +1,4 @@
-import { createUser, UserDTO } from '../data/registerClient';
+import { confirmUser, createUser, UserDTO } from '../data/registerClient';
 
 export interface User {
   name: string;
@@ -14,6 +14,15 @@ function toOptional(name: string): string | undefined {
   return name;
 }
 
+function toUser(dto: UserDTO): User {
+  return {
+    email: dto.email,
+    password: dto.password,
+    name: dto.name || '',
+    isVerified: dto.isVerified,
+  };
+}
+
 export function register(
   email: string,
   password: string,
@@ -25,16 +34,9 @@ export function register(
     name: toOptional(name),
     isVerified: false,
   };
-  return createUser(toBeCreatedUser).then((dto) => {
-    return {
-      email: dto.email,
-      password: dto.password,
-      name: dto.name || '',
-      isVerified: dto.isVerified,
-    };
-  });
+  return createUser(toBeCreatedUser).then(toUser);
 }
 
-export function confirm(_id: string): Promise<User> {
-  return Promise.reject(new Error());
+export function confirm(id: string): Promise<User> {
+  return confirmUser({ id }).then(toUser);
 }

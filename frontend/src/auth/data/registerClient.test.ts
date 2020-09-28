@@ -59,7 +59,7 @@ describe('registerClient', () => {
 
       await expect(actual).resolves.toBe(expected);
       await expect(axiosMock.post).toHaveBeenCalledWith(
-        'backend/confirmation',
+        'backend/user/confirmation',
         given,
         AXIOS_CONFIG
       );

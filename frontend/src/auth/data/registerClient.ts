@@ -14,7 +14,7 @@ export interface ConfirmationDTO {
 
 export function confirmUser(dto: ConfirmationDTO): Promise<UserDTO> {
   return axios
-    .post(`${baseUrl}user/confirmation`, dto, config)
+    .post(`${baseUrl}user/confirm`, dto, config)
     .then(({ data }) => data)
     .catch(errorLogging);
 }

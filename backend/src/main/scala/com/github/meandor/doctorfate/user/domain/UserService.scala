@@ -17,6 +17,9 @@ class UserService(
 )(
     implicit ec: ExecutionContext
 ) extends LazyLogging {
+
+  def confirm(id: String): Future[Option[User]] = ???
+
   def confirmationLink(recipientMail: String): String = {
     val messageDigest = MessageDigest.getInstance("SHA-256")
     messageDigest.update(confirmationSalt.getBytes(StandardCharsets.UTF_8))

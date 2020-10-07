@@ -12,10 +12,15 @@ class UserController(salt: String, userService: UserService)
     extends Controller
     with PasswordEncryption
     with LazyLogging {
-  override def routes: Route = path("user") {
-    post {
-      entity(as[UserDTO]) { handleRegisterRequest }
-    }
+  override def routes: Route = pathPrefix("user") {
+    path("confirm") {
+      post {
+        entity(as[ConfirmationDTO]) { handleConfirmationRequest }
+      }
+    } ~
+      post {
+        entity(as[UserDTO]) { handleRegisterRequest }
+      }
   }
 
   def isValidRequest(userDTO: UserDTO): Boolean = {
@@ -37,6 +42,27 @@ class UserController(salt: String, userService: UserService)
           val registeredUser = UserDTO(user.email, user.password, user.name, user.hasVerifiedEmail)
           complete(StatusCodes.Created, registeredUser)
         case None => failedResponse
+      }
+    }
+  }
+
+  def isValidConfirmationRequest(confirmationDTO: ConfirmationDTO): Boolean = {
+    !confirmationDTO.id.trim.isEmpty
+  }
+
+  def handleConfirmationRequest(confirmationDTO: ConfirmationDTO): Route = {
+    logger.info("Got user confirmation request")
+
+    if (!isValidConfirmationRequest(confirmationDTO)) {
+      logger.info("Request is invalid")
+      invalidRequestResponse
+    } else {
+      val confirmedUser = userService.confirm(confirmationDTO.id)
+      onSuccess(confirmedUser) {
+        case Some(user) =>
+          val confirmedUser = UserDTO(user.email, user.password, user.name, user.hasVerifiedEmail)
+          complete(StatusCodes.OK, confirmedUser)
+        case None => invalidRequestResponse
       }
     }
   }

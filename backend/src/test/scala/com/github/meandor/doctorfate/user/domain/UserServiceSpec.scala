@@ -81,4 +81,54 @@ class UserServiceSpec extends UnitSpec with ScalaFutures {
       actual.failed.futureValue shouldBe expected.failed.futureValue
     }
   }
+
+  Feature("confirm") {
+    val userRepositoryMock = mock[UserRepository]
+    val mailClientMock     = mock[MailClient]
+    val service            = new UserService(userRepositoryMock, mailClientMock, "salt", "http://")
+    val id                 = "KnToMxPEeG1Qubxm1f50fg=="
+
+    Scenario("should successfully confirm user based on given id") {
+      val email = "foo@bar.com"
+      val confirmedUserEntity = UserEntity(
+        UUID.randomUUID(),
+        email,
+        "password",
+        None,
+        emailIsVerified = true
+      )
+
+      userRepositoryMock.confirm(email) shouldReturn Future.successful(Some(confirmedUserEntity))
+
+      val actual = service.confirm(id)
+      val expectedConfirmedUser = User(
+        confirmedUserEntity.email,
+        confirmedUserEntity.password,
+        confirmedUserEntity.name,
+        confirmedUserEntity.emailIsVerified
+      )
+      val expected = Future.successful(Some(expectedConfirmedUser))
+
+      actual.futureValue shouldBe expected.futureValue
+    }
+
+    Scenario("should return none when user already confirmed") {
+      userRepositoryMock.confirm(any()) shouldReturn Future.successful(None)
+
+      val actual   = service.confirm(id)
+      val expected = Future.successful(None)
+
+      actual.futureValue shouldBe expected.futureValue
+    }
+
+    Scenario("should return failure when something goes wrong") {
+      val exception = new Exception("expected")
+      userRepositoryMock.confirm(any()) shouldReturn Future.failed(exception)
+
+      val actual   = service.confirm(id)
+      val expected = Future.failed(exception)
+
+      actual.failed.futureValue shouldBe expected.failed.futureValue
+    }
+  }
 }

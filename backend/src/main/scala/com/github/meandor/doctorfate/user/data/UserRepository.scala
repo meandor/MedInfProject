@@ -7,6 +7,8 @@ import scalikejdbc.{DB, DBSession, WrappedResultSet, scalikejdbcSQLInterpolation
 import scala.concurrent.{ExecutionContext, Future, blocking}
 
 class UserRepository(executionContext: ExecutionContext) extends LazyLogging {
+  def confirm(email: String): Future[Option[UserEntity]] = ???
+
   implicit val ec: ExecutionContext = executionContext
 
   def toEntity(result: WrappedResultSet): UserEntity = {

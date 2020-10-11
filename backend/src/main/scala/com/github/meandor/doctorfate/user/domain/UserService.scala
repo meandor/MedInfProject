@@ -1,4 +1,5 @@
 package com.github.meandor.doctorfate.user.domain
+import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util
@@ -60,7 +61,9 @@ class UserService(
   }
 
   def confirmationLink(recipientMail: String): String = {
-    s"$confirmationLinkTemplate?id=${encrypt(recipientMail)}"
+    val encryptedMail = encrypt(recipientMail)
+    val htmlEncodedId = URLEncoder.encode(encryptedMail, StandardCharsets.UTF_8)
+    s"$confirmationLinkTemplate?id=$htmlEncodedId"
   }
 
   def registerUser(user: User): Future[Option[User]] = {

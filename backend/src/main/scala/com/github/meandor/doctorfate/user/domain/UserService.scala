@@ -62,7 +62,7 @@ class UserService(
 
   def confirmationLink(recipientMail: String): String = {
     val encryptedMail = encrypt(recipientMail)
-    val htmlEncodedId = URLEncoder.encode(encryptedMail, StandardCharsets.UTF_8)
+    val htmlEncodedId = URLEncoder.encode(encryptedMail, StandardCharsets.UTF_8.toString)
     s"$confirmationLinkTemplate?id=$htmlEncodedId"
   }
 

@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserService(
     userRepository: UserRepository,
     mailClient: MailClient,
-    confirmationSecretKey: String,
+    confirmationSecret: String,
     confirmationLinkTemplate: String
 )(
     implicit ec: ExecutionContext
@@ -46,14 +46,14 @@ class UserService(
     val cipherBytes        = cipher.getBytes(StandardCharsets.UTF_8)
     val decodedBase64Bytes = Base64.getDecoder.decode(cipherBytes)
     val cypherSystem       = Cipher.getInstance("Blowfish")
-    cypherSystem.init(Cipher.DECRYPT_MODE, secretKey(confirmationSecretKey))
+    cypherSystem.init(Cipher.DECRYPT_MODE, secretKey(confirmationSecret))
     val plainText = cypherSystem.doFinal(decodedBase64Bytes)
     new String(plainText, StandardCharsets.UTF_8)
   }
 
   def encrypt(plain: String): String = {
     val cypherSystem = Cipher.getInstance("Blowfish")
-    cypherSystem.init(Cipher.ENCRYPT_MODE, secretKey(confirmationSecretKey))
+    cypherSystem.init(Cipher.ENCRYPT_MODE, secretKey(confirmationSecret))
     val buffer             = cypherSystem.doFinal(plain.getBytes(StandardCharsets.UTF_8))
     val encodedBase64Bytes = Base64.getEncoder.encode(buffer)
     new String(encodedBase64Bytes, StandardCharsets.UTF_8)

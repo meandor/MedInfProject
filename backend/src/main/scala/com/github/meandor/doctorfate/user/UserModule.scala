@@ -18,13 +18,13 @@ final case class UserModule(config: Config, databaseModule: DatabaseModule)(
     val mailUserName             = config.getString("mail.username")
     val mailPassword             = config.getString("mail.password")
     val mailClient               = new MailClient(mailUserName, mailPassword)
-    val confirmationSalt         = config.getString("confirmation.salt")
+    val confirmationSecret       = config.getString("confirmation.secret")
     val confirmationLinkTemplate = config.getString("confirmation.linkTemplate")
     val userPasswordSalt         = config.getString("auth.passwordSalt")
     val userService = new UserService(
       userRepository,
       mailClient,
-      confirmationSalt,
+      confirmationSecret,
       confirmationLinkTemplate
     )
     val userController = new UserController(userPasswordSalt, userService)

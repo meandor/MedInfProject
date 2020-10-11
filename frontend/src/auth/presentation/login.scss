@@ -34,11 +34,18 @@
   @media only screen and (max-device-width: $smartphone-breakpoint) {
     &__login {
       width: 100%;
-      padding: $space;
+      padding: 0;
 
       &__form {
         width: 100%;
+        padding: 0;
       }
     }
+  }
+}
+
+@media only screen and (max-device-width: $smartphone-breakpoint) {
+  .login {
+    height: auto;
   }
 }

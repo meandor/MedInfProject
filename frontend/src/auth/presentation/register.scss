@@ -34,13 +34,18 @@
   @media only screen and (max-device-width: $smartphone-breakpoint) {
     &__register {
       width: 100%;
-      padding: $space;
-      background-color: $white;
+      padding: 0;
 
       &__form {
         width: 100%;
-        margin: auto;
+        padding: 0;
       }
     }
+  }
+}
+
+@media only screen and (max-device-width: $smartphone-breakpoint) {
+  .register {
+    height: auto;
   }
 }

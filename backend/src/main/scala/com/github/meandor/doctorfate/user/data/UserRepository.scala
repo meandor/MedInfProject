@@ -28,7 +28,7 @@ class UserRepository(executionContext: ExecutionContext) extends LazyLogging {
             SET email_is_verified=true
             WHERE users.email = $email AND users.email_is_verified = false
           """.update().apply()
-        if (updated == 0) {
+        if (updated == 1) {
           sql"""
             SELECT * FROM users WHERE users.email = $email
           """

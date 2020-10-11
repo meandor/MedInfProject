@@ -81,7 +81,7 @@ export function Register({
           >
             <div className="group">
               <label htmlFor="name">
-                Name
+                Name (optional)
                 <input
                   type="text"
                   name="text"

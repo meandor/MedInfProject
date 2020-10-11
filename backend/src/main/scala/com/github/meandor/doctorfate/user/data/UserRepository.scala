@@ -2,13 +2,11 @@ package com.github.meandor.doctorfate.user.data
 import java.util.UUID
 
 import com.typesafe.scalalogging.LazyLogging
-import scalikejdbc.{DB, DBSession, WrappedResultSet, scalikejdbcSQLInterpolationImplicitDef}
+import scalikejdbc.{DB, WrappedResultSet, scalikejdbcSQLInterpolationImplicitDef}
 
 import scala.concurrent.{ExecutionContext, Future, blocking}
 
 class UserRepository(executionContext: ExecutionContext) extends LazyLogging {
-  def confirm(email: String): Future[Option[UserEntity]] = ???
-
   implicit val ec: ExecutionContext = executionContext
 
   def toEntity(result: WrappedResultSet): UserEntity = {
@@ -19,6 +17,29 @@ class UserRepository(executionContext: ExecutionContext) extends LazyLogging {
       result.get("name"),
       result.get("email_is_verified")
     )
+  }
+
+  def confirm(email: String): Future[Option[UserEntity]] = Future {
+    blocking {
+      DB localTx { implicit session =>
+        logger.info("confirming a user")
+        val updated = sql"""
+            UPDATE users
+            SET email_is_verified=true
+            WHERE users.email = $email AND users.email_is_verified = false
+          """.update().apply()
+        if (updated == 0) {
+          sql"""
+            SELECT * FROM users WHERE users.email = $email
+          """
+            .map(toEntity)
+            .single()
+            .apply()
+        } else {
+          None
+        }
+      }
+    }
   }
 
   def insert(userEntity: UserEntity): Future[Int] = Future {

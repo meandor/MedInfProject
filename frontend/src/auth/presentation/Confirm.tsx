@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { confirm } from '../domain/registerService';
 import { logger } from '../../logger';
@@ -25,17 +25,19 @@ export function Confirm({
   const idFromQuery = urlParams.get('id');
   const [confirmed, setConfirmed] = useState<null | boolean>(null);
 
-  if (!idFromQuery || idFromQuery === '') {
-    logger.error('id missing');
-    return renderFailure();
-  }
-
-  confirm(idFromQuery)
-    .then((_) => setConfirmed(true))
-    .catch((error) => {
-      logger.error('was not able to confirm user', error);
+  useEffect(() => {
+    if (!idFromQuery || idFromQuery === '') {
+      logger.error('id missing');
       setConfirmed(false);
-    });
+    } else {
+      confirm(idFromQuery)
+        .then((_) => setConfirmed(true))
+        .catch((error) => {
+          logger.error('was not able to confirm user', error);
+          setConfirmed(false);
+        });
+    }
+  }, [idFromQuery]);
 
   if (confirmed == null) {
     return (

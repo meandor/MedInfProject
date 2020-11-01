@@ -126,7 +126,9 @@ export function Dashboard(_props: any): JSX.Element {
         <section className="dashboard__prediction">
           <PredictionInfo prediction={prediction} />
           <p>
-            <button className="button button-primary">Insert period</button>
+            <button type="button" className="button button-primary">
+              Insert period
+            </button>
           </p>
         </section>
       </section>

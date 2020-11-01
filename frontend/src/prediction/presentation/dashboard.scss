@@ -1,0 +1,61 @@
+@import '../../variables';
+
+.dashboard {
+  width: 100%;
+  padding: $space;
+  text-align: center;
+
+  &__prediction {
+    background-color: $surface;
+    width: 100%;
+    padding: $space;
+
+    .period {
+      border-color: $secondary;
+    }
+
+    .upcoming-period {
+      border-color: $secondary-dark;
+    }
+
+    .upcoming-ovulation {
+      border-color: $primary-dark;
+    }
+
+    .ovulation {
+      border-color: $primary-light;
+
+      .dashboard__prediction__gauge__info {
+        margin-top: 9.5rem;
+      }
+    }
+
+    &__gauge {
+      height: 25rem;
+      width: 25rem;
+      margin: auto;
+      border: 0.5rem solid;
+      border-radius: 12.5rem;
+
+      &__meter {
+        &-bottom {
+          font-size: 6rem;
+          padding: 0;
+          margin: 0 0 0 3.8rem;
+        }
+
+        &-top {
+          font-size: 6rem;
+          padding: 0;
+          margin: 6rem 0 0 3.8rem;
+        }
+
+        &__unit {
+          font-size: $font-size-normal;
+          padding: 0;
+          margin: 0;
+        }
+      }
+    }
+  }
+}

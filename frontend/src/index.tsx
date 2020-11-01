@@ -13,6 +13,7 @@ import { Register } from './auth/presentation/Register';
 import { PrivateRoute, PublicRoute } from './core/presentation/Routes';
 import { RegisterConfirmation } from './auth/presentation/RegisterConfirmation';
 import { Confirm } from './auth/presentation/Confirm';
+import { Dashboard } from './prediction/presentation/Dashboard';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -28,7 +29,7 @@ ReactDOM.render(
           exact
           component={() => <Redirect to="/dashboard" />}
         />
-        <PrivateRoute path="/dashboard" exact component={() => <></>} />
+        <PrivateRoute path="/dashboard" exact component={Dashboard} />
         <PublicRoute path="/login" exact component={withRouter(Login)} />
         <PublicRoute path="/register" exact component={withRouter(Register)} />
         <PublicRoute

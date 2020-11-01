@@ -9,3 +9,7 @@ export interface PredictionDTO {
     duration: number;
   };
 }
+
+export function getPrediction(_email: string): Promise<PredictionDTO> {
+  return Promise.reject(new Error());
+}

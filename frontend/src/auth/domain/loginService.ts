@@ -20,6 +20,15 @@ export function isAuthenticated(): boolean {
   }
 }
 
+export function authenticatedUser(): IDToken | undefined {
+  if (!isAuthenticated()) {
+    return undefined;
+  }
+
+  const rawIdToken = localStorage.getItem(ID_TOKEN_KEY) || '';
+  return JSON.parse(rawIdToken);
+}
+
 export interface IDToken {
   name: string;
   email: string;

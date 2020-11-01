@@ -1,3 +1,6 @@
+import { authenticatedUser } from '../../auth/domain/loginService';
+import { getPrediction, PredictionDTO } from '../data/predictionClient';
+
 export enum Event {
   PERIOD = 'Period',
   OVULATION = 'Ovulation',
@@ -9,28 +12,30 @@ export interface Prediction {
   days: number;
 }
 
+function toPrediction(predictionDTO: PredictionDTO): Prediction {
+  if (
+    predictionDTO.ovulation.startDate.getTime() <
+    predictionDTO.period.startDate.getTime()
+  ) {
+    return {
+      event: Event.OVULATION,
+      isUpcoming: !predictionDTO.ovulation.isActive,
+      days: 1,
+    };
+  }
+
+  return {
+    event: Event.PERIOD,
+    isUpcoming: !predictionDTO.period.isActive,
+    days: predictionDTO.period.duration,
+  };
+}
+
 export function predict(): Promise<Prediction> {
-  // function daysUntilOvulation(prediction: PredictionDTO): JSX.Element {
-  //   const today = new Date();
-  //   const timeDifference =
-  //     prediction.ovulation.startDate.getTime() - today.getTime();
-  //   const daysLeft = Math.round(timeDifference / (1000 * 60 * 60 * 24));
-  //   if (daysLeft == 1) {
-  //     return <>{daysLeft} day</>;
-  //   }
-  //   return <>{daysLeft} days</>;
-  // }
-  //
-  // function nextEvent(prediction: PredictionDTO): string {
-  //   if (
-  //     prediction.period.startDate.getTime() <
-  //     prediction.ovulation.startDate.getTime()
-  //   ) {
-  //     return {
-  //       name: 'Period'
-  //     };
-  //   }
-  //   return 'Ovulation';
-  // }
-  return Promise.reject(new Error(''));
+  const idToken = authenticatedUser();
+  if (idToken === undefined) {
+    return Promise.reject(new Error('User not found'));
+  }
+
+  return getPrediction(idToken.email).then(toPrediction);
 }

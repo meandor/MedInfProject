@@ -9,7 +9,7 @@ export interface Prediction {
   days: number;
 }
 
-export function predict(_userId: string): Promise<Prediction> {
+export function predict(): Promise<Prediction> {
   // function daysUntilOvulation(prediction: PredictionDTO): JSX.Element {
   //   const today = new Date();
   //   const timeDifference =

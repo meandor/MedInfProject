@@ -112,7 +112,7 @@ export function Dashboard(_props: any): JSX.Element {
   );
 
   useEffect(() => {
-    predict('foo')
+    predict()
       .then(setPrediction)
       .catch((error) => {
         logger.error('Was not able to get prediction', error);

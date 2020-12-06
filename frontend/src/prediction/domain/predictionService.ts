@@ -37,5 +37,5 @@ export function predict(): Promise<Prediction> {
     return Promise.reject(new Error('User not found'));
   }
 
-  return getPrediction(idToken.email).then(toPrediction);
+  return getPrediction().then(toPrediction);
 }

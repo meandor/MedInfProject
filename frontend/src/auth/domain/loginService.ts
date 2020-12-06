@@ -8,6 +8,7 @@ export interface IDToken {
   name: string;
   email: string;
   email_verified: boolean;
+  sub: string;
 }
 
 export function isAuthenticated(): boolean {

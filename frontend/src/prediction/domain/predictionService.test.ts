@@ -31,6 +31,7 @@ describe('predict', () => {
       name: 'foo bar',
       email: 'foo@bar.com',
       email_verified: true,
+      sub: 'foo-bar-000',
     });
     getPredictionMock.mockResolvedValue({
       ovulation: {
@@ -59,6 +60,7 @@ describe('predict', () => {
       name: 'foo bar',
       email: 'foo@bar.com',
       email_verified: true,
+      sub: 'foo-bar-000',
     });
     getPredictionMock.mockResolvedValue({
       ovulation: {
@@ -87,6 +89,7 @@ describe('predict', () => {
       name: 'foo bar',
       email: 'foo@bar.com',
       email_verified: true,
+      sub: 'foo-bar-000',
     });
     getPredictionMock.mockResolvedValue({
       ovulation: {
@@ -115,6 +118,7 @@ describe('predict', () => {
       name: 'foo bar',
       email: 'foo@bar.com',
       email_verified: true,
+      sub: 'foo-bar-000',
     });
     getPredictionMock.mockResolvedValue({
       ovulation: {

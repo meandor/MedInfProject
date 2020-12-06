@@ -1,3 +1,6 @@
+import axios from 'axios';
+import { baseUrl, config, errorLogging } from '../../core/data/client';
+
 export interface PredictionDTO {
   ovulation: {
     startDate: Date;
@@ -10,6 +13,9 @@ export interface PredictionDTO {
   };
 }
 
-export function getPrediction(_email: string): Promise<PredictionDTO> {
-  return Promise.reject(new Error());
+export function getPrediction(): Promise<PredictionDTO> {
+  return axios
+    .get(`${baseUrl}menstruation/prediction`, config)
+    .then(({ data }) => data)
+    .catch(errorLogging);
 }

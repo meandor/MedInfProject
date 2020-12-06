@@ -4,6 +4,12 @@ import { logger } from '../../logger';
 
 const ID_TOKEN_KEY = 'idToken';
 
+export interface IDToken {
+  name: string;
+  email: string;
+  email_verified: boolean;
+}
+
 export function isAuthenticated(): boolean {
   const idToken = localStorage.getItem(ID_TOKEN_KEY) || '';
   if (idToken === '') {
@@ -26,13 +32,13 @@ export function authenticatedUser(): IDToken | undefined {
   }
 
   const rawIdToken = localStorage.getItem(ID_TOKEN_KEY) || '';
-  return JSON.parse(rawIdToken);
-}
-
-export interface IDToken {
-  name: string;
-  email: string;
-  email_verified: boolean;
+  const idTokenSecret: string = process.env.REACT_APP_ID_TOKEN_SECRET || '';
+  try {
+    return <IDToken>verify(rawIdToken, idTokenSecret);
+  } catch (error) {
+    logger.error(error);
+    return undefined;
+  }
 }
 
 export function authenticate(

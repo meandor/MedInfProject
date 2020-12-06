@@ -23,7 +23,6 @@ class TokenController(
 ) extends Controller
     with PasswordEncryption
     with LazyLogging {
-  val ACCESS_TOKEN_COOKIE_NAME = "ACCESS_TOKEN"
 
   override def routes: Route = path("token") {
     post {

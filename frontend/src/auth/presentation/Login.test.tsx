@@ -14,11 +14,12 @@ describe('Login component', () => {
   let emailField: HTMLElement;
   let passwordField: HTMLElement;
   let errorInfo: HTMLElement | null;
+  const history = { push: jest.fn() };
 
   beforeEach(() => {
     const { getByTestId, queryByTestId } = render(
       <MemoryRouter>
-        <Login />
+        <Login history={history} />
       </MemoryRouter>
     );
     signInButton = getByTestId(/sign-in/i);
@@ -30,6 +31,7 @@ describe('Login component', () => {
       name: 'foo bar',
       email: 'foo@bar.com',
       email_verified: true,
+      sub: 'foo-000',
     });
   });
 

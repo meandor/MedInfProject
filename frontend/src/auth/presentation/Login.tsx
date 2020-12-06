@@ -28,13 +28,18 @@ function signIn(
   };
 }
 
-export function Login(): JSX.Element {
+export function Login({
+  history,
+}: {
+  history: { push: (_: string) => any };
+}): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const redirect: () => any = () => {
     // window.location.href = '/dashboard';
+    history.push('dashboard');
     return true;
   };
 

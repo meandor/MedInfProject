@@ -47,7 +47,7 @@ class PredictionController(secret: String) extends Controller with LazyLogging {
   def handlePredictionRequest(accessTokenCookie: HttpCookiePair): Route = {
     val maybeUserId = userId(accessTokenCookie.value)
     maybeUserId.fold(Controller.unauthorized) { userId =>
-      logger.info("Got prediction request for user: %s", userId)
+      logger.info(s"Got prediction request for user: $userId")
       val ovulation = OvulationDTO(startDate = LocalDate.now(), isActive = false)
       val period    = PeriodDTO(startDate = LocalDate.now(), isActive = false, duration = 5)
       complete(StatusCodes.OK, PredictionDTO(ovulation, period))

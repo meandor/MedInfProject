@@ -34,7 +34,7 @@ export function authenticatedUser(): IDToken | undefined {
   const rawIdToken = localStorage.getItem(ID_TOKEN_KEY) || '';
   const idTokenSecret: string = process.env.REACT_APP_ID_TOKEN_SECRET || '';
   try {
-    return <IDToken>verify(rawIdToken, idTokenSecret);
+    return verify(rawIdToken, idTokenSecret) as IDToken;
   } catch (error) {
     logger.error(error);
     return undefined;

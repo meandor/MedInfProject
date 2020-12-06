@@ -10,7 +10,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.meandor.doctorfate.UnitSpec
 import com.github.meandor.doctorfate.auth.domain.AccessToken
-import com.github.meandor.doctorfate.core.presentation.ErrorDTO
+import com.github.meandor.doctorfate.core.presentation.{Controller, ErrorDTO}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
@@ -36,7 +36,7 @@ class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
 
     Scenario("should return 200 and prediction for valid user") {
       Get("/menstruation/prediction") ~>
-        Cookie(controller.ACCESS_TOKEN_COOKIE_NAME -> accessJWT) ~>
+        Cookie(Controller.accessTokenCookieName -> accessJWT) ~>
         Route.seal(controller.routes) ~>
         check {
           val actual    = responseAs[PredictionDTO]
@@ -51,7 +51,7 @@ class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
 
     Scenario("should return 401 for unauthorized user") {
       Get("/menstruation/prediction") ~>
-        Cookie(controller.ACCESS_TOKEN_COOKIE_NAME -> "foo") ~>
+        Cookie(Controller.accessTokenCookieName -> "foo") ~>
         Route.seal(controller.routes) ~>
         check {
           val actual   = responseAs[ErrorDTO]
@@ -64,7 +64,7 @@ class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
 
     Scenario("should return MissingCookieRejection(ACCESS_TOKEN) for missing user") {
       Get("/menstruation/prediction") ~> controller.routes ~> check {
-        rejection shouldEqual MissingCookieRejection(controller.ACCESS_TOKEN_COOKIE_NAME)
+        rejection shouldEqual MissingCookieRejection(Controller.accessTokenCookieName)
       }
     }
   }

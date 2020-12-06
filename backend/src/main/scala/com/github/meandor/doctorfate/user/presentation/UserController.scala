@@ -31,7 +31,7 @@ class UserController(salt: String, userService: UserService)
     logger.info("Got user registration request")
     if (!isValidRequest(userDTO)) {
       logger.info("Request is invalid")
-      invalidRequestResponse
+      Controller.invalidRequestResponse
     } else {
       val hashedPassword = hashPassword(userDTO.password, salt)
       val createdToken = userService.registerUser(
@@ -41,7 +41,7 @@ class UserController(salt: String, userService: UserService)
         case Some(user) =>
           val registeredUser = UserDTO(user.email, user.password, user.name, user.hasVerifiedEmail)
           complete(StatusCodes.Created, registeredUser)
-        case None => failedResponse
+        case None => Controller.failedResponse
       }
     }
   }
@@ -55,14 +55,14 @@ class UserController(salt: String, userService: UserService)
 
     if (!isValidConfirmationRequest(confirmationDTO)) {
       logger.info("Request is invalid")
-      invalidRequestResponse
+      Controller.invalidRequestResponse
     } else {
       val confirmedUser = userService.confirm(confirmationDTO.id)
       onSuccess(confirmedUser) {
         case Some(user) =>
           val confirmedUser = UserDTO(user.email, user.password, user.name, user.hasVerifiedEmail)
           complete(StatusCodes.OK, confirmedUser)
-        case None => invalidRequestResponse
+        case None => Controller.invalidRequestResponse
       }
     }
   }

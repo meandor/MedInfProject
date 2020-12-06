@@ -11,7 +11,7 @@ import com.typesafe.config.Config
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.DurationInt
 
-final case class WebServer(config: Config, tokenController: Controller, userController: Controller)(
+final case class WebServer(config: Config, controllers: Seq[Controller])(
     implicit executionContext: ExecutionContextExecutor,
     system: ActorSystem[Nothing]
 ) extends Module {
@@ -19,8 +19,8 @@ final case class WebServer(config: Config, tokenController: Controller, userCont
     RejectionHandler
       .newBuilder()
       .handle {
-        case MissingCookieRejection(tokenController.ACCESS_TOKEN_COOKIE_NAME) =>
-          tokenController.unauthorized
+        case MissingCookieRejection(Controller.accessTokenCookieName) =>
+          Controller.unauthorized
       }
       .result()
 
@@ -32,7 +32,7 @@ final case class WebServer(config: Config, tokenController: Controller, userCont
       complete(StatusCodes.NotFound -> e.getMessage)
     case e: Exception =>
       logger.error("Error processing request", e)
-      tokenController.failedResponse
+      Controller.failedResponse
   }
 
   def routes(): Route = {
@@ -42,7 +42,7 @@ final case class WebServer(config: Config, tokenController: Controller, userCont
     val route = handleErrors {
       cors() {
         handleErrors {
-          BaseRoutes.routes ~ tokenController.routes ~ userController.routes
+          controllers.foldLeft(BaseRoutes.routes) { (acc, controller) => acc ~ controller.routes }
         }
       }
     }

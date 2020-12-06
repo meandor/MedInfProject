@@ -40,7 +40,7 @@ class TokenController(
     logger.info("Got token creation request")
     if (!isValid(tokenRequest)) {
       logger.info("Request is invalid")
-      invalidRequestResponse
+      Controller.invalidRequestResponse
     } else {
       val hashedPassword = hashPassword(tokenRequest.password, salt)
       val createdToken   = tokenService.createToken(tokenRequest.email, hashedPassword)
@@ -49,9 +49,9 @@ class TokenController(
   }
 
   def processTokens(maybeTokens: Option[Tokens]): Route = {
-    maybeTokens.map(generateJWT).fold(invalidRequestResponse) { tokens =>
+    maybeTokens.map(generateJWT).fold(Controller.invalidRequestResponse) { tokens =>
       val accessTokenCookie = HttpCookie(
-        ACCESS_TOKEN_COOKIE_NAME,
+        Controller.accessTokenCookieName,
         value = tokens.accessToken,
         secure = true,
         httpOnly = true

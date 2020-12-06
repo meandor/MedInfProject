@@ -5,15 +5,17 @@ import akka.http.scaladsl.server.{MissingCookieRejection, RejectionHandler, Rout
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
-trait Controller {
-  protected val invalidRequestResponse: Route =
+object Controller {
+  val invalidRequestResponse: Route =
     complete(StatusCodes.BadRequest, ErrorDTO("Invalid Request"))
   val failedResponse: Route =
     complete(StatusCodes.InternalServerError)
   val unauthorized: Route =
     complete(StatusCodes.Unauthorized, ErrorDTO("Invalid user"))
 
-  val ACCESS_TOKEN_COOKIE_NAME = "ACCESS_TOKEN"
+  val accessTokenCookieName = "ACCESS_TOKEN"
+}
 
+trait Controller {
   def routes: Route
 }

@@ -34,7 +34,7 @@ export function Login(): JSX.Element {
   const [error, setError] = useState('');
 
   const redirect: () => any = () => {
-    window.location.href = '/dashboard';
+    // window.location.href = '/dashboard';
     return true;
   };
 

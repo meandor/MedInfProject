@@ -19,6 +19,7 @@ class TokenController(
     idTokenSecret: String,
     accessTokenSecret: String,
     salt: String,
+    host: String,
     tokenService: TokenService
 ) extends Controller
     with PasswordEncryption
@@ -55,7 +56,7 @@ class TokenController(
         value = tokens.accessToken,
         secure = true,
         httpOnly = true,
-        maxAge = Some(2592000L)
+        domain = Some(host)
       )
       setCookie(accessTokenCookie) {
         complete(StatusCodes.Created, TokenDTO(tokens.idToken))

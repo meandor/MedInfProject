@@ -16,10 +16,12 @@ final case class AuthModule(config: Config, databaseModule: DatabaseModule)(
     val jwtIDSecret              = config.getString("auth.idTokenSecret")
     val jwtAccessSecret          = config.getString("auth.accessTokenSecret")
     val passwordSalt             = config.getString("auth.passwordSalt")
+    val host                     = config.getString("app.host")
     val tokenRepository          = new TokenRepository(databaseModule.executionContext)
     val authenticationRepository = new AuthenticationRepository(databaseModule.executionContext)
     val tokenService             = new TokenService(authenticationRepository, tokenRepository)
-    val controller               = new TokenController(jwtIDSecret, jwtAccessSecret, passwordSalt, tokenService)
+    val controller =
+      new TokenController(jwtIDSecret, jwtAccessSecret, passwordSalt, host, tokenService)
     logger.info("Done loading AuthModule")
     Option(controller)
   }

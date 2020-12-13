@@ -20,7 +20,14 @@ class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
   val tokenServiceMock: TokenService = mock[TokenService]
   val secret: String                 = "secret"
   val salt: String                   = "salt"
-  val controller: TokenController    = new TokenController(secret, secret, salt, tokenServiceMock)
+  val host: String                   = "localhost"
+  val controller: TokenController = new TokenController(
+    secret,
+    secret,
+    salt,
+    host,
+    tokenServiceMock
+  )
 
   Feature("POST /token") {
     val email           = "foo@bar.com"

@@ -33,10 +33,7 @@ module.exports = {
         "react/destructuring-assignment": "off",
         "react/jsx-filename-extension": "off",
         "react/jsx-props-no-spreading": "off",
-        "no-use-before-define": [
-            "error",
-            {functions: false, classes: true, variables: true},
-        ],
+        "no-use-before-define": "off",
         "@typescript-eslint/explicit-function-return-type": [
             "error",
             {allowExpressions: true, allowTypedFunctionExpressions: true},

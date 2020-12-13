@@ -54,7 +54,8 @@ class TokenController(
         Controller.accessTokenCookieName,
         value = tokens.accessToken,
         secure = true,
-        httpOnly = true
+        httpOnly = true,
+        maxAge = Some(2592000L)
       )
       setCookie(accessTokenCookie) {
         complete(StatusCodes.Created, TokenDTO(tokens.idToken))

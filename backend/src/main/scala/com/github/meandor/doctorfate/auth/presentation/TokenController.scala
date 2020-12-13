@@ -53,7 +53,7 @@ class TokenController(
     maybeTokens.map(generateJWT).fold(Controller.invalidRequestResponse) { tokens =>
       val accessTokenCookie = RawHeader(
         "Set-Cookie",
-        s"${Controller.accessTokenCookieName}=${tokens.accessToken}; Secure; HttpOnly; SameSite=None"
+        s"${Controller.accessTokenCookieName}=${tokens.accessToken}; Secure; HttpOnly; SameSite=None; Domain=$host"
       )
       respondWithHeader(accessTokenCookie) {
         complete(StatusCodes.Created, TokenDTO(tokens.idToken))

@@ -13,7 +13,7 @@ object Controller {
   val unauthorized: Route =
     complete(StatusCodes.Unauthorized, ErrorDTO("Invalid user"))
 
-  val accessTokenCookieName = "ACCESS_TOKEN"
+  val accessTokenCookieName = "MENSTRA_ACCESS_TOKEN"
 }
 
 trait Controller {

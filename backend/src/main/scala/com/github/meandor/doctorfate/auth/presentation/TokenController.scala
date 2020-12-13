@@ -4,8 +4,8 @@ import java.time.{LocalDateTime, ZoneId}
 import java.util.Date
 
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.model.headers.HttpCookie
-import akka.http.scaladsl.server.Directives.{as, complete, entity, onSuccess, path, post, setCookie}
+import akka.http.scaladsl.model.headers.RawHeader
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
@@ -51,14 +51,11 @@ class TokenController(
 
   def processTokens(maybeTokens: Option[Tokens]): Route = {
     maybeTokens.map(generateJWT).fold(Controller.invalidRequestResponse) { tokens =>
-      val accessTokenCookie = HttpCookie(
-        Controller.accessTokenCookieName,
-        value = tokens.accessToken,
-        secure = true,
-        httpOnly = true,
-        domain = Some(host)
+      val accessTokenCookie = RawHeader(
+        "Set-Cookie",
+        s"${Controller.accessTokenCookieName}=${tokens.accessToken}; Secure; HttpOnly; SameSite=None"
       )
-      setCookie(accessTokenCookie) {
+      respondWithHeader(accessTokenCookie) {
         complete(StatusCodes.Created, TokenDTO(tokens.idToken))
       }
     }

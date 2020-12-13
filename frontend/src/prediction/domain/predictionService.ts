@@ -13,10 +13,9 @@ export interface Prediction {
 }
 
 function toPrediction(predictionDTO: PredictionDTO): Prediction {
-  if (
-    predictionDTO.ovulation.startDate.getTime() <
-    predictionDTO.period.startDate.getTime()
-  ) {
+  const ovulationStartDate = new Date(predictionDTO.ovulation.startDate);
+  const periodStartDate = new Date(predictionDTO.period.startDate);
+  if (ovulationStartDate.getTime() < periodStartDate.getTime()) {
     return {
       event: Event.OVULATION,
       isUpcoming: !predictionDTO.ovulation.isActive,

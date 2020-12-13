@@ -3,11 +3,11 @@ import { baseUrl, config, errorLogging } from '../../core/data/client';
 
 export interface PredictionDTO {
   ovulation: {
-    startDate: Date;
+    startDate: string;
     isActive: boolean;
   };
   period: {
-    startDate: Date;
+    startDate: string;
     isActive: boolean;
     duration: number;
   };

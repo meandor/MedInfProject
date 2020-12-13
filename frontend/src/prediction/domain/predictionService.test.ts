@@ -35,11 +35,11 @@ describe('predict', () => {
     });
     getPredictionMock.mockResolvedValue({
       ovulation: {
-        startDate: in20Days,
+        startDate: in20Days.toISOString(),
         isActive: false,
       },
       period: {
-        startDate: tomorrow,
+        startDate: tomorrow.toISOString(),
         isActive: false,
         duration: 5,
       },
@@ -64,11 +64,11 @@ describe('predict', () => {
     });
     getPredictionMock.mockResolvedValue({
       ovulation: {
-        startDate: in20Days,
+        startDate: in20Days.toISOString(),
         isActive: false,
       },
       period: {
-        startDate: tomorrow,
+        startDate: tomorrow.toISOString(),
         isActive: true,
         duration: 15,
       },
@@ -93,11 +93,11 @@ describe('predict', () => {
     });
     getPredictionMock.mockResolvedValue({
       ovulation: {
-        startDate: today,
+        startDate: today.toISOString(),
         isActive: false,
       },
       period: {
-        startDate: tomorrow,
+        startDate: tomorrow.toISOString(),
         isActive: false,
         duration: 5,
       },
@@ -122,11 +122,11 @@ describe('predict', () => {
     });
     getPredictionMock.mockResolvedValue({
       ovulation: {
-        startDate: today,
+        startDate: today.toISOString(),
         isActive: true,
       },
       period: {
-        startDate: tomorrow,
+        startDate: tomorrow.toISOString(),
         isActive: false,
         duration: 5,
       },

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { baseUrl, config, errorLogging } from '../../core/data/client';
+import { baseUrl, withTokenConfig, errorLogging } from '../../core/data/client';
 
 export interface PredictionDTO {
   ovulation: {
@@ -15,7 +15,7 @@ export interface PredictionDTO {
 
 export function getPrediction(): Promise<PredictionDTO> {
   return axios
-    .get(`${baseUrl}menstruation/prediction`, config)
+    .get(`${baseUrl}menstruation/prediction`, withTokenConfig)
     .then(({ data }) => data)
     .catch(errorLogging);
 }

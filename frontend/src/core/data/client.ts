@@ -2,6 +2,11 @@ import { logger } from '../../logger';
 
 export const baseUrl = process.env.REACT_APP_BACKEND;
 export const config = { withCredentials: true };
+const accessToken = localStorage.getItem('accessToken');
+export const withTokenConfig = {
+  withCredentials: true,
+  headers: { Authorization: `Bearer ${accessToken}` }
+};
 
 export function errorLogging(error: any): any {
   if (error.response) {

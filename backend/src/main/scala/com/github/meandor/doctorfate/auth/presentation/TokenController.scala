@@ -19,7 +19,6 @@ class TokenController(
     idTokenSecret: String,
     accessTokenSecret: String,
     salt: String,
-    host: String,
     tokenService: TokenService
 ) extends Controller
     with PasswordEncryption
@@ -32,8 +31,8 @@ class TokenController(
   }
 
   def isValid(tokenRequest: TokenRequestDTO): Boolean = {
-    !tokenRequest.email.trim.isEmpty &&
-    !tokenRequest.password.trim.isEmpty &&
+    tokenRequest.email.trim.nonEmpty &&
+    tokenRequest.password.trim.nonEmpty &&
     tokenRequest.email.contains("@")
   }
 
@@ -51,13 +50,7 @@ class TokenController(
 
   def processTokens(maybeTokens: Option[Tokens]): Route = {
     maybeTokens.map(generateJWT).fold(Controller.invalidRequestResponse) { tokens =>
-      val accessTokenCookie = RawHeader(
-        "Set-Cookie",
-        s"${Controller.accessTokenCookieName}=${tokens.accessToken}; Path=/; Domain=$host; HttpOnly; SameSite=None; Secure"
-      )
-      respondWithHeader(accessTokenCookie) {
-        complete(StatusCodes.Created, TokenDTO(tokens.idToken))
-      }
+      complete(StatusCodes.Created, TokenDTO(tokens.idToken, tokens.accessToken))
     }
   }
 

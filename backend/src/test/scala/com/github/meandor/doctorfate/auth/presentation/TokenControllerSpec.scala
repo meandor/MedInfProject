@@ -19,12 +19,10 @@ class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
   val tokenServiceMock: TokenService = mock[TokenService]
   val secret: String                 = "secret"
   val salt: String                   = "salt"
-  val host: String                   = "localhost"
   val controller: TokenController = new TokenController(
     secret,
     secret,
     salt,
-    host,
     tokenServiceMock
   )
 
@@ -41,19 +39,16 @@ class TokenControllerSpec extends UnitSpec with ScalatestRouteTest {
     Scenario("should return 201 and tokens for valid user") {
       tokenServiceMock.createToken(email, any()) shouldReturn Future.successful(Some(token))
       Post("/token", tokenRequestDTO) ~> Route.seal(controller.routes) ~> check {
-        val actualToken             = responseAs[TokenDTO]
-        val actualIDToken           = verifier.verify(actualToken.idToken)
-        val actualAccessTokenCookie = headers.head.toString()
+        val actualToken       = responseAs[TokenDTO]
+        val actualIDToken     = verifier.verify(actualToken.idToken)
+        val actualAccessToken = verifier.verify(actualToken.accessToken)
 
         status shouldBe StatusCodes.Created
         actualIDToken.getClaim("name").asString() shouldBe idToken.name
         actualIDToken.getClaim("email").asString() shouldBe idToken.email
         actualIDToken.getClaim("email_verified").asBoolean() shouldBe idToken.emailIsVerified
         actualIDToken.getSubject shouldBe idToken.userID.toString
-        actualAccessTokenCookie should include("MENSTRA_ACCESS_TOKEN")
-        actualAccessTokenCookie should include("Secure")
-        actualAccessTokenCookie should include("HttpOnly")
-        actualAccessTokenCookie should include("SameSite=None")
+        actualAccessToken.getSubject shouldBe accessToken.userID.toString
       }
     }
 

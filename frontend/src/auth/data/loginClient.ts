@@ -3,6 +3,7 @@ import { baseUrl, config, errorLogging } from '../../core/data/client';
 
 export interface TokenDTO {
   idToken: string;
+  accessToken: string;
 }
 
 export interface CreateTokenDTO {

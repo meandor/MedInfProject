@@ -3,6 +3,7 @@ import { createToken } from '../data/loginClient';
 import { logger } from '../../logger';
 
 const ID_TOKEN_KEY = 'idToken';
+const ACCESS_TOKEN_KEY = 'accessToken';
 
 export interface IDToken {
   name: string;
@@ -51,6 +52,7 @@ export function authenticate(
     try {
       const decodedIdToken = verify(token.idToken, idTokenSecret) as IDToken;
       localStorage.setItem(ID_TOKEN_KEY, token.idToken);
+      localStorage.setItem(ACCESS_TOKEN_KEY, token.accessToken);
       return decodedIdToken;
     } catch (error) {
       logger.error('Error verifying idToken', error);

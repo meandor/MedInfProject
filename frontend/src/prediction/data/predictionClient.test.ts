@@ -4,7 +4,10 @@ import { getPrediction } from './predictionClient';
 jest.mock('axios');
 
 const axiosMock: jest.Mocked<AxiosInstance> = axios as any;
-const AXIOS_CONFIG = { withCredentials: true };
+const AXIOS_CONFIG = {
+  withCredentials: true,
+  headers: { Authorization: `Bearer null` }
+};
 
 describe('getPrediction', () => {
   const prediction = {

@@ -1,18 +1,17 @@
 package com.github.meandor.doctorfate.menstruation.presentation
-import java.time.{LocalDate, LocalDateTime, ZoneId}
-import java.util.{Date, UUID}
-
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.model.headers.Cookie
-import akka.http.scaladsl.server.{MissingCookieRejection, Route}
+import akka.http.scaladsl.model.headers.OAuth2BearerToken
+import akka.http.scaladsl.server.{AuthenticationFailedRejection, Route}
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.meandor.doctorfate.UnitSpec
 import com.github.meandor.doctorfate.auth.domain.AccessToken
-import com.github.meandor.doctorfate.core.presentation.{Controller, ErrorDTO}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
+
+import java.time.{LocalDate, LocalDateTime, ZoneId}
+import java.util.{Date, UUID}
 
 class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
   val secret: String                   = "secret"
@@ -36,7 +35,7 @@ class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
 
     Scenario("should return 200 and prediction for valid user") {
       Get("/menstruation/prediction") ~>
-        Cookie(Controller.accessTokenCookieName -> accessJWT) ~>
+        addCredentials(OAuth2BearerToken(accessJWT)) ~>
         Route.seal(controller.routes) ~>
         check {
           val actual    = responseAs[PredictionDTO]
@@ -49,22 +48,18 @@ class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
         }
     }
 
-    Scenario("should return 401 for unauthorized user") {
+    Scenario("should return AuthorizationFailedRejection for unauthorized user") {
       Get("/menstruation/prediction") ~>
-        Cookie(Controller.accessTokenCookieName -> "foo") ~>
-        Route.seal(controller.routes) ~>
+        addCredentials(OAuth2BearerToken("foo")) ~>
+        controller.routes ~>
         check {
-          val actual   = responseAs[ErrorDTO]
-          val expected = ErrorDTO("Invalid user")
-
-          status shouldBe StatusCodes.Unauthorized
-          actual shouldBe expected
+          rejection shouldBe a[AuthenticationFailedRejection]
         }
     }
 
-    Scenario("should return MissingCookieRejection(ACCESS_TOKEN) for missing user") {
+    Scenario("should return AuthorizationFailedRejection for missing user") {
       Get("/menstruation/prediction") ~> controller.routes ~> check {
-        rejection shouldEqual MissingCookieRejection(Controller.accessTokenCookieName)
+        rejection shouldBe a[AuthenticationFailedRejection]
       }
     }
   }

@@ -1,9 +1,15 @@
 package com.github.meandor.doctorfate.core
 import akka.actor.typed.ActorSystem
+import akka.http.javadsl.server.AuthorizationFailedRejection
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{ExceptionHandler, MissingCookieRejection, RejectionHandler, Route}
+import akka.http.scaladsl.server.{
+  AuthenticationFailedRejection,
+  ExceptionHandler,
+  RejectionHandler,
+  Route
+}
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.{cors, corsRejectionHandler}
 import com.github.meandor.doctorfate.core.presentation.{BaseRoutes, Controller}
 import com.typesafe.config.Config
@@ -19,7 +25,11 @@ final case class WebServer(config: Config, controllers: Seq[Controller])(
     RejectionHandler
       .newBuilder()
       .handle {
-        case MissingCookieRejection(Controller.accessTokenCookieName) =>
+        case _: AuthenticationFailedRejection =>
+          Controller.unauthorized
+      }
+      .handle {
+        case _: AuthorizationFailedRejection =>
           Controller.unauthorized
       }
       .result()

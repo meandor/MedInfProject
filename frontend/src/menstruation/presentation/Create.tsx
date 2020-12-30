@@ -4,7 +4,7 @@ import './create.scss';
 export function Create({
   history,
 }: {
-  history: { goBack: () => any; push: (_: string) => any };
+  history: { push: (_: string) => any };
 }): JSX.Element {
   return (
     <section className="create">
@@ -15,7 +15,7 @@ export function Create({
           <button
             type="submit"
             className="button button-secondary"
-            onClick={history.goBack}
+            onClick={history.push('/dashboard')}
           >
             Cancel
           </button>

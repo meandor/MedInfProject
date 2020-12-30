@@ -15,7 +15,6 @@ describe('Create component', () => {
 
   beforeEach(() => {
     historyMock = {
-      goBack: jest.fn(),
       push: jest.fn(),
     };
     const { getByText, getByTestId } = render(<Create history={historyMock} />);
@@ -35,6 +34,6 @@ describe('Create component', () => {
   it('should go back when cancel is clicked', async () => {
     await fireEvent.click(cancelButton);
 
-    await expect(historyMock.goBack).toBeCalled();
+    await expect(historyMock.push).toBeCalledWith('/dashboard');
   });
 });

@@ -17,6 +17,9 @@ describe('Dashboard component', () => {
   in20Days.setDate(today.getDate() + 20);
   const in21Days = new Date();
   in21Days.setDate(today.getDate() + 21);
+  const historyMock = {
+    push: jest.fn(),
+  };
 
   it('should render ovulation in one day', async () => {
     predictMock.mockResolvedValue({
@@ -26,7 +29,7 @@ describe('Dashboard component', () => {
     });
 
     await act(async () => {
-      const { getByTestId } = render(<Dashboard />);
+      const { getByTestId } = render(<Dashboard history={historyMock} />);
       predictionField = getByTestId(/prediction-field/i);
     });
 
@@ -42,7 +45,7 @@ describe('Dashboard component', () => {
     });
 
     await act(async () => {
-      const { getByTestId } = render(<Dashboard />);
+      const { getByTestId } = render(<Dashboard history={historyMock} />);
       predictionField = getByTestId(/prediction-field/i);
     });
 
@@ -58,7 +61,7 @@ describe('Dashboard component', () => {
     });
 
     await act(async () => {
-      const { getByTestId } = render(<Dashboard />);
+      const { getByTestId } = render(<Dashboard history={historyMock} />);
       predictionField = getByTestId(/prediction-field/i);
     });
 
@@ -74,7 +77,7 @@ describe('Dashboard component', () => {
     });
 
     await act(async () => {
-      const { getByTestId } = render(<Dashboard />);
+      const { getByTestId } = render(<Dashboard history={historyMock} />);
       predictionField = getByTestId(/prediction-field/i);
     });
 
@@ -90,7 +93,7 @@ describe('Dashboard component', () => {
     });
 
     await act(async () => {
-      const { getByTestId } = render(<Dashboard />);
+      const { getByTestId } = render(<Dashboard history={historyMock} />);
       predictionField = getByTestId(/prediction-field/i);
     });
 
@@ -107,7 +110,7 @@ describe('Dashboard component', () => {
     });
 
     await act(async () => {
-      const { getByTestId } = render(<Dashboard />);
+      const { getByTestId } = render(<Dashboard history={historyMock} />);
       predictionField = getByTestId(/prediction-field/i);
     });
 

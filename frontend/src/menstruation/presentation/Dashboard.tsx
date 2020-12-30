@@ -124,7 +124,7 @@ export function Dashboard({
       });
   }, []);
 
-  const goToInsert: any = () => history.push('create');
+  const goToInsert: any = () => history.push('/create');
 
   if (prediction) {
     return (

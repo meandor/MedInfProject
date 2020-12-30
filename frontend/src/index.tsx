@@ -14,6 +14,7 @@ import { PrivateRoute, PublicRoute } from './core/presentation/Routes';
 import { RegisterConfirmation } from './auth/presentation/RegisterConfirmation';
 import { Confirm } from './auth/presentation/Confirm';
 import { Dashboard } from './menstruation/presentation/Dashboard';
+import { Create } from './menstruation/presentation/Create';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -30,6 +31,7 @@ ReactDOM.render(
           component={() => <Redirect to="/dashboard" />}
         />
         <PrivateRoute path="/dashboard" exact component={Dashboard} />
+        <PrivateRoute path="/create" exact component={withRouter(Create)} />
         <PublicRoute path="/login" exact component={Login} />
         <PublicRoute path="/register" exact component={withRouter(Register)} />
         <PublicRoute

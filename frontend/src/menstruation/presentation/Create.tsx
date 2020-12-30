@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import './create.scss';
 
 export function Create({
@@ -6,10 +6,14 @@ export function Create({
 }: {
   history: { push: (_: string) => any };
 }): JSX.Element {
+  const foo: any = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
+
   return (
     <section className="create">
       <h1 className="create__header">Insert Period</h1>
-      <form>
+      <form onSubmit={foo}>
         <section className="create__calendar" data-testid="calendar" />
         <section className="create__actions">
           <button

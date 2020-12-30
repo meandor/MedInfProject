@@ -5,7 +5,8 @@ import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MailClient(userName: String, password: String)(implicit ec: ExecutionContext) extends LazyLogging {
+class MailClient(userName: String, password: String)(implicit ec: ExecutionContext)
+    extends LazyLogging {
   val mailer: Mailer = Mailer("smtp.gmail.com", 587)
     .auth(true)
     .as(userName, password)
@@ -15,7 +16,7 @@ class MailClient(userName: String, password: String)(implicit ec: ExecutionConte
     val sender    = new InternetAddress(userName, "Menstra Period Tracker")
     val recipient = new InternetAddress(email)
     logger.info("Sending confirmation mail")
-    mailer(
+    val mailSendingResult = mailer(
       Envelope
         .from(sender)
         .to(recipient)
@@ -26,5 +27,7 @@ class MailClient(userName: String, password: String)(implicit ec: ExecutionConte
           )
         )
     )
+    logger.info(s"Sent mail with: $mailSendingResult")
+    mailSendingResult
   }
 }

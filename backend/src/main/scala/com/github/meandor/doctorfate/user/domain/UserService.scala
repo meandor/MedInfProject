@@ -72,7 +72,7 @@ class UserService(
         for {
           createdUser <- createUser(user)
           emailSent   <- mailClient.sendConfirmationMail(user.email, confirmationLink(user.email))
-          _           <- Future.successful(logger.info(s"$emailSent"))
+          _           <- Future.successful(logger.info(s"Sent mail $emailSent"))
         } yield createdUser
       case Some(_) =>
         logger.info("Failed creating user, E-Mail already exists")

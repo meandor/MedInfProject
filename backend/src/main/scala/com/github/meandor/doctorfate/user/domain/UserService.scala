@@ -69,9 +69,11 @@ class UserService(
   def registerUser(user: User): Future[Option[User]] = {
     userRepository.findByMail(user.email).flatMap {
       case None =>
-        val createdUser = createUser(user)
-        mailClient.sendConfirmationMail(user.email, confirmationLink(user.email))
-        createdUser
+        for {
+          createdUser <- createUser(user)
+          emailSent   <- mailClient.sendConfirmationMail(user.email, confirmationLink(user.email))
+          _           <- Future.successful(logger.info(s"$emailSent"))
+        } yield createdUser
       case Some(_) =>
         logger.info("Failed creating user, E-Mail already exists")
         Future.successful(None)

@@ -16,7 +16,7 @@ class MailClient(userName: String, password: String)(implicit ec: ExecutionConte
     val sender    = new InternetAddress(userName, "Menstra Period Tracker")
     val recipient = new InternetAddress(email)
     logger.info("Sending confirmation mail")
-    val mailSendingResult = mailer(
+    mailer(
       Envelope
         .from(sender)
         .to(recipient)
@@ -27,7 +27,5 @@ class MailClient(userName: String, password: String)(implicit ec: ExecutionConte
           )
         )
     )
-    logger.info(s"Sent mail with: $mailSendingResult")
-    mailSendingResult
   }
 }

@@ -9,7 +9,7 @@ const AXIOS_CONFIG = { withCredentials: true };
 describe('createToken', () => {
   const validToken = {
     idToken: 'foo',
-    accessToken: 'bar'
+    accessToken: 'bar',
   };
 
   beforeEach(() => {

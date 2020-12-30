@@ -13,7 +13,7 @@ import { Register } from './auth/presentation/Register';
 import { PrivateRoute, PublicRoute } from './core/presentation/Routes';
 import { RegisterConfirmation } from './auth/presentation/RegisterConfirmation';
 import { Confirm } from './auth/presentation/Confirm';
-import { Dashboard } from './prediction/presentation/Dashboard';
+import { Dashboard } from './menstruation/presentation/Dashboard';
 
 ReactDOM.render(
   <React.StrictMode>

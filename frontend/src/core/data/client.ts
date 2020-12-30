@@ -5,7 +5,7 @@ export const config = { withCredentials: true };
 const accessToken = localStorage.getItem('accessToken');
 export const withTokenConfig = {
   withCredentials: true,
-  headers: { Authorization: `Bearer ${accessToken}` }
+  headers: { Authorization: `Bearer ${accessToken}` },
 };
 
 export function errorLogging(error: any): any {

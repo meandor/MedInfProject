@@ -106,7 +106,11 @@ function PredictionInfo({
   );
 }
 
-export function Dashboard(_props: any): JSX.Element {
+export function Dashboard({
+  history,
+}: {
+  history: { push: (_: string) => any };
+}): JSX.Element {
   const [prediction, setPrediction] = useState<Prediction | undefined>(
     undefined
   );
@@ -120,13 +124,19 @@ export function Dashboard(_props: any): JSX.Element {
       });
   }, []);
 
+  const goToInsert: any = () => history.push('create');
+
   if (prediction) {
     return (
       <section data-testid="prediction-field" className="dashboard">
         <section className="dashboard__prediction">
           <PredictionInfo prediction={prediction} />
           <p>
-            <button type="button" className="button button-primary">
+            <button
+              type="button"
+              className="button button-primary"
+              onClick={goToInsert}
+            >
               Insert period
             </button>
           </p>

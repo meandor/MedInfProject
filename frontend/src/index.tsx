@@ -30,7 +30,11 @@ ReactDOM.render(
           exact
           component={() => <Redirect to="/dashboard" />}
         />
-        <PrivateRoute path="/dashboard" exact component={Dashboard} />
+        <PrivateRoute
+          path="/dashboard"
+          exact
+          component={withRouter(Dashboard)}
+        />
         <PrivateRoute path="/create" exact component={withRouter(Create)} />
         <PublicRoute path="/login" exact component={Login} />
         <PublicRoute path="/register" exact component={withRouter(Register)} />

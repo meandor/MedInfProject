@@ -19,7 +19,7 @@ export function Create({
           <button
             type="submit"
             className="button button-secondary"
-            onClick={history.push('/dashboard')}
+            onClick={() => history.push('/dashboard')}
           >
             Cancel
           </button>

@@ -1,14 +1,19 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
+import { Calendar, Interval } from './Calendar';
 import './create.scss';
-import { Calendar } from './Calendar';
+import { logger } from '../../logger';
 
 export function Create({
   history,
 }: {
   history: { push: (_: string) => any };
 }): JSX.Element {
+  const [interval, setInterval] = useState<undefined | Interval>(undefined);
   const foo: any = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (interval) {
+      logger.info(JSON.stringify(interval));
+    }
   };
 
   return (
@@ -20,6 +25,7 @@ export function Create({
           upcomingMonths={1}
           previousMonths={1}
           currentDate={new Date()}
+          intervalSelectionFn={setInterval}
         />
         <section className="create__actions">
           <button

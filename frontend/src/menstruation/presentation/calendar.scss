@@ -27,6 +27,7 @@
       height: 5rem;
       text-align: center;
       padding: 1rem;
+      cursor: pointer;
     }
 
     .gray {
@@ -34,7 +35,17 @@
     }
 
     .today {
-      border: 0.2rem solid $primary;
+      font-weight: bold;
+      color: $primary-dark;
+    }
+
+    .active {
+      background-color: $secondary;
+      height: 3rem;
+      width: 3rem;
+      margin: auto;
+      //color: $white;
+      border-radius: 1.5rem;
     }
   }
 }

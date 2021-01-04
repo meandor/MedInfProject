@@ -2,9 +2,10 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render } from '@testing-library/react';
 import { Create } from './Create';
+import { Calendar } from './Calendar';
 // import { createPeriod } from '../domain/menstruationService';
 
-// jest.mock('../domain/menstruationService');
+jest.mock('./Calendar');
 
 describe('Create component', () => {
   let historyMock: any;
@@ -12,11 +13,13 @@ describe('Create component', () => {
   let calendar: HTMLElement;
   let saveButton: HTMLElement;
   let cancelButton: HTMLElement;
+  const calendarMock = Calendar as jest.Mock<JSX.Element>;
 
   beforeEach(() => {
     historyMock = {
       push: jest.fn(),
     };
+    calendarMock.mockReturnValue(<section data-testid="calendar" />);
     const { getByText, getByTestId } = render(<Create history={historyMock} />);
     title = getByText(/insert/i);
     calendar = getByTestId(/calendar/i);

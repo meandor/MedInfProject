@@ -1,5 +1,6 @@
 import React, { FormEvent } from 'react';
 import './create.scss';
+import { Calendar } from './Calendar';
 
 export function Create({
   history,
@@ -14,7 +15,12 @@ export function Create({
     <section className="create">
       <h1 className="create__header">Insert Period</h1>
       <form onSubmit={foo}>
-        <section className="create__calendar" data-testid="calendar" />
+        <Calendar
+          data-testid="calendar"
+          upcomingMonths={1}
+          previousMonths={1}
+          currentDate={new Date()}
+        />
         <section className="create__actions">
           <button
             type="submit"

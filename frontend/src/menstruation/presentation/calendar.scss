@@ -32,5 +32,9 @@
     .gray {
       background-color: lighten($gray-light, 4%);
     }
+
+    .today {
+      border: 0.2rem solid $primary;
+    }
   }
 }

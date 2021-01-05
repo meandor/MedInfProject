@@ -19,6 +19,7 @@ describe('authenticate', () => {
   beforeEach(() => {
     createTokenMock.mockResolvedValue({
       idToken: signedIdToken,
+      accessToken: signedIdToken,
     });
     verifyMock.mockReturnValue(validIdToken);
   });

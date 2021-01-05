@@ -23,7 +23,7 @@ export function Create({
         .catch((error) => {
           logger.error('Was not able to create period', error);
           setErrorMessage(
-            'There was an error creating that period. Please try again or check back later.'
+            'There was an error creating that period. Please refresh and try again or check back later.'
           );
         });
     }

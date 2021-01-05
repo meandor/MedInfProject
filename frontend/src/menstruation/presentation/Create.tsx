@@ -3,7 +3,7 @@ import { Calendar, Interval } from './Calendar';
 import './create.scss';
 import { createPeriod } from '../domain/menstruationService';
 import { logger } from '../../logger';
-import {ErrorInfo} from "../../core/presentation/ErrorInfo";
+import { ErrorInfo } from '../../core/presentation/ErrorInfo';
 
 export function Create({
   history,

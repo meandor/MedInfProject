@@ -1,6 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import {act, fireEvent, render} from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import { Create } from './Create';
 import { Calendar, Interval } from './Calendar';
 import { createPeriod, Period } from '../domain/menstruationService';
@@ -25,13 +25,12 @@ describe('Create component', () => {
     };
     calendarMock.mockImplementation(({ intervalSelectionFn }) => {
       const update: () => JSX.Element = () =>
-          intervalSelectionFn(periodInterval);
+        intervalSelectionFn(periodInterval);
       return (
-          <section data-testid="calendar" onClick={update} aria-hidden="true" />
+        <section data-testid="calendar" onClick={update} aria-hidden="true" />
       );
     });
   });
-
 
   describe('valid behaviour', () => {
     let title: HTMLElement;
@@ -46,12 +45,14 @@ describe('Create component', () => {
       };
       calendarMock.mockImplementation(({ intervalSelectionFn }) => {
         const update: () => JSX.Element = () =>
-            intervalSelectionFn(periodInterval);
+          intervalSelectionFn(periodInterval);
         return (
-            <section data-testid="calendar" onClick={update} aria-hidden="true" />
+          <section data-testid="calendar" onClick={update} aria-hidden="true" />
         );
       });
-      const { getByText, getByTestId } = render(<Create history={historyMock} />);
+      const { getByText, getByTestId } = render(
+        <Create history={historyMock} />
+      );
       title = getByText(/insert/i);
       calendar = getByTestId(/calendar/i);
       saveButton = getByText(/save/i);
@@ -86,11 +87,10 @@ describe('Create component', () => {
   });
 
   describe('error handling', () => {
-    it('should show creation error',  () => {
-       return act(async () => {
+    it('should show creation error', () => act(async () => {
         createPeriodMock.mockRejectedValue(new Error('foo'));
-        const { getByText,getByTestId } = render(
-            <Create history={historyMock} />
+        const { getByText, getByTestId } = render(
+          <Create history={historyMock} />
         );
         const calendar = getByTestId(/calendar/i);
         const saveButton = getByText(/save/i);
@@ -100,7 +100,6 @@ describe('Create component', () => {
 
         await expect(createPeriodMock).toBeCalledWith(periodInterval);
         await expect(getByTestId(/error/i)).toHaveTextContent(/error/i);
-      });
-    });
+      }));
   });
 });

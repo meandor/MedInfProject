@@ -2,7 +2,7 @@ import { authenticatedUser } from '../../auth/domain/loginService';
 import { getPrediction, PredictionDTO } from '../data/predictionClient';
 
 export enum Event {
-  MENSTRUATION = 'MENSTRUATION',
+  MENSTRUATION = 'Period',
   OVULATION = 'Ovulation',
 }
 

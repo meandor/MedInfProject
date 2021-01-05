@@ -87,7 +87,8 @@ describe('Create component', () => {
   });
 
   describe('error handling', () => {
-    it('should show creation error', () => act(async () => {
+    it('should show creation error', () =>
+      act(async () => {
         createPeriodMock.mockRejectedValue(new Error('foo'));
         const { getByText, getByTestId } = render(
           <Create history={historyMock} />
@@ -100,6 +101,19 @@ describe('Create component', () => {
 
         await expect(createPeriodMock).toBeCalledWith(periodInterval);
         await expect(getByTestId(/error/i)).toHaveTextContent(/error/i);
+      }));
+
+    it('should show missing selection error', () =>
+      act(async () => {
+        const { getByText, getByTestId } = render(
+          <Create history={historyMock} />
+        );
+        const saveButton = getByText(/save/i);
+
+        await fireEvent.click(saveButton);
+
+        await expect(createPeriodMock).not.toBeCalled();
+        await expect(getByTestId(/error/i)).toHaveTextContent(/select/i);
       }));
   });
 });

@@ -1,7 +1,7 @@
 import React, { FormEvent, useState } from 'react';
 import { Calendar, Interval } from './Calendar';
 import './create.scss';
-import { createPeriod } from '../domain/menstruationService';
+import { createPeriod, Period } from '../domain/menstruationService';
 import { logger } from '../../logger';
 import { ErrorInfo } from '../../core/presentation/ErrorInfo';
 
@@ -12,12 +12,14 @@ export function Create({
 }): JSX.Element {
   const [interval, setInterval] = useState<undefined | Interval>(undefined);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const onSubmitHandler: any = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmitHandler: (
+    event: React.FormEvent<HTMLFormElement>
+  ) => Promise<Period | void> = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage('');
     if (interval) {
       return createPeriod(interval)
-        .then(history.push('/dashboard'))
+        .then((_) => history.push('/dashboard'))
         .catch((error) => {
           logger.error('Was not able to create period', error);
           setErrorMessage(
@@ -25,6 +27,7 @@ export function Create({
           );
         });
     }
+    return Promise.resolve(setErrorMessage('Please select a time interval.'));
   };
 
   return (

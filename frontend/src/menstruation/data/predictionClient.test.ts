@@ -15,7 +15,7 @@ describe('getPrediction', () => {
       startDate: new Date(),
       isActive: false,
     },
-    period: {
+    menstruation: {
       startDate: new Date(),
       isActive: true,
       duration: 13,

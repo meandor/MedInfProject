@@ -35,11 +35,11 @@ function NoData(_props: any): JSX.Element {
 }
 
 function gaugeSupportClass(prediction: Prediction): string {
-  if (prediction.event === Event.PERIOD && prediction.isUpcoming) {
+  if (prediction.event === Event.MENSTRUATION && prediction.isUpcoming) {
     return 'upcoming-period';
   }
 
-  if (prediction.event === Event.PERIOD && !prediction.isUpcoming) {
+  if (prediction.event === Event.MENSTRUATION && !prediction.isUpcoming) {
     return 'period';
   }
 
@@ -73,7 +73,7 @@ function PredictionInfo({
       </div>
     );
   }
-  if (prediction.event === Event.PERIOD) {
+  if (prediction.event === Event.MENSTRUATION) {
     return (
       <div
         className={`dashboard__prediction__gauge ${gaugeSupportClass(

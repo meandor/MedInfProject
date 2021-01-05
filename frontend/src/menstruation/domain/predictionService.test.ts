@@ -26,7 +26,7 @@ describe('predict', () => {
     return expect(actual).rejects.toStrictEqual(expected);
   });
 
-  it('should return upcoming period event', () => {
+  it('should return upcoming menstruation event', () => {
     authenticatedUserMock.mockReturnValue({
       name: 'foo bar',
       email: 'foo@bar.com',
@@ -38,7 +38,7 @@ describe('predict', () => {
         startDate: in20Days.toISOString(),
         isActive: false,
       },
-      period: {
+      menstruation: {
         startDate: tomorrow.toISOString(),
         isActive: false,
         duration: 5,
@@ -47,7 +47,7 @@ describe('predict', () => {
 
     const actual = predict();
     const expected = {
-      event: Event.PERIOD,
+      event: Event.MENSTRUATION,
       isUpcoming: true,
       days: 5,
     };
@@ -55,7 +55,7 @@ describe('predict', () => {
     return expect(actual).resolves.toStrictEqual(expected);
   });
 
-  it('should return current period event', () => {
+  it('should return current menstruation event', () => {
     authenticatedUserMock.mockReturnValue({
       name: 'foo bar',
       email: 'foo@bar.com',
@@ -67,7 +67,7 @@ describe('predict', () => {
         startDate: in20Days.toISOString(),
         isActive: false,
       },
-      period: {
+      menstruation: {
         startDate: tomorrow.toISOString(),
         isActive: true,
         duration: 15,
@@ -76,7 +76,7 @@ describe('predict', () => {
 
     const actual = predict();
     const expected = {
-      event: Event.PERIOD,
+      event: Event.MENSTRUATION,
       isUpcoming: false,
       days: 15,
     };
@@ -96,7 +96,7 @@ describe('predict', () => {
         startDate: today.toISOString(),
         isActive: false,
       },
-      period: {
+      menstruation: {
         startDate: tomorrow.toISOString(),
         isActive: false,
         duration: 5,
@@ -125,7 +125,7 @@ describe('predict', () => {
         startDate: today.toISOString(),
         isActive: true,
       },
-      period: {
+      menstruation: {
         startDate: tomorrow.toISOString(),
         isActive: false,
         duration: 5,

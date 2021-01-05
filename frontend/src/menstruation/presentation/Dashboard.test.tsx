@@ -55,7 +55,7 @@ describe('Dashboard component', () => {
 
   it('should render period in one day', async () => {
     predictMock.mockResolvedValue({
-      event: Event.PERIOD,
+      event: Event.MENSTRUATION,
       isUpcoming: true,
       days: 1,
     });
@@ -71,7 +71,7 @@ describe('Dashboard component', () => {
 
   it('should render period in multiple days', async () => {
     predictMock.mockResolvedValue({
-      event: Event.PERIOD,
+      event: Event.MENSTRUATION,
       isUpcoming: true,
       days: 13,
     });
@@ -87,7 +87,7 @@ describe('Dashboard component', () => {
 
   it('should render period and n days left', async () => {
     predictMock.mockResolvedValue({
-      event: Event.PERIOD,
+      event: Event.MENSTRUATION,
       isUpcoming: false,
       days: 3,
     });

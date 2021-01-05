@@ -40,7 +40,7 @@ class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
         check {
           val actual    = responseAs[PredictionDTO]
           val ovulation = OvulationDTO(startDate = LocalDate.now(), isActive = false)
-          val period    = PeriodDTO(startDate = LocalDate.now(), isActive = true, duration = 5)
+          val period    = MenstruationDTO(startDate = LocalDate.now(), isActive = true, duration = 5)
           val expected  = PredictionDTO(ovulation, period)
 
           status shouldBe StatusCodes.OK

@@ -2,7 +2,7 @@ import { authenticatedUser } from '../../auth/domain/loginService';
 import { getPrediction, PredictionDTO } from '../data/predictionClient';
 
 export enum Event {
-  PERIOD = 'Period',
+  MENSTRUATION = 'MENSTRUATION',
   OVULATION = 'Ovulation',
 }
 
@@ -14,8 +14,8 @@ export interface Prediction {
 
 function toPrediction(predictionDTO: PredictionDTO): Prediction {
   const ovulationStartDate = new Date(predictionDTO.ovulation.startDate);
-  const periodStartDate = new Date(predictionDTO.period.startDate);
-  if (ovulationStartDate.getTime() < periodStartDate.getTime()) {
+  const menstruationStartDate = new Date(predictionDTO.menstruation.startDate);
+  if (ovulationStartDate.getTime() < menstruationStartDate.getTime()) {
     return {
       event: Event.OVULATION,
       isUpcoming: !predictionDTO.ovulation.isActive,
@@ -24,9 +24,9 @@ function toPrediction(predictionDTO: PredictionDTO): Prediction {
   }
 
   return {
-    event: Event.PERIOD,
-    isUpcoming: !predictionDTO.period.isActive,
-    days: predictionDTO.period.duration,
+    event: Event.MENSTRUATION,
+    isUpcoming: !predictionDTO.menstruation.isActive,
+    days: predictionDTO.menstruation.duration,
   };
 }
 

@@ -12,10 +12,10 @@ jest.mock('./Calendar');
 jest.mock('../domain/menstruationService');
 
 describe('Create component', () => {
-  const createPeriodMock = createMenstruation as jest.Mock<
+  const createMenstruationMock = createMenstruation as jest.Mock<
     Promise<Menstruation>
   >;
-  const periodInterval: Interval = {
+  const interval: Interval = {
     start: new Date(2021, 1, 1),
     end: new Date(2021, 1, 5),
   };
@@ -29,8 +29,7 @@ describe('Create component', () => {
       push: pushMock,
     };
     calendarMock.mockImplementation(({ intervalSelectionFn }) => {
-      const update: () => JSX.Element = () =>
-        intervalSelectionFn(periodInterval);
+      const update: () => JSX.Element = () => intervalSelectionFn(interval);
       return (
         <section data-testid="calendar" onClick={update} aria-hidden="true" />
       );
@@ -49,8 +48,7 @@ describe('Create component', () => {
         push: pushMock,
       };
       calendarMock.mockImplementation(({ intervalSelectionFn }) => {
-        const update: () => JSX.Element = () =>
-          intervalSelectionFn(periodInterval);
+        const update: () => JSX.Element = () => intervalSelectionFn(interval);
         return (
           <section data-testid="calendar" onClick={update} aria-hidden="true" />
         );
@@ -78,7 +76,7 @@ describe('Create component', () => {
     });
 
     it('should save given interval', async () => {
-      createPeriodMock.mockResolvedValue({
+      createMenstruationMock.mockResolvedValue({
         start: new Date(),
         end: new Date(),
       });
@@ -86,7 +84,7 @@ describe('Create component', () => {
       await fireEvent.click(calendar);
       await fireEvent.click(saveButton);
 
-      await expect(createPeriodMock).toBeCalledWith(periodInterval);
+      await expect(createMenstruationMock).toBeCalledWith(interval);
       await expect(pushMock).toBeCalledWith('/dashboard');
     });
   });
@@ -94,7 +92,7 @@ describe('Create component', () => {
   describe('error handling', () => {
     it('should show creation error', () =>
       act(async () => {
-        createPeriodMock.mockRejectedValue(new Error('foo'));
+        createMenstruationMock.mockRejectedValue(new Error('foo'));
         const { getByText, getByTestId } = render(
           <Create history={historyMock} />
         );
@@ -104,7 +102,7 @@ describe('Create component', () => {
         await fireEvent.click(calendar);
         await fireEvent.click(saveButton);
 
-        await expect(createPeriodMock).toBeCalledWith(periodInterval);
+        await expect(createMenstruationMock).toBeCalledWith(interval);
         await expect(getByTestId(/error/i)).toHaveTextContent(/error/i);
       }));
 
@@ -117,7 +115,7 @@ describe('Create component', () => {
 
         await fireEvent.click(saveButton);
 
-        await expect(createPeriodMock).not.toBeCalled();
+        await expect(createMenstruationMock).not.toBeCalled();
         await expect(getByTestId(/error/i)).toHaveTextContent(/select/i);
       }));
   });

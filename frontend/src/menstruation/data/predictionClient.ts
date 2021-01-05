@@ -6,7 +6,7 @@ export interface PredictionDTO {
     startDate: string;
     isActive: boolean;
   };
-  period: {
+  menstruation: {
     startDate: string;
     isActive: boolean;
     duration: number;

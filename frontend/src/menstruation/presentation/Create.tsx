@@ -1,7 +1,10 @@
 import React, { FormEvent, useState } from 'react';
 import { Calendar, Interval } from './Calendar';
 import './create.scss';
-import { createPeriod, Period } from '../domain/menstruationService';
+import {
+  createMenstruation,
+  Menstruation,
+} from '../domain/menstruationService';
 import { logger } from '../../logger';
 import { ErrorInfo } from '../../core/presentation/ErrorInfo';
 
@@ -14,11 +17,11 @@ export function Create({
   const [errorMessage, setErrorMessage] = useState<string>('');
   const onSubmitHandler: (
     event: React.FormEvent<HTMLFormElement>
-  ) => Promise<Period | void> = (event: FormEvent<HTMLFormElement>) => {
+  ) => Promise<Menstruation | void> = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage('');
     if (interval) {
-      return createPeriod(interval)
+      return createMenstruation(interval)
         .then((_) => history.push('/dashboard'))
         .catch((error) => {
           logger.error('Was not able to create period', error);

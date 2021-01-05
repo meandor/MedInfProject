@@ -3,13 +3,18 @@ import '@testing-library/jest-dom/extend-expect';
 import { act, fireEvent, render } from '@testing-library/react';
 import { Create } from './Create';
 import { Calendar, Interval } from './Calendar';
-import { createPeriod, Period } from '../domain/menstruationService';
+import {
+  createMenstruation,
+  Menstruation,
+} from '../domain/menstruationService';
 
 jest.mock('./Calendar');
 jest.mock('../domain/menstruationService');
 
 describe('Create component', () => {
-  const createPeriodMock = createPeriod as jest.Mock<Promise<Period>>;
+  const createPeriodMock = createMenstruation as jest.Mock<
+    Promise<Menstruation>
+  >;
   const periodInterval: Interval = {
     start: new Date(2021, 1, 1),
     end: new Date(2021, 1, 5),

@@ -36,11 +36,15 @@ function renderDay(
 
     let dayElement: JSX.Element = <>{day}</>;
     if (
-      (currentStartDate && currentStartDate.getTime() === currentDay.getTime()) ||
+      (currentStartDate &&
+        currentStartDate.getTime() === currentDay.getTime()) ||
       (currentEndDate && currentEndDate.getTime() === currentDay.getTime()) ||
-      (currentStartDate && currentEndDate && currentStartDate.getTime() < currentDay.getTime() && currentEndDate.getTime() > currentDay.getTime())
+      (currentStartDate &&
+        currentEndDate &&
+        currentStartDate.getTime() < currentDay.getTime() &&
+        currentEndDate.getTime() > currentDay.getTime())
     ) {
-      dayElement = <div className="active">{day}</div>
+      dayElement = <div className="active">{day}</div>;
     }
 
     return (

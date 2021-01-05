@@ -2,24 +2,38 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render } from '@testing-library/react';
 import { Create } from './Create';
-import { Calendar } from './Calendar';
-// import { createPeriod } from '../domain/menstruationService';
+import { Calendar, Interval } from './Calendar';
+import { createPeriod, Period } from '../domain/menstruationService';
 
 jest.mock('./Calendar');
+jest.mock('../domain/menstruationService');
 
 describe('Create component', () => {
   let historyMock: any;
+  let pushMock: jest.Mock;
   let title: HTMLElement;
   let calendar: HTMLElement;
   let saveButton: HTMLElement;
   let cancelButton: HTMLElement;
   const calendarMock = Calendar as jest.Mock<JSX.Element>;
+  const createPeriodMock = createPeriod as jest.Mock<Promise<Period>>;
+  const periodInterval: Interval = {
+    start: new Date(2021, 1, 1),
+    end: new Date(2021, 1, 5),
+  };
 
   beforeEach(() => {
+    pushMock = jest.fn();
     historyMock = {
-      push: jest.fn(),
+      push: pushMock,
     };
-    calendarMock.mockReturnValue(<section data-testid="calendar" />);
+    calendarMock.mockImplementation(({ intervalSelectionFn }) => {
+      const update: () => JSX.Element = () =>
+        intervalSelectionFn(periodInterval);
+      return (
+        <section data-testid="calendar" onClick={update} aria-hidden="true" />
+      );
+    });
     const { getByText, getByTestId } = render(<Create history={historyMock} />);
     title = getByText(/insert/i);
     calendar = getByTestId(/calendar/i);
@@ -38,5 +52,18 @@ describe('Create component', () => {
     await fireEvent.click(cancelButton);
 
     await expect(historyMock.push).toBeCalledWith('/dashboard');
+  });
+
+  it('should save given interval', async () => {
+    createPeriodMock.mockResolvedValue({
+      start: new Date(),
+      end: new Date(),
+    });
+
+    await fireEvent.click(calendar);
+    await fireEvent.click(saveButton);
+
+    await expect(createPeriodMock).toBeCalledWith(periodInterval);
+    await expect(pushMock).toBeCalledWith('/dashboard');
   });
 });

@@ -15,8 +15,8 @@ function toMenstruation(dto: MenstruationDTO): Menstruation {
 
 function toMenstruationDTO(menstruation: Menstruation): MenstruationDTO {
   return {
-    start: menstruation.start.toISOString(),
-    end: menstruation.end.toISOString(),
+    start: menstruation.start.toDateString(),
+    end: menstruation.end.toDateString(),
   };
 }
 

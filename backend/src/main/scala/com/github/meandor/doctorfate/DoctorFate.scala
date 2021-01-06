@@ -20,15 +20,25 @@ object DoctorFate extends LazyLogging {
     logger.info("Start loading config")
     val config: Config = ConfigFactory.load
     logger.info("Done loading config")
+
     val databaseModule = DatabaseModule(config)
     databaseModule.start()
-    val authModule         = AuthModule(config, databaseModule).start()
-    val tokenController    = authModule.getOrElse(throw new NoSuchElementException("TokenController"))
-    val userModule         = UserModule(config, databaseModule).start()
-    val userController     = userModule.getOrElse(throw new NoSuchElementException("UserController"))
-    val menstruationModule = MenstruationModule(config).start()
-    val menstruationController =
-      menstruationModule.getOrElse(throw new NoSuchElementException("MenstruationController"))
+
+    val authModule = AuthModule(config, databaseModule)
+    val tokenController = authModule
+      .start()
+      .getOrElse(throw new NoSuchElementException("TokenController"))
+
+    val userModule = UserModule(config, databaseModule)
+    val userController = userModule
+      .start()
+      .getOrElse(throw new NoSuchElementException("UserController"))
+
+    val menstruationModule = MenstruationModule(config, authModule)
+    val menstruationController = menstruationModule
+      .start()
+      .getOrElse(throw new NoSuchElementException("MenstruationController"))
+
     WebServer(
       config,
       Seq(tokenController, userController, menstruationController)

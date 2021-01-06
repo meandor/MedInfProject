@@ -245,7 +245,7 @@ jobs:
   e2e_test:
     working_directory: ~/repo
     docker:
-      - image: cypress/included:5.2.0
+      - image: cypress/included:5.6.0
     steps:
       - checkout
       - run:

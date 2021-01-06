@@ -34,7 +34,7 @@ object DoctorFate extends LazyLogging {
       .start()
       .getOrElse(throw new NoSuchElementException("UserController"))
 
-    val menstruationModule = MenstruationModule(config, authModule)
+    val menstruationModule = MenstruationModule(config, authModule, databaseModule)
     val menstruationController = menstruationModule
       .start()
       .getOrElse(throw new NoSuchElementException("MenstruationController"))

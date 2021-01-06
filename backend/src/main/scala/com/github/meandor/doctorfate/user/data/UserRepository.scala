@@ -69,7 +69,7 @@ class UserRepository(executionContext: ExecutionContext) extends LazyLogging {
     for {
       _                 <- insert(userEntity)
       maybeInsertedUser <- findByMail(userEntity.email)
-    } yield (maybeInsertedUser.getOrElse(throw new Exception()))
+    } yield maybeInsertedUser.getOrElse(throw new NoSuchElementException("User was not created"))
   }
 
   def findByMail(email: String): Future[Option[UserEntity]] = Future {

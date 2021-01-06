@@ -21,7 +21,7 @@ class MenstruationServiceSpec extends UnitSpec with ScalaFutures {
         end = LocalDate.now()
       )
       val createdMenstruationEntity = MenstruationEntity(
-        user = userId,
+        userId = userId,
         start = menstruation.start,
         end = menstruation.end
       )
@@ -48,7 +48,7 @@ class MenstruationServiceSpec extends UnitSpec with ScalaFutures {
         end = LocalDate.now()
       )
       val existingMenstruationEntity = MenstruationEntity(
-        user = userId,
+        userId = userId,
         start = menstruation.start,
         end = menstruation.end
       )

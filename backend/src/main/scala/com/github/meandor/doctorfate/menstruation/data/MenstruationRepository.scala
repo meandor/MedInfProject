@@ -6,6 +6,21 @@ import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future, blocking}
 
 class MenstruationRepository(executionContext: ExecutionContext) extends LazyLogging {
+  def findByUser(userId: UUID): Future[Seq[MenstruationEntity]] = Future {
+    blocking {
+      DB localTx { implicit session =>
+        sql"""
+            SELECT *
+            FROM menstruation
+            WHERE menstruation.user_id = $userId
+          """
+          .map(toEntity)
+          .list()
+          .apply()
+      }
+    }
+  }
+
   implicit val ec: ExecutionContext = executionContext
 
   def toEntity(result: WrappedResultSet): MenstruationEntity = {

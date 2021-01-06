@@ -62,4 +62,28 @@ class MenstruationServiceSpec extends UnitSpec with ScalaFutures {
       actual.futureValue shouldBe expected
     }
   }
+
+  Feature("find") {
+    val menstruationRepository = mock[MenstruationRepository]
+    val menstruationService    = new MenstruationService(menstruationRepository)
+
+    Scenario("should return all menstruation for user") {
+      val userId = UUID.randomUUID()
+      val menstruationEntity = MenstruationEntity(
+        userId = userId,
+        start = LocalDate.now(),
+        end = LocalDate.now()
+      )
+      menstruationRepository.findByUser(any[UUID]) shouldReturn Future.successful(
+        Seq(menstruationEntity)
+      )
+
+      val actual = menstruationService.find(userId)
+      val expected = Seq(
+        Menstruation(start = menstruationEntity.start, end = menstruationEntity.end)
+      )
+
+      actual.futureValue shouldBe expected
+    }
+  }
 }

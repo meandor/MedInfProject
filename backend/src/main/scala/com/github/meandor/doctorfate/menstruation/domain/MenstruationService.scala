@@ -7,6 +7,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class MenstruationService(menstruationRepository: MenstruationRepository)(
     implicit ec: ExecutionContext
 ) {
+  private def toMenstruation(menstruationEntity: MenstruationEntity): Menstruation = {
+    Menstruation(menstruationEntity.start, menstruationEntity.end)
+  }
+
+  def find(uuid: UUID): Future[Seq[Menstruation]] = {
+    menstruationRepository.findByUser(uuid).map(_.map(toMenstruation))
+  }
+
   private def createIfNotExisting(
       toBeCreatedMenstruationEntity: MenstruationEntity,
       existingMenstruationEntity: Option[MenstruationEntity]
@@ -23,6 +31,6 @@ class MenstruationService(menstruationRepository: MenstruationRepository)(
         menstruationEntity,
         existingMenstruationEntity
       )
-    } yield createdMenstruationEntity.map(entity => Menstruation(entity.start, entity.end))
+    } yield createdMenstruationEntity.map(toMenstruation)
   }
 }

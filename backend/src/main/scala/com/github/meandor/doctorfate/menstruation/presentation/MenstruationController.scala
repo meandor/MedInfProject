@@ -50,9 +50,17 @@ class MenstruationController(
   }
 
   override def routes: Route = pathPrefix("menstruation") {
-    post {
-      authenticateOAuth2("menstra", authenticator) { userId =>
+    authenticateOAuth2("menstra", authenticator) { userId =>
+      post {
         entity(as[MenstruationDTO]) { handleMenstruationCreationRequest(userId) }
+      } ~ get {
+        val availableMenstruation = menstruationService.find(userId)
+        onSuccess(availableMenstruation) { menstruationForUser =>
+          val menstruationDTOs = menstruationForUser.map(menstruation =>
+            MenstruationDTO(menstruation.start, menstruation.end)
+          )
+          complete(StatusCodes.OK, menstruationDTOs)
+        }
       }
     }
   }

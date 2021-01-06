@@ -16,8 +16,8 @@ import scala.concurrent.Future
 
 class MenstruationControllerSpec extends UnitSpec with ScalatestRouteTest {
   val authenticator: Credentials => Option[UUID] = {
-    case p @ Credentials.Provided("accessToken") => Some(UUID.randomUUID())
-    case _                                       => None
+    case _ @Credentials.Provided("accessToken") => Some(UUID.randomUUID())
+    case _                                      => None
   }
   val serviceMock: MenstruationService   = mock[MenstruationService]
   val controller: MenstruationController = new MenstruationController(authenticator, serviceMock)
@@ -65,6 +65,22 @@ class MenstruationControllerSpec extends UnitSpec with ScalatestRouteTest {
         Route.seal(controller.routes) ~>
         check {
           status shouldBe StatusCodes.BadRequest
+        }
+    }
+  }
+
+  Feature("GET /menstruation") {
+    Scenario("should return 200 and available menstruation for user") {
+      serviceMock.find(any[UUID]) shouldReturn Future.successful(Seq())
+
+      Get("/menstruation") ~>
+        addCredentials(OAuth2BearerToken("accessToken")) ~>
+        Route.seal(controller.routes) ~>
+        check {
+          val actual   = responseAs[Seq[MenstruationDTO]]
+          val expected = Seq()
+          status shouldBe StatusCodes.OK
+          actual shouldBe expected
         }
     }
   }

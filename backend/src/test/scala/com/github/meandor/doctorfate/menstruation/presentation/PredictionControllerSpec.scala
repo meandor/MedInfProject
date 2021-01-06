@@ -13,8 +13,8 @@ import java.util.UUID
 
 class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
   val authenticator: Credentials => Option[UUID] = {
-    case p @ Credentials.Provided("accessToken") => Some(UUID.randomUUID())
-    case _                                       => None
+    case _ @Credentials.Provided("accessToken") => Some(UUID.randomUUID())
+    case _                                      => None
   }
   val controller: PredictionController = new PredictionController(authenticator)
 

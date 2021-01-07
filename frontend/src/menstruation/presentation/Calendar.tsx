@@ -18,8 +18,8 @@ function rest(array: Array<number>): Array<number> {
 function renderDayElement(
   day: Date,
   setStateFn: any,
-  startDate: Date | undefined,
-  endDate: Date | undefined
+  startDate: Date | null,
+  endDate: Date | null
 ): JSX.Element {
   if (
     (startDate && startDate.getTime() === day.getTime()) ||
@@ -34,7 +34,7 @@ function renderDayElement(
   return <>{day.getDate()}</>;
 }
 
-function dayState(day: Date): string {
+function dayStateClass(day: Date): string {
   let state = '';
   if (Math.floor((day.getDate() - 1) / 7) % 2 === 0) {
     state += 'gray';
@@ -49,37 +49,26 @@ function dayState(day: Date): string {
 
 function renderDay(
   setStateFn: (date: Date) => any,
-  currentStartDate: undefined | Date,
-  currentEndDate: undefined | Date,
-  month: number,
-  year: number
-): (day: number) => JSX.Element {
-  return (day: number) => {
-    const currentDate = new Date(year, month, day);
-
-    return (
+  currentStartDate: Date | null,
+  currentEndDate: Date | null
+): (day: Date) => JSX.Element {
+  return (day: Date) => (
       <section
-        key={`${year}-${month}-${day}`}
-        data-testid={`${year}-${month}-${day}`}
-        className={`calendar__month__day ${dayState(currentDate)}`}
-        onClick={() => setStateFn(currentDate)}
+        key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
+        data-testid={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
+        className={`calendar__month__day ${dayStateClass(day)}`}
+        onClick={() => setStateFn(day)}
         aria-hidden="true"
       >
-        {renderDayElement(
-          currentDate,
-          setStateFn,
-          currentStartDate,
-          currentEndDate
-        )}
+        {renderDayElement(day, setStateFn, currentStartDate, currentEndDate)}
       </section>
     );
-  };
 }
 
 function renderMonth(
   setStateFn: (date: Date) => any,
-  currentStartDate: undefined | Date,
-  currentEndDate: undefined | Date
+  currentStartDate: Date | null,
+  currentEndDate: Date | null
 ): (monthDate: Date) => JSX.Element {
   return (monthDate) => {
     const month = monthDate.toLocaleString('en-us', { month: 'long' });
@@ -88,30 +77,24 @@ function renderMonth(
       monthDate.getMonth() + 1,
       0
     );
-    const days = rest(range(lastDay.getDate()));
+    const days = rest(range(lastDay.getDate())).map(
+      (day) => new Date(monthDate.getFullYear(), monthDate.getMonth(), day)
+    );
     return (
       <section className="calendar__month" key={monthDate.getMonth()}>
         <section className="calendar__month__title">
           {`${month} ${monthDate.getFullYear()}`}
         </section>
-        {days.map(
-          renderDay(
-            setStateFn,
-            currentStartDate,
-            currentEndDate,
-            monthDate.getMonth(),
-            monthDate.getFullYear()
-          )
-        )}
+        {days.map(renderDay(setStateFn, currentStartDate, currentEndDate))}
       </section>
     );
   };
 }
 
 function toggleState(
-  startDate: undefined | Date,
+  startDate: Date | null,
   setStartDateFn: any,
-  endDate: undefined | Date,
+  endDate: Date | null,
   setEndDateFn: any,
   intervalSelectionFn: (interval: Interval) => any
 ): (date: Date) => any {
@@ -142,8 +125,8 @@ export function Calendar({
   upcomingMonths: number;
   intervalSelectionFn: (interval: Interval) => any;
 }): JSX.Element {
-  const [startDate, setStartDate] = useState<undefined | Date>(undefined);
-  const [endDate, setEndDate] = useState<undefined | Date>(undefined);
+  const [startDate, setStartDate] = useState<null | Date>(null);
+  const [endDate, setEndDate] = useState<null | Date>(null);
 
   const upcomingRange = rest(range(upcomingMonths));
   const upcomingMonthRange = upcomingRange.map(

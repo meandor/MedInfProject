@@ -146,7 +146,7 @@ export function Calendar({
   currentDate,
   previousMonths,
   upcomingMonths,
-  intervalSelectionFn = undefined,
+  intervalSelectionFn,
 }: {
   currentDate: Date;
   previousMonths: number;
@@ -197,3 +197,7 @@ export function Calendar({
     </section>
   );
 }
+
+Calendar.defaultProps = {
+  intervalSelectionFn: undefined,
+};

@@ -27,11 +27,15 @@
       height: 5rem;
       text-align: center;
       padding: 1rem;
+      background-color: $secondary-light;
+    }
+
+    .cursor {
       cursor: pointer;
     }
 
     .gray {
-      background-color: lighten($gray-light, 4%);
+      background-color: $surface;
     }
 
     .today {

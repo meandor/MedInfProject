@@ -80,7 +80,7 @@ function renderDay(
       <section
         key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
         data-testid={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
-        className={`calendar__month__day ${dayStateClass(day)}`}
+        className={`calendar__month__day ${dayStateClass(day)} cursor`}
         onClick={() => setStateFn(day)}
         aria-hidden="true"
       >
@@ -147,6 +147,7 @@ export function Calendar({
   previousMonths,
   upcomingMonths,
   intervalSelectionFn,
+  ...otherProps
 }: {
   currentDate: Date;
   previousMonths: number;
@@ -192,7 +193,7 @@ export function Calendar({
     intervalSelectionFn
   );
   return (
-    <section className="calendar">
+    <section className="calendar" {...otherProps}>
       {monthRange.map(renderMonth(stateFn, startDate, endDate))}
     </section>
   );

@@ -30,3 +30,7 @@ export function createMenstruation(
 
   return postMenstruation(toMenstruationDTO(menstruation)).then(toMenstruation);
 }
+
+export function find(): Promise<Menstruation[]> {
+  return Promise.reject(new Error());
+}

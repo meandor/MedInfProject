@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Event, predict, Prediction } from '../domain/predictionService';
 import './dashboard.scss';
 import { logger } from '../../logger';
+import { Calendar } from './Calendar';
 
 function withDaysUnit(days: number): JSX.Element {
   if (days === 1) {
@@ -20,13 +21,17 @@ function withDaysUnit(days: number): JSX.Element {
   );
 }
 
-function NoData(_props: any): JSX.Element {
+function NoData({ insertFn }: { insertFn: any }): JSX.Element {
   return (
     <>
       <h3>No data available.</h3>
       You could start by adding your last period.
       <p>
-        <button type="button" className="button button-primary">
+        <button
+          type="button"
+          className="button button-primary"
+          onClick={insertFn}
+        >
           Insert period
         </button>
       </p>
@@ -106,49 +111,64 @@ function PredictionInfo({
   );
 }
 
+function PredictionComponent({
+  prediction,
+  insertFn,
+}: {
+  prediction: Prediction | null;
+  insertFn: any;
+}): JSX.Element {
+  if (prediction) {
+    return (
+      <section data-testid="prediction-field" className="dashboard__prediction">
+        <PredictionInfo prediction={prediction} />
+        <p>
+          <button
+            type="button"
+            className="button button-primary"
+            onClick={insertFn}
+          >
+            Insert period
+          </button>
+        </p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="dashboard__prediction" data-testid="prediction-field">
+      <NoData insertFn={insertFn} />
+    </section>
+  );
+}
+
 export function Dashboard({
   history,
 }: {
   history: { push: (_: string) => any };
 }): JSX.Element {
-  const [prediction, setPrediction] = useState<Prediction | undefined>(
-    undefined
-  );
+  const [prediction, setPrediction] = useState<Prediction | null>(null);
 
   useEffect(() => {
     predict()
       .then(setPrediction)
       .catch((error) => {
         logger.error('Was not able to get prediction', error);
-        setPrediction(undefined);
+        setPrediction(null);
       });
   }, []);
 
   const goToInsert: any = () => history.push('/create');
-
-  if (prediction) {
-    return (
-      <section data-testid="prediction-field" className="dashboard">
-        <section className="dashboard__prediction">
-          <PredictionInfo prediction={prediction} />
-          <p>
-            <button
-              type="button"
-              className="button button-primary"
-              onClick={goToInsert}
-            >
-              Insert period
-            </button>
-          </p>
-        </section>
-      </section>
-    );
-  }
-
   return (
-    <section data-testid="prediction-field" className="dashboard">
-      <section className="dashboard__prediction">
-        <NoData />
+    <section className="dashboard">
+      <PredictionComponent prediction={prediction} insertFn={goToInsert} />
+      <section className="dashboard__calendar">
+        <Calendar
+          currentDate={new Date()}
+          previousMonths={2}
+          upcomingMonths={3}
+          data-testid="calendar"
+        />
       </section>
     </section>
   );

@@ -19,7 +19,7 @@ describe('Create component', () => {
     start: new Date(2021, 1, 1),
     end: new Date(2021, 1, 5),
   };
-  const calendarMock = Calendar as jest.Mock<JSX.Element>;
+  const calendarMock = (Calendar as unknown) as jest.Mock;
   let historyMock: { push: jest.Mock };
   let pushMock: jest.Mock;
 

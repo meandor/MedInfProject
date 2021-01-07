@@ -53,6 +53,7 @@ class MenstruationController(
     post {
       entity(as[MenstruationDTO]) { handleMenstruationCreationRequest(userId) }
     } ~ get {
+      logger.info(s"Got request for all menstruation")
       val availableMenstruation = menstruationService.find(userId)
       onSuccess(availableMenstruation) { menstruationForUser =>
         val menstruationDTOs = menstruationForUser.map(menstruation =>

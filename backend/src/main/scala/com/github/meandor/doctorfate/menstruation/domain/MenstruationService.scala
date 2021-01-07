@@ -1,18 +1,20 @@
 package com.github.meandor.doctorfate.menstruation.domain
 import com.github.meandor.doctorfate.menstruation.data.{MenstruationEntity, MenstruationRepository}
+import com.typesafe.scalalogging.LazyLogging
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class MenstruationService(menstruationRepository: MenstruationRepository)(
     implicit ec: ExecutionContext
-) {
+) extends LazyLogging {
   private def toMenstruation(menstruationEntity: MenstruationEntity): Menstruation = {
     Menstruation(menstruationEntity.start, menstruationEntity.end)
   }
 
-  def find(uuid: UUID): Future[Seq[Menstruation]] = {
-    menstruationRepository.findByUser(uuid).map(_.map(toMenstruation))
+  def find(userId: UUID): Future[Seq[Menstruation]] = {
+    logger.info(s"Find all menstruation for user: $userId")
+    menstruationRepository.findByUser(userId).map(_.map(toMenstruation))
   }
 
   private def createIfNotExisting(

@@ -49,7 +49,7 @@ jobs:
   scapegoat:
     working_directory: ~/repo
     docker:
-      - image: mozilla/sbt:latest
+      - image: meandor/sbt:latest
     steps:
       - checkout
       - restore-sbt-cache
@@ -65,7 +65,7 @@ jobs:
   unit_test_backend:
     working_directory: ~/repo
     docker:
-      - image: mozilla/sbt:latest
+      - image: meandor/sbt:latest
     steps:
       - checkout
       - restore-sbt-cache
@@ -81,7 +81,7 @@ jobs:
   integration_test_backend:
     working_directory: ~/repo
     docker:
-      - image: mozilla/sbt:latest
+      - image: meandor/sbt:latest
       - image: postgres:latest
         environment:
           POSTGRES_USER: postgres
@@ -101,7 +101,7 @@ jobs:
   build_backend:
     working_directory: ~/repo
     docker:
-      - image: mozilla/sbt:latest
+      - image: meandor/sbt:latest
     steps:
       - checkout
       - restore-sbt-cache

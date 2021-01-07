@@ -15,6 +15,7 @@ import { RegisterConfirmation } from './user/presentation/RegisterConfirmation';
 import { Confirm } from './user/presentation/Confirm';
 import { Dashboard } from './menstruation/presentation/Dashboard';
 import { Create } from './menstruation/presentation/Create';
+import { ProfileMenu } from './user/presentation/ProfileMenu';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -23,6 +24,7 @@ ReactDOM.render(
         <Link className="logo" to="/">
           Menstra
         </Link>
+        <ProfileMenu />
       </header>
       <main>
         <PrivateRoute

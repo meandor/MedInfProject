@@ -1,0 +1,43 @@
+@import '../../variables';
+
+.profile_menu {
+  color: $white;
+  text-decoration: none;
+  display: inline-block;
+  outline: none;
+
+  .right_space {
+    margin-right: 1rem;
+  }
+
+  &__username {
+    padding: 1.1rem 1.5rem;
+    cursor: pointer;
+
+    &-selected {
+      padding: 1.1rem 1.5rem;
+      cursor: pointer;
+      background-color: $primary-dark;
+      border-left: 0.1rem solid $primary-light;
+    }
+
+    &__verified {
+      font-size: $font-size-small;
+      margin-right: 1rem;
+    }
+  }
+
+  &__info {
+    background-color: $primary-dark;
+    border-left: 0.1rem solid $primary-light;
+    border-bottom: 0.1rem solid $primary-light;
+    position: absolute;
+    right: 0;
+    width: 30rem;
+    padding: 0 $space;
+
+    &-hidden {
+      display: none;
+    }
+  }
+}

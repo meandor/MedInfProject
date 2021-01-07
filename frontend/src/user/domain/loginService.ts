@@ -43,6 +43,11 @@ export function authenticatedUser(): IDToken | undefined {
   }
 }
 
+export function signOutUser(): void {
+  localStorage.removeItem(ID_TOKEN_KEY);
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+}
+
 export function authenticate(
   email: string,
   password: string

@@ -1,5 +1,5 @@
 import { get, MenstruationDTO, post } from '../data/menstruationClient';
-import { authenticatedUser } from '../../auth/domain/loginService';
+import { authenticatedUser } from '../../user/domain/loginService';
 
 export interface Menstruation {
   start: Date;

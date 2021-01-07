@@ -1,9 +1,9 @@
-import { authenticatedUser, IDToken } from '../../auth/domain/loginService';
+import { authenticatedUser, IDToken } from '../../user/domain/loginService';
 import { Event, predict } from './predictionService';
 import { getPrediction, PredictionDTO } from '../data/predictionClient';
 
 jest.mock('../data/predictionClient');
-jest.mock('../../auth/domain/loginService');
+jest.mock('../../user/domain/loginService');
 
 const authenticatedUserMock = authenticatedUser as jest.Mock<
   IDToken | undefined

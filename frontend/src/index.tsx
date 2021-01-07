@@ -8,11 +8,11 @@ import {
   withRouter,
 } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-import { Login } from './auth/presentation/Login';
-import { Register } from './auth/presentation/Register';
+import { Login } from './user/presentation/Login';
+import { Register } from './user/presentation/Register';
 import { PrivateRoute, PublicRoute } from './core/presentation/Routes';
-import { RegisterConfirmation } from './auth/presentation/RegisterConfirmation';
-import { Confirm } from './auth/presentation/Confirm';
+import { RegisterConfirmation } from './user/presentation/RegisterConfirmation';
+import { Confirm } from './user/presentation/Confirm';
 import { Dashboard } from './menstruation/presentation/Dashboard';
 import { Create } from './menstruation/presentation/Create';
 

@@ -1,8 +1,8 @@
 import { get, MenstruationDTO, post } from '../data/menstruationClient';
 import { createMenstruation, find } from './menstruationService';
-import { authenticatedUser, IDToken } from '../../auth/domain/loginService';
+import { authenticatedUser, IDToken } from '../../user/domain/loginService';
 
-jest.mock('../../auth/domain/loginService');
+jest.mock('../../user/domain/loginService');
 jest.mock('../data/menstruationClient');
 
 const authenticatedUserMock = authenticatedUser as jest.Mock<

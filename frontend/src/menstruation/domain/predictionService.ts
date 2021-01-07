@@ -1,4 +1,4 @@
-import { authenticatedUser } from '../../auth/domain/loginService';
+import { authenticatedUser } from '../../user/domain/loginService';
 import { getPrediction, PredictionDTO } from '../data/predictionClient';
 
 export enum Event {

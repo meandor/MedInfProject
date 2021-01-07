@@ -151,7 +151,7 @@ export function Calendar({
   currentDate: Date;
   previousMonths: number;
   upcomingMonths: number;
-  intervalSelectionFn?: ((interval: Interval) => any) | undefined;
+  intervalSelectionFn?: ((interval: Interval) => any);
 }): JSX.Element {
   const [startDate, setStartDate] = useState<null | Date>(null);
   const [endDate, setEndDate] = useState<null | Date>(null);

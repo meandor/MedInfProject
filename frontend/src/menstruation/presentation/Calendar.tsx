@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './calendar.scss';
 
 export interface Interval {
@@ -15,6 +15,39 @@ function rest(array: Array<number>): Array<number> {
   return tail;
 }
 
+function renderDayElement(
+  day: Date,
+  setStateFn: any,
+  startDate: Date | undefined,
+  endDate: Date | undefined
+): JSX.Element {
+  let dayElement: JSX.Element = <>{day.getDate()}</>;
+  if (
+    (startDate && startDate.getTime() === day.getTime()) ||
+    (endDate && endDate.getTime() === day.getTime()) ||
+    (startDate &&
+      endDate &&
+      startDate.getTime() < day.getTime() &&
+      endDate.getTime() > day.getTime())
+  ) {
+    dayElement = <div className="active">{day.getDate()}</div>;
+  }
+  return dayElement;
+}
+
+function dayState(day: Date): string {
+  let state = '';
+  if (Math.floor((day.getDate() - 1) / 7) % 2 === 0) {
+    state += 'gray';
+  }
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (today.getTime() === day.getTime()) {
+    state += ' today';
+  }
+  return state;
+}
+
 function renderDay(
   setStateFn: (date: Date) => any,
   currentStartDate: undefined | Date,
@@ -23,39 +56,22 @@ function renderDay(
   year: number
 ): (day: number) => JSX.Element {
   return (day: number) => {
-    let state = '';
-    if (Math.floor((day - 1) / 7) % 2 === 0) {
-      state += 'gray';
-    }
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const currentDay = new Date(year, month, day);
-    if (today.getTime() === currentDay.getTime()) {
-      state += ' today';
-    }
-
-    let dayElement: JSX.Element = <>{day}</>;
-    if (
-      (currentStartDate &&
-        currentStartDate.getTime() === currentDay.getTime()) ||
-      (currentEndDate && currentEndDate.getTime() === currentDay.getTime()) ||
-      (currentStartDate &&
-        currentEndDate &&
-        currentStartDate.getTime() < currentDay.getTime() &&
-        currentEndDate.getTime() > currentDay.getTime())
-    ) {
-      dayElement = <div className="active">{day}</div>;
-    }
+    const currentDate = new Date(year, month, day);
 
     return (
       <section
         key={`${year}-${month}-${day}`}
         data-testid={`${year}-${month}-${day}`}
-        className={`calendar__month__day ${state}`}
-        onClick={() => setStateFn(currentDay)}
+        className={`calendar__month__day ${dayState(currentDate)}`}
+        onClick={() => setStateFn(currentDate)}
         aria-hidden="true"
       >
-        {dayElement}
+        {renderDayElement(
+          currentDate,
+          setStateFn,
+          currentStartDate,
+          currentEndDate
+        )}
       </section>
     );
   };

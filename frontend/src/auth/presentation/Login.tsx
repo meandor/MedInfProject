@@ -106,6 +106,11 @@ export function Login(_props: any): JSX.Element {
               Sign in
             </button>
           </form>
+          <p className="login__login__form__info">
+            We are not sending your data to 3rd party systems in order to analyze
+            and track you and follow you around. Menstra was built having your
+            data privacy in mind and is completely open source and free.
+          </p>
         </section>
       </section>
     </section>

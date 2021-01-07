@@ -28,6 +28,10 @@
     &__form {
       width: 38rem;
       margin: auto;
+
+      &__info {
+        display: none;
+      }
     }
   }
 
@@ -39,6 +43,10 @@
       &__form {
         width: 100%;
         padding: 0;
+
+        &__info {
+          display: inline-block;
+        }
       }
     }
   }

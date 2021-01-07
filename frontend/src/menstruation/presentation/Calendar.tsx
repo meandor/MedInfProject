@@ -19,10 +19,15 @@ function isActive(
   day: Date,
   setStateFn: ((date: Date) => any) | undefined,
   startDate: Date | null,
-  endDate: Date | null
+  endDate: Date | null,
+  activeIntervals: Interval[] | undefined
 ): boolean {
-  if (setStateFn === undefined) {
-    return true;
+  if (setStateFn === undefined && activeIntervals) {
+    const availableIntervals = activeIntervals.find((interval) => (
+        interval.start.getTime() <= day.getTime() &&
+        day.getTime() <= interval.end.getTime()
+      ));
+    return availableIntervals !== undefined;
   }
   return (
     (startDate && startDate.getTime() === day.getTime()) ||
@@ -38,9 +43,10 @@ function renderDayElement(
   day: Date,
   setStateFn: ((date: Date) => any) | undefined,
   startDate: Date | null,
-  endDate: Date | null
+  endDate: Date | null,
+  activeIntervals: Interval[] | undefined
 ): JSX.Element {
-  if (isActive(day, setStateFn, startDate, endDate)) {
+  if (isActive(day, setStateFn, startDate, endDate, activeIntervals)) {
     return <div className="active">{day.getDate()}</div>;
   }
   return <>{day.getDate()}</>;
@@ -62,9 +68,17 @@ function dayStateClass(day: Date): string {
 function renderDay(
   setStateFn: ((date: Date) => any) | undefined,
   currentStartDate: Date | null,
-  currentEndDate: Date | null
+  currentEndDate: Date | null,
+  activeIntervals: Interval[] | undefined
 ): (day: Date) => JSX.Element {
   return (day: Date) => {
+    const dayElement = renderDayElement(
+      day,
+      setStateFn,
+      currentStartDate,
+      currentEndDate,
+      activeIntervals
+    );
     if (setStateFn === undefined) {
       return (
         <section
@@ -72,7 +86,7 @@ function renderDay(
           data-testid={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
           className={`calendar__month__day ${dayStateClass(day)}`}
         >
-          {renderDayElement(day, setStateFn, currentStartDate, currentEndDate)}
+          {dayElement}
         </section>
       );
     }
@@ -84,7 +98,7 @@ function renderDay(
         onClick={() => setStateFn(day)}
         aria-hidden="true"
       >
-        {renderDayElement(day, setStateFn, currentStartDate, currentEndDate)}
+        {dayElement}
       </section>
     );
   };
@@ -93,7 +107,8 @@ function renderDay(
 function renderMonth(
   setStateFn: ((date: Date) => any) | undefined,
   currentStartDate: Date | null,
-  currentEndDate: Date | null
+  currentEndDate: Date | null,
+  activeIntervals: Interval[] | undefined
 ): (monthDate: Date) => JSX.Element {
   return (monthDate) => {
     const month = monthDate.toLocaleString('en-us', { month: 'long' });
@@ -110,7 +125,14 @@ function renderMonth(
         <section className="calendar__month__title">
           {`${month} ${monthDate.getFullYear()}`}
         </section>
-        {days.map(renderDay(setStateFn, currentStartDate, currentEndDate))}
+        {days.map(
+          renderDay(
+            setStateFn,
+            currentStartDate,
+            currentEndDate,
+            activeIntervals
+          )
+        )}
       </section>
     );
   };
@@ -147,12 +169,14 @@ export function Calendar({
   previousMonths,
   upcomingMonths,
   intervalSelectionFn,
+  activeIntervals,
   ...otherProps
 }: {
   currentDate: Date;
   previousMonths: number;
   upcomingMonths: number;
   intervalSelectionFn?: (interval: Interval) => any;
+  activeIntervals?: Interval[];
 }): JSX.Element {
   const [startDate, setStartDate] = useState<null | Date>(null);
   const [endDate, setEndDate] = useState<null | Date>(null);
@@ -194,11 +218,14 @@ export function Calendar({
   );
   return (
     <section className="calendar" {...otherProps}>
-      {monthRange.map(renderMonth(stateFn, startDate, endDate))}
+      {monthRange.map(
+        renderMonth(stateFn, startDate, endDate, activeIntervals)
+      )}
     </section>
   );
 }
 
 Calendar.defaultProps = {
   intervalSelectionFn: undefined,
+  activeIntervals: undefined,
 };

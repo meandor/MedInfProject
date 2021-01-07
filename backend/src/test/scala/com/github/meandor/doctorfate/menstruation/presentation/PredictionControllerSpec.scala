@@ -18,9 +18,9 @@ class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
   }
   val controller: PredictionController = new PredictionController(authenticator)
 
-  Feature("GET /menstruation/prediction") {
+  Feature("GET /prediction") {
     Scenario("should return 200 and prediction for valid user") {
-      Get("/menstruation/prediction") ~>
+      Get("/prediction") ~>
         addCredentials(OAuth2BearerToken("accessToken")) ~>
         Route.seal(controller.routes) ~>
         check {
@@ -39,7 +39,7 @@ class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
     }
 
     Scenario("should return AuthorizationFailedRejection for unauthorized user") {
-      Get("/menstruation/prediction") ~>
+      Get("/prediction") ~>
         addCredentials(OAuth2BearerToken("foo")) ~>
         controller.routes ~>
         check {
@@ -48,7 +48,7 @@ class PredictionControllerSpec extends UnitSpec with ScalatestRouteTest {
     }
 
     Scenario("should return AuthorizationFailedRejection for missing user") {
-      Get("/menstruation/prediction") ~> controller.routes ~> check {
+      Get("/prediction") ~> controller.routes ~> check {
         rejection shouldBe a[AuthenticationFailedRejection]
       }
     }

@@ -31,7 +31,9 @@ final case class MenstruationModule(
       menstruationService
     )
     object CombinedController extends Controller {
-      override def routes: Route = menstruationController.routes ~ predictionController.routes
+      override def routes: Route = pathPrefix("menstruation") {
+        predictionController.routes ~ menstruationController.routes
+      }
     }
     logger.info("Done loading MenstruationModule")
     Option(CombinedController)

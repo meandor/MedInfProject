@@ -22,7 +22,7 @@ class MenstruationControllerSpec extends UnitSpec with ScalatestRouteTest {
   val serviceMock: MenstruationService   = mock[MenstruationService]
   val controller: MenstruationController = new MenstruationController(authenticator, serviceMock)
 
-  Feature("POST /menstruation") {
+  Feature("POST /") {
     val firstOfJanuary = LocalDate.of(2021, 1, 1)
     val fifthOfJanuary = LocalDate.of(2021, 1, 5)
 
@@ -69,11 +69,11 @@ class MenstruationControllerSpec extends UnitSpec with ScalatestRouteTest {
     }
   }
 
-  Feature("GET /menstruation") {
+  Feature("GET /") {
     Scenario("should return 200 and available menstruation for user") {
       serviceMock.find(any[UUID]) shouldReturn Future.successful(Seq())
 
-      Get("/menstruation") ~>
+      Get("/") ~>
         addCredentials(OAuth2BearerToken("accessToken")) ~>
         Route.seal(controller.routes) ~>
         check {

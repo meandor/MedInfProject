@@ -11,12 +11,10 @@ import java.time.LocalDate
 import java.util.UUID
 
 class PredictionController(authenticator: Authenticator[UUID]) extends Controller with LazyLogging {
-  override def routes: Route = pathPrefix("menstruation") {
-    path("prediction") {
-      get {
-        authenticateOAuth2("menstra", authenticator) {
-          handlePredictionRequest
-        }
+  override def routes: Route = path("prediction") {
+    get {
+      authenticateOAuth2("menstra", authenticator) {
+        handlePredictionRequest
       }
     }
   }

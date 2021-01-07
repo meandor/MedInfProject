@@ -38,8 +38,8 @@ class MenstruationRepository(executionContext: ExecutionContext) extends LazyLog
             SELECT *
             FROM menstruation
             WHERE menstruation.user_id = ${menstruationEntity.userId}
-            AND menstruation.start_date = ${menstruationEntity.start}
-            AND menstruation.end_date = ${menstruationEntity.end}
+            AND menstruation.start_date <= ${menstruationEntity.start}
+            AND menstruation.end_date >= ${menstruationEntity.end}
           """
           .map(toEntity)
           .single()

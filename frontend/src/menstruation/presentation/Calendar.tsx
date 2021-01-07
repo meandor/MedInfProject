@@ -23,10 +23,11 @@ function isActive(
   activeIntervals: Interval[] | undefined
 ): boolean {
   if (setStateFn === undefined && activeIntervals) {
-    const availableIntervals = activeIntervals.find((interval) => (
+    const availableIntervals = activeIntervals.find(
+      (interval) =>
         interval.start.getTime() <= day.getTime() &&
         day.getTime() <= interval.end.getTime()
-      ));
+    );
     return availableIntervals !== undefined;
   }
   return (

@@ -12,7 +12,6 @@ describe('Calendar component', () => {
         currentDate={currentDate}
         previousMonths={0}
         upcomingMonths={0}
-        intervalSelectionFn={jest.fn()}
       />
     );
     const january = getByText(/january/i);

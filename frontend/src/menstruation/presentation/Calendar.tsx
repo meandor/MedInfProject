@@ -15,20 +15,32 @@ function rest(array: Array<number>): Array<number> {
   return tail;
 }
 
+function isActive(
+  day: Date,
+  setStateFn: ((date: Date) => any) | undefined,
+  startDate: Date | null,
+  endDate: Date | null
+): boolean {
+  if (setStateFn === undefined) {
+    return true;
+  }
+  return (
+    (startDate && startDate.getTime() === day.getTime()) ||
+    (endDate && endDate.getTime() === day.getTime()) ||
+    ((startDate &&
+      endDate &&
+      startDate.getTime() < day.getTime() &&
+      endDate.getTime() > day.getTime()) as boolean)
+  );
+}
+
 function renderDayElement(
   day: Date,
-  setStateFn: any,
+  setStateFn: ((date: Date) => any) | undefined,
   startDate: Date | null,
   endDate: Date | null
 ): JSX.Element {
-  if (
-    (startDate && startDate.getTime() === day.getTime()) ||
-    (endDate && endDate.getTime() === day.getTime()) ||
-    (startDate &&
-      endDate &&
-      startDate.getTime() < day.getTime() &&
-      endDate.getTime() > day.getTime())
-  ) {
+  if (isActive(day, setStateFn, startDate, endDate)) {
     return <div className="active">{day.getDate()}</div>;
   }
   return <>{day.getDate()}</>;
@@ -48,11 +60,23 @@ function dayStateClass(day: Date): string {
 }
 
 function renderDay(
-  setStateFn: (date: Date) => any,
+  setStateFn: ((date: Date) => any) | undefined,
   currentStartDate: Date | null,
   currentEndDate: Date | null
 ): (day: Date) => JSX.Element {
-  return (day: Date) => (
+  return (day: Date) => {
+    if (setStateFn === undefined) {
+      return (
+        <section
+          key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
+          data-testid={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
+          className={`calendar__month__day ${dayStateClass(day)}`}
+        >
+          {renderDayElement(day, setStateFn, currentStartDate, currentEndDate)}
+        </section>
+      );
+    }
+    return (
       <section
         key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
         data-testid={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
@@ -63,10 +87,11 @@ function renderDay(
         {renderDayElement(day, setStateFn, currentStartDate, currentEndDate)}
       </section>
     );
+  };
 }
 
 function renderMonth(
-  setStateFn: (date: Date) => any,
+  setStateFn: ((date: Date) => any) | undefined,
   currentStartDate: Date | null,
   currentEndDate: Date | null
 ): (monthDate: Date) => JSX.Element {
@@ -96,8 +121,11 @@ function toggleState(
   setStartDateFn: any,
   endDate: Date | null,
   setEndDateFn: any,
-  intervalSelectionFn: (interval: Interval) => any
-): (date: Date) => any {
+  intervalSelectionFn: ((interval: Interval) => any) | undefined
+): ((date: Date) => any) | undefined {
+  if (intervalSelectionFn === undefined) {
+    return undefined;
+  }
   return (date: Date) => {
     if (!startDate && !endDate) {
       setStartDateFn(date);
@@ -123,7 +151,7 @@ export function Calendar({
   currentDate: Date;
   previousMonths: number;
   upcomingMonths: number;
-  intervalSelectionFn: (interval: Interval) => any;
+  intervalSelectionFn?: ((interval: Interval) => any) | undefined;
 }): JSX.Element {
   const [startDate, setStartDate] = useState<null | Date>(null);
   const [endDate, setEndDate] = useState<null | Date>(null);

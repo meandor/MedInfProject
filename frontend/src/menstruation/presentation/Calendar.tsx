@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './calendar.scss';
 
 export interface Interval {
@@ -21,7 +21,6 @@ function renderDayElement(
   startDate: Date | undefined,
   endDate: Date | undefined
 ): JSX.Element {
-  let dayElement: JSX.Element = <>{day.getDate()}</>;
   if (
     (startDate && startDate.getTime() === day.getTime()) ||
     (endDate && endDate.getTime() === day.getTime()) ||
@@ -30,9 +29,9 @@ function renderDayElement(
       startDate.getTime() < day.getTime() &&
       endDate.getTime() > day.getTime())
   ) {
-    dayElement = <div className="active">{day.getDate()}</div>;
+    return <div className="active">{day.getDate()}</div>;
   }
-  return dayElement;
+  return <>{day.getDate()}</>;
 }
 
 function dayState(day: Date): string {

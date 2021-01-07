@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { postMenstruation } from './menstruationClient';
+import { get, post } from './menstruationClient';
 
 jest.mock('axios');
 
@@ -18,13 +18,30 @@ describe('menstruationClient', () => {
       end: '2020-01-01',
     };
 
-    const actual = postMenstruation(menstruationDTO);
+    const actual = post(menstruationDTO);
     const expected = createdMenstruation;
 
     await expect(actual).resolves.toBe(expected);
     await expect(axiosMock.post).toHaveBeenCalledWith(
       'backend/menstruation',
       menstruationDTO,
+      AXIOS_CONFIG
+    );
+  });
+
+  it('should get menstruation from backend', async () => {
+    const menstruationDTO = {
+      start: '2020-01-01',
+      end: '2020-01-01',
+    };
+    axiosMock.get.mockResolvedValue({ data: [menstruationDTO] });
+
+    const actual = get();
+    const expected = [menstruationDTO];
+
+    await expect(actual).resolves.toStrictEqual(expected);
+    await expect(axiosMock.get).toHaveBeenCalledWith(
+      'backend/menstruation',
       AXIOS_CONFIG
     );
   });

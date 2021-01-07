@@ -1,4 +1,4 @@
-import { MenstruationDTO, postMenstruation } from '../data/menstruationClient';
+import { get, MenstruationDTO, post } from '../data/menstruationClient';
 import { authenticatedUser } from '../../auth/domain/loginService';
 
 export interface Menstruation {
@@ -28,9 +28,14 @@ export function createMenstruation(
     return Promise.reject(new Error('User not found'));
   }
 
-  return postMenstruation(toMenstruationDTO(menstruation)).then(toMenstruation);
+  return post(toMenstruationDTO(menstruation)).then(toMenstruation);
 }
 
 export function find(): Promise<Menstruation[]> {
-  return Promise.reject(new Error());
+  const idToken = authenticatedUser();
+  if (idToken === undefined) {
+    return Promise.reject(new Error('User not found'));
+  }
+
+  return get().then((menstruation) => menstruation.map(toMenstruation));
 }

@@ -52,6 +52,7 @@ describe('Dashboard component', () => {
         isUpcoming: true,
         days: 1,
       });
+      findMock.mockResolvedValue([]);
 
       await act(async () => {
         const { getByTestId } = render(<Dashboard history={historyMock} />);
@@ -68,6 +69,7 @@ describe('Dashboard component', () => {
         isUpcoming: true,
         days: 42,
       });
+      findMock.mockResolvedValue([]);
 
       await act(async () => {
         const { getByTestId } = render(<Dashboard history={historyMock} />);
@@ -84,6 +86,7 @@ describe('Dashboard component', () => {
         isUpcoming: true,
         days: 1,
       });
+      findMock.mockResolvedValue([]);
 
       await act(async () => {
         const { getByTestId } = render(<Dashboard history={historyMock} />);
@@ -100,6 +103,7 @@ describe('Dashboard component', () => {
         isUpcoming: true,
         days: 13,
       });
+      findMock.mockResolvedValue([]);
 
       await act(async () => {
         const { getByTestId } = render(<Dashboard history={historyMock} />);
@@ -116,6 +120,7 @@ describe('Dashboard component', () => {
         isUpcoming: false,
         days: 3,
       });
+      findMock.mockResolvedValue([]);
 
       await act(async () => {
         const { getByTestId } = render(<Dashboard history={historyMock} />);
@@ -133,6 +138,7 @@ describe('Dashboard component', () => {
         isUpcoming: false,
         days: 0,
       });
+      findMock.mockResolvedValue([]);
 
       await act(async () => {
         const { getByTestId } = render(<Dashboard history={historyMock} />);

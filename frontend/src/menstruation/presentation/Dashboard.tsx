@@ -3,6 +3,7 @@ import { Event, predict, Prediction } from '../domain/predictionService';
 import './dashboard.scss';
 import { logger } from '../../logger';
 import { Calendar } from './Calendar';
+import { find, Menstruation } from '../domain/menstruationService';
 
 function withDaysUnit(days: number): JSX.Element {
   if (days === 1) {
@@ -148,6 +149,7 @@ export function Dashboard({
   history: { push: (_: string) => any };
 }): JSX.Element {
   const [prediction, setPrediction] = useState<Prediction | null>(null);
+  const [menstruation, setMenstruation] = useState<Menstruation[]>([]);
 
   useEffect(() => {
     predict()
@@ -155,6 +157,12 @@ export function Dashboard({
       .catch((error) => {
         logger.error('Was not able to get prediction', error);
         setPrediction(null);
+      });
+    find()
+      .then(setMenstruation)
+      .catch((error) => {
+        logger.error('Was not able to get menstruation', error);
+        setMenstruation([]);
       });
   }, []);
 
@@ -167,6 +175,7 @@ export function Dashboard({
           currentDate={new Date()}
           previousMonths={2}
           upcomingMonths={3}
+          activeIntervals={menstruation}
           data-testid="calendar"
         />
       </section>

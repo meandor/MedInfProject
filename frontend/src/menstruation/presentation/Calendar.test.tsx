@@ -88,4 +88,21 @@ describe('offsetWithMonday', () => {
 
     expect(actual).toStrictEqual(expected);
   });
+
+  it('should add 6 days from previous month when first day is sunday', () => {
+    const days = [utcDate(2020, 11, 1)];
+
+    const actual = offsetWithMonday(days);
+    const expected = [
+      utcDate(2020, 11, -5),
+      utcDate(2020, 11, -4),
+      utcDate(2020, 11, -3),
+      utcDate(2020, 11, -2),
+      utcDate(2020, 11, -1),
+      utcDate(2020, 11, 0),
+      ...days,
+    ];
+
+    expect(actual).toStrictEqual(expected);
+  });
 });

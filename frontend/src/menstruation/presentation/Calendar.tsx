@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './calendar.scss';
 import { utcDate } from '../../core/domain/dateService';
+import './calendar.scss';
 
 export interface Interval {
   start: Date;
@@ -20,7 +20,12 @@ export function offsetWithMonday([firstDay, ...restDays]: Date[]): Date[] {
   if (firstDay.getDay() === 1) {
     return [firstDay, ...restDays];
   }
-  const offsetDays = range(firstDay.getDay() - 2)
+  let dayIndex = firstDay.getDay();
+  if (firstDay.getDay() === 0) {
+    dayIndex = 7;
+  }
+
+  const offsetDays = range(dayIndex - 2)
     .reverse()
     .map((day) =>
       utcDate(firstDay.getFullYear(), firstDay.getMonth() + 1, -day)

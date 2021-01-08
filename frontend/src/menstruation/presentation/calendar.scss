@@ -5,7 +5,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: $space;
+  padding-bottom: $space;
 
   &__month {
     width: 32%;
@@ -30,6 +30,23 @@
       height: 3.3rem;
     }
 
+    &__week_days {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+
+      &__day {
+        width: 14.28%;
+        height: 5rem;
+        text-align: center;
+        padding: 1rem;
+        font-size: $font-size-small;
+        color: $secondary-dark;
+      }
+    }
+
     &__day {
       width: 14.28%;
       height: 5rem;
@@ -43,12 +60,16 @@
     }
 
     .gray {
-      background-color: $surface;
+      background-color: lighten($secondary, 8.5%);
     }
 
     .today {
       font-weight: bold;
       color: $primary-dark;
+    }
+
+    .previousMonth {
+      color: $gray;
     }
 
     .active {

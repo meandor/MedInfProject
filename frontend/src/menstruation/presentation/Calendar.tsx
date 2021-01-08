@@ -71,15 +71,19 @@ function renderDayElement(
   return <>{day.getDate()}</>;
 }
 
-function dayStateClass(day: Date): string {
+function dayStateClass(day: Date, currentMonth: number, index: number): string {
   let state = '';
-  if (Math.floor((day.getDate() - 1) / 7) % 2 === 0) {
+  if (Math.floor(index / 7) % 2 === 0) {
     state += 'gray';
   }
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   if (today.getTime() === day.getTime()) {
     state += ' today';
+  }
+
+  if (day.getMonth() !== currentMonth) {
+    state += ' previousMonth';
   }
   return state;
 }
@@ -88,9 +92,10 @@ function renderDay(
   setStateFn: ((date: Date) => any) | undefined,
   currentStartDate: Date | null,
   currentEndDate: Date | null,
-  activeIntervals: Interval[] | undefined
-): (day: Date) => JSX.Element {
-  return (day: Date) => {
+  activeIntervals: Interval[] | undefined,
+  currentMonth: number
+): (day: Date, index: number) => JSX.Element {
+  return (day: Date, index: number) => {
     const dayElement = renderDayElement(
       day,
       setStateFn,
@@ -98,12 +103,13 @@ function renderDay(
       currentEndDate,
       activeIntervals
     );
-    if (setStateFn === undefined) {
+    const dayState = dayStateClass(day, currentMonth, index);
+    if (setStateFn === undefined || day.getMonth() !== currentMonth) {
       return (
         <section
           key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
           data-testid={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
-          className={`calendar__month__day ${dayStateClass(day)}`}
+          className={`calendar__month__day ${dayState}`}
         >
           {dayElement}
         </section>
@@ -113,7 +119,7 @@ function renderDay(
       <section
         key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
         data-testid={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
-        className={`calendar__month__day ${dayStateClass(day)} cursor`}
+        className={`calendar__month__day ${dayState} cursor`}
         onClick={() => setStateFn(day)}
         aria-hidden="true"
       >
@@ -121,6 +127,12 @@ function renderDay(
       </section>
     );
   };
+}
+
+function renderWeekDay(weekDay: string): JSX.Element {
+  return (
+    <section className="calendar__month__week_days__day">{weekDay}</section>
+  );
 }
 
 function renderMonth(
@@ -139,17 +151,23 @@ function renderMonth(
     const days = rest(range(lastDay.getDate())).map(
       (day) => new Date(monthDate.getFullYear(), monthDate.getMonth(), day)
     );
+    const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const daysWithOffset = offsetWithMonday(days);
     return (
       <section className="calendar__month" key={monthDate.getMonth()}>
         <section className="calendar__month__title">
           {`${month} ${monthDate.getFullYear()}`}
         </section>
-        {days.map(
+        <section className="calendar__month__week_days">
+          {weekDays.map(renderWeekDay)}
+        </section>
+        {daysWithOffset.map(
           renderDay(
             setStateFn,
             currentStartDate,
             currentEndDate,
-            activeIntervals
+            activeIntervals,
+            monthDate.getMonth()
           )
         )}
       </section>

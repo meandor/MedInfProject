@@ -6,10 +6,16 @@ export interface Menstruation {
   end: Date;
 }
 
+function toLocalDate(date: string): Date {
+  const dateWithTimezone = new Date(date);
+  const timezoneOffset = dateWithTimezone.getTimezoneOffset();
+  return new Date(dateWithTimezone.getTime() + timezoneOffset * 60000);
+}
+
 function toMenstruation(dto: MenstruationDTO): Menstruation {
   return {
-    start: new Date(dto.start),
-    end: new Date(dto.end),
+    start: toLocalDate(dto.start),
+    end: toLocalDate(dto.end),
   };
 }
 

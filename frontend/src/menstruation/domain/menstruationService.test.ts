@@ -20,16 +20,16 @@ describe('createMenstruation', () => {
       sub: 'foo-bar-000',
     });
     const createdMenstruation = {
-      start: '2020-01-01T00:00:00.000Z',
-      end: '2020-01-01T00:00:00.000Z',
+      start: '2020-01-01',
+      end: '2020-01-01',
     };
     postMock.mockResolvedValue(createdMenstruation);
     const menstruation = { start: new Date(), end: new Date() };
 
     const actual = createMenstruation(menstruation);
     const expected = {
-      start: new Date(Date.UTC(2020, 0, 1)),
-      end: new Date(Date.UTC(2020, 0, 1)),
+      start: new Date(2020, 0, 1),
+      end: new Date(2020, 0, 1),
     };
 
     expect(postMock).toHaveBeenCalled();
@@ -63,8 +63,8 @@ describe('find', () => {
     const actual = find();
     const expected = [
       {
-        start: new Date(Date.UTC(2020, 0, 1)),
-        end: new Date(Date.UTC(2020, 0, 5)),
+        start: new Date(2020, 0, 1),
+        end: new Date(2020, 0, 5),
       },
     ];
 

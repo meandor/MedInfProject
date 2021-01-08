@@ -38,8 +38,12 @@ function isActive(
   setStateFn: ((date: Date) => any) | undefined,
   startDate: Date | null,
   endDate: Date | null,
-  activeIntervals: Interval[] | undefined
+  activeIntervals: Interval[] | undefined,
+  isInCurrentMonth: boolean
 ): boolean {
+  if (!isInCurrentMonth) {
+    return false;
+  }
   if (setStateFn === undefined && activeIntervals) {
     const availableIntervals = activeIntervals.find(
       (interval) =>
@@ -63,15 +67,29 @@ function renderDayElement(
   setStateFn: ((date: Date) => any) | undefined,
   startDate: Date | null,
   endDate: Date | null,
-  activeIntervals: Interval[] | undefined
+  activeIntervals: Interval[] | undefined,
+  isInCurrentMonth: boolean
 ): JSX.Element {
-  if (isActive(day, setStateFn, startDate, endDate, activeIntervals)) {
+  if (
+    isActive(
+      day,
+      setStateFn,
+      startDate,
+      endDate,
+      activeIntervals,
+      isInCurrentMonth
+    )
+  ) {
     return <div className="active">{day.getDate()}</div>;
   }
   return <>{day.getDate()}</>;
 }
 
-function dayStateClass(day: Date, currentMonth: number, index: number): string {
+function dayStateClass(
+  day: Date,
+  isInCurrentMonth: boolean,
+  index: number
+): string {
   let state = '';
   if (Math.floor(index / 7) % 2 === 0) {
     state += 'gray';
@@ -82,7 +100,7 @@ function dayStateClass(day: Date, currentMonth: number, index: number): string {
     state += ' today';
   }
 
-  if (day.getMonth() !== currentMonth) {
+  if (!isInCurrentMonth) {
     state += ' previousMonth';
   }
   return state;
@@ -96,15 +114,17 @@ function renderDay(
   currentMonth: number
 ): (day: Date, index: number) => JSX.Element {
   return (day: Date, index: number) => {
+    const isInCurrentMonth = day.getMonth() === currentMonth;
     const dayElement = renderDayElement(
       day,
       setStateFn,
       currentStartDate,
       currentEndDate,
-      activeIntervals
+      activeIntervals,
+      isInCurrentMonth
     );
-    const dayState = dayStateClass(day, currentMonth, index);
-    if (setStateFn === undefined || day.getMonth() !== currentMonth) {
+    const dayState = dayStateClass(day, isInCurrentMonth, index);
+    if (setStateFn === undefined || !isInCurrentMonth) {
       return (
         <section
           key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
@@ -131,7 +151,9 @@ function renderDay(
 
 function renderWeekDay(weekDay: string): JSX.Element {
   return (
-    <section className="calendar__month__week_days__day">{weekDay}</section>
+    <section className="calendar__month__week_days__day" key={weekDay}>
+      {weekDay}
+    </section>
   );
 }
 

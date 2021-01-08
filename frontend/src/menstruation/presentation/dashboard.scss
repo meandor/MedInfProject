@@ -9,7 +9,22 @@
     margin-top: $space;
     background-color: $surface;
     width: 100%;
-    padding: $space;
+
+    &__actions {
+      text-align: right;
+      padding: 1rem;
+      background-color: $gray-light;
+      border-bottom: 0.1rem solid #dfdfdf;
+      margin-bottom: $space;
+
+      button {
+        margin: 0;
+      }
+    }
+
+    &__data {
+      padding: 0 $space;
+    }
   }
 
   &__prediction {

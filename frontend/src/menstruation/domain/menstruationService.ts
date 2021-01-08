@@ -14,7 +14,11 @@ function toMenstruation(dto: MenstruationDTO): Menstruation {
 }
 
 function toDateString(date: Date): string {
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  const month = (date.getMonth() + 1)
+      .toString()
+      .padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
 }
 
 function toMenstruationDTO(menstruation: Menstruation): MenstruationDTO {

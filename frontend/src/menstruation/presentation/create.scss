@@ -3,4 +3,12 @@
 .create {
   width: 100%;
   padding: $space;
+
+  &__actions {
+    text-align: right;
+
+    button {
+      margin: 0 0 0 $space;
+    }
+  }
 }

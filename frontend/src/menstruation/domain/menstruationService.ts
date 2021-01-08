@@ -13,10 +13,14 @@ function toMenstruation(dto: MenstruationDTO): Menstruation {
   };
 }
 
+function toDateString(date: Date): string {
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+}
+
 function toMenstruationDTO(menstruation: Menstruation): MenstruationDTO {
   return {
-    start: menstruation.start.toISOString().slice(0, 10),
-    end: menstruation.end.toISOString().slice(0, 10),
+    start: toDateString(menstruation.start),
+    end: toDateString(menstruation.end),
   };
 }
 

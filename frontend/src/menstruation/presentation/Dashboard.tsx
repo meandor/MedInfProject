@@ -182,9 +182,9 @@ export function Dashboard({
         </div>
         <div className="dashboard__calendar__actions">
           <button
-              type="button"
-              onClick={goToInsert}
-              className="button button-secondary"
+            type="button"
+            onClick={goToInsert}
+            className="button button-secondary"
           >
             Insert period
           </button>

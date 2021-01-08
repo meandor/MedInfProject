@@ -171,15 +171,6 @@ export function Dashboard({
     <section className="dashboard">
       <PredictionComponent prediction={prediction} insertFn={goToInsert} />
       <section className="dashboard__calendar">
-        <div className="dashboard__calendar__actions">
-          <button
-            type="button"
-            onClick={goToInsert}
-            className="button button-secondary"
-          >
-            Insert period
-          </button>
-        </div>
         <div className="dashboard__calendar__data">
           <Calendar
             currentDate={new Date()}
@@ -188,6 +179,15 @@ export function Dashboard({
             activeIntervals={menstruation}
             data-testid="calendar"
           />
+        </div>
+        <div className="dashboard__calendar__actions">
+          <button
+              type="button"
+              onClick={goToInsert}
+              className="button button-secondary"
+          >
+            Insert period
+          </button>
         </div>
       </section>
     </section>

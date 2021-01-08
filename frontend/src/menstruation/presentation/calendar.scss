@@ -5,7 +5,6 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
-  padding-bottom: $space;
 
   &__month {
     width: 32%;
@@ -13,6 +12,7 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
+    text-align: center;
   }
 
   @media only screen and (max-device-width: $smartphone-breakpoint) {
@@ -22,6 +22,8 @@
   }
 
   &__month {
+    padding-bottom: $space;
+
     &__title {
       font-size: $font-size-big;
       margin-bottom: 1rem;

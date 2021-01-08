@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './calendar.scss';
+import { utcDate } from '../../core/domain/dateService';
 
 export interface Interval {
   start: Date;
@@ -13,6 +14,18 @@ function range(endInclusive: number): Array<number> {
 function rest(array: Array<number>): Array<number> {
   const [, ...tail] = array;
   return tail;
+}
+
+export function offsetWithMonday([firstDay, ...restDays]: Date[]): Date[] {
+  if (firstDay.getDay() === 1) {
+    return [firstDay, ...restDays];
+  }
+  const offsetDays = range(firstDay.getDay() - 2)
+    .reverse()
+    .map((day) =>
+      utcDate(firstDay.getFullYear(), firstDay.getMonth() + 1, -day)
+    );
+  return [...offsetDays, firstDay, ...restDays];
 }
 
 function isActive(

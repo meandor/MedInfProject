@@ -1,7 +1,8 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { Calendar } from './Calendar';
+import { Calendar, offsetWithMonday } from './Calendar';
+import { utcDate } from '../../core/domain/dateService';
 
 describe('Calendar component', () => {
   it('should render one month for date', () => {
@@ -60,5 +61,31 @@ describe('Calendar component', () => {
       start: new Date(2021, 1, 1),
       end: new Date(2021, 1, 2),
     });
+  });
+});
+
+describe('offsetWithMonday', () => {
+  it('should do nothing when it already starts with monday', () => {
+    const days = [utcDate(2021, 2, 1), utcDate(2021, 2, 2)];
+
+    const actual = offsetWithMonday(days);
+    const expected = days;
+
+    expect(actual).toStrictEqual(expected);
+  });
+
+  it('should add 4 days from previous month', () => {
+    const days = [utcDate(2021, 1, 1), utcDate(2021, 1, 2)];
+
+    const actual = offsetWithMonday(days);
+    const expected = [
+      utcDate(2021, 1, -3),
+      utcDate(2021, 1, -2),
+      utcDate(2021, 1, -1),
+      utcDate(2021, 1, 0),
+      ...days,
+    ];
+
+    expect(actual).toStrictEqual(expected);
   });
 });

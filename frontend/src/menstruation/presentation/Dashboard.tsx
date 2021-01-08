@@ -181,13 +181,13 @@ export function Dashboard({
           </button>
         </div>
         <div className="dashboard__calendar__data">
-        <Calendar
-          currentDate={new Date()}
-          previousMonths={2}
-          upcomingMonths={3}
-          activeIntervals={menstruation}
-          data-testid="calendar"
-        />
+          <Calendar
+            currentDate={new Date()}
+            previousMonths={2}
+            upcomingMonths={3}
+            activeIntervals={menstruation}
+            data-testid="calendar"
+          />
         </div>
       </section>
     </section>

@@ -11,6 +11,10 @@
     background-color: $surface;
     width: 100%;
 
+    .active {
+      cursor: pointer;
+    }
+
     &__actions {
       text-align: right;
       padding: 1rem;

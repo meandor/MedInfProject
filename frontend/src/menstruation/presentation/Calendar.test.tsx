@@ -62,6 +62,38 @@ describe('Calendar component', () => {
       end: new Date(2021, 1, 2),
     });
   });
+
+  it('should throw exception if both intervalSelectionFn and onClick are set', () => {
+    const actual: any = () =>
+      render(
+        <Calendar
+          currentDate={new Date(2021, 1, 1)}
+          previousMonths={1}
+          upcomingMonths={1}
+          intervalSelectionFn={jest.fn()}
+          onClickFn={jest.fn()}
+        />
+      );
+
+    expect(actual).toThrowError(/not allowed/i);
+  });
+
+  it('should execute onClickFn', async () => {
+    const onClickMock = jest.fn();
+
+    const { getByTestId } = render(
+      <Calendar
+        currentDate={new Date(2021, 1, 1)}
+        previousMonths={1}
+        upcomingMonths={1}
+        onClickFn={onClickMock}
+      />
+    );
+    const firstOfJanuary = getByTestId('2021-1-1');
+    await fireEvent.click(firstOfJanuary);
+
+    await expect(onClickMock).toHaveBeenCalledWith(new Date(2021, 1, 1));
+  });
 });
 
 describe('offsetWithMonday', () => {

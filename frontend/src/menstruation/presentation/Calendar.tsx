@@ -229,14 +229,21 @@ export function Calendar({
   upcomingMonths,
   intervalSelectionFn,
   activeIntervals,
+  onClickFn,
   ...otherProps
 }: {
   currentDate: Date;
   previousMonths: number;
   upcomingMonths: number;
   intervalSelectionFn?: (interval: Interval) => any;
+  onClickFn?: (date: Date) => any;
   activeIntervals?: Interval[];
 }): JSX.Element {
+  if (onClickFn && intervalSelectionFn) {
+    throw new Error(
+      'Not allowed to set both intervalSelectionFn and onClickFn. Please use either one of them exclusively.'
+    );
+  }
   const [startDate, setStartDate] = useState<null | Date>(null);
   const [endDate, setEndDate] = useState<null | Date>(null);
 
@@ -278,7 +285,7 @@ export function Calendar({
   return (
     <section className="calendar" {...otherProps}>
       {monthRange.map(
-        renderMonth(stateFn, startDate, endDate, activeIntervals)
+        renderMonth(onClickFn || stateFn, startDate, endDate, activeIntervals)
       )}
     </section>
   );
@@ -286,5 +293,6 @@ export function Calendar({
 
 Calendar.defaultProps = {
   intervalSelectionFn: undefined,
+  onClickFn: undefined,
   activeIntervals: undefined,
 };

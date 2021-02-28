@@ -195,9 +195,8 @@ export function Dashboard({
       .then(setMenstruation)
       .catch((error) => {
         logger.error('Was not able to get menstruation', error);
-        setMenstruation([{ start: new Date(), end: new Date(2021, 2, 3) }]);
+        setMenstruation([]);
       });
-    setMenstruation([{ start: new Date(), end: new Date(2021, 2, 3) }]);
   }, []);
 
   const goToInsert: any = () => history.push('/create');

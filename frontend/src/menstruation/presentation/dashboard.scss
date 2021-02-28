@@ -27,6 +27,12 @@
       }
     }
 
+    &__detail {
+      &-hidden {
+        display: none;
+      }
+    }
+
     &__data {
       padding: 0 $space;
     }

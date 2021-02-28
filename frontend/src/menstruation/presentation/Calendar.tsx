@@ -111,7 +111,8 @@ function renderDay(
   currentStartDate: Date | null,
   currentEndDate: Date | null,
   activeIntervals: Interval[] | undefined,
-  currentMonth: number
+  currentMonth: number,
+  onClickFn: ((date: Date) => any) | undefined
 ): (day: Date, index: number) => JSX.Element {
   return (day: Date, index: number) => {
     const isInCurrentMonth = day.getMonth() === currentMonth;
@@ -125,6 +126,19 @@ function renderDay(
     );
     const dayState = dayStateClass(day, isInCurrentMonth, index);
     if (setStateFn === undefined || !isInCurrentMonth) {
+      if (onClickFn) {
+        return (
+          <section
+            key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
+            data-testid={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
+            className={`calendar__month__day ${dayState}`}
+            onClick={() => onClickFn(day)}
+            aria-hidden="true"
+          >
+            {dayElement}
+          </section>
+        );
+      }
       return (
         <section
           key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`}
@@ -161,7 +175,8 @@ function renderMonth(
   setStateFn: ((date: Date) => any) | undefined,
   currentStartDate: Date | null,
   currentEndDate: Date | null,
-  activeIntervals: Interval[] | undefined
+  activeIntervals: Interval[] | undefined,
+  onClickFn: ((date: Date) => any) | undefined
 ): (monthDate: Date) => JSX.Element {
   return (monthDate) => {
     const month = monthDate.toLocaleString('en-us', { month: 'long' });
@@ -189,7 +204,8 @@ function renderMonth(
             currentStartDate,
             currentEndDate,
             activeIntervals,
-            monthDate.getMonth()
+            monthDate.getMonth(),
+            onClickFn
           )
         )}
       </section>
@@ -285,7 +301,7 @@ export function Calendar({
   return (
     <section className="calendar" {...otherProps}>
       {monthRange.map(
-        renderMonth(onClickFn || stateFn, startDate, endDate, activeIntervals)
+        renderMonth(stateFn, startDate, endDate, activeIntervals, onClickFn)
       )}
     </section>
   );

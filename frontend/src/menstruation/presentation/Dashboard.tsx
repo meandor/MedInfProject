@@ -4,6 +4,7 @@ import './dashboard.scss';
 import { logger } from '../../logger';
 import { Calendar } from './Calendar';
 import { find, Menstruation } from '../domain/menstruationService';
+import { Detail } from './Detail';
 
 function withDaysUnit(days: number): JSX.Element {
   if (days === 1) {
@@ -143,6 +144,34 @@ function PredictionComponent({
   );
 }
 
+function renderDetailCollapsable(
+  activeMenstruation: Menstruation | null
+): JSX.Element {
+  if (activeMenstruation) {
+    return (
+      <div className="dashboard__calendar__detail">
+        <Detail menstruation={activeMenstruation} />
+      </div>
+    );
+  }
+  return <div className="dashboard__calendar__detail-hidden" />;
+}
+
+function showDetail(selectMenstruationFn: any, menstruation: Menstruation[]) {
+  return (day: Date) => {
+    const selectedTime = day.getTime();
+    const selectedMenstruation = menstruation.find(
+      (m) =>
+        m.start.getTime() <= selectedTime && selectedTime <= m.end.getTime()
+    );
+    if (selectedMenstruation) {
+      selectMenstruationFn(selectedMenstruation);
+    } else {
+      selectMenstruationFn(null);
+    }
+  };
+}
+
 export function Dashboard({
   history,
 }: {
@@ -150,6 +179,10 @@ export function Dashboard({
 }): JSX.Element {
   const [prediction, setPrediction] = useState<Prediction | null>(null);
   const [menstruation, setMenstruation] = useState<Menstruation[]>([]);
+  const [
+    activeMenstruation,
+    selectMenstruation,
+  ] = useState<Menstruation | null>(null);
 
   useEffect(() => {
     predict()
@@ -162,8 +195,9 @@ export function Dashboard({
       .then(setMenstruation)
       .catch((error) => {
         logger.error('Was not able to get menstruation', error);
-        setMenstruation([]);
+        setMenstruation([{ start: new Date(), end: new Date(2021, 2, 3) }]);
       });
+    setMenstruation([{ start: new Date(), end: new Date(2021, 2, 3) }]);
   }, []);
 
   const goToInsert: any = () => history.push('/create');
@@ -171,12 +205,14 @@ export function Dashboard({
     <section className="dashboard">
       <PredictionComponent prediction={prediction} insertFn={goToInsert} />
       <section className="dashboard__calendar">
+        {renderDetailCollapsable(activeMenstruation)}
         <div className="dashboard__calendar__data">
           <Calendar
             currentDate={new Date()}
             previousMonths={2}
             upcomingMonths={3}
             activeIntervals={menstruation}
+            onClickFn={showDetail(selectMenstruation, menstruation)}
             data-testid="calendar"
           />
         </div>

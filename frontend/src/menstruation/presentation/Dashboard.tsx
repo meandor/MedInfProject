@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Event, predict, Prediction } from '../domain/predictionService';
-import './dashboard.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { logger } from '../../logger';
-import { Calendar } from './Calendar';
+import { Event, predict, Prediction } from '../domain/predictionService';
 import { find, Menstruation } from '../domain/menstruationService';
+import { Calendar } from './Calendar';
 import { Detail } from './Detail';
+import './dashboard.scss';
 
 function withDaysUnit(days: number): JSX.Element {
   if (days === 1) {
@@ -144,14 +146,29 @@ function PredictionComponent({
   );
 }
 
-function renderDetailCollapsable(
-  activeMenstruation: Menstruation | null
+function renderDetailModal(
+  activeMenstruation: Menstruation | null,
+  closeFn: () => void
 ): JSX.Element {
   if (activeMenstruation) {
     return (
-      <div className="dashboard__calendar__detail">
-        <Detail menstruation={activeMenstruation} />
-      </div>
+      <>
+        <div className="dashboard__calendar__detail">
+          <Detail menstruation={activeMenstruation} />
+          <div
+            className="dashboard__calendar__detail__close"
+            onClick={closeFn}
+            aria-hidden="true"
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </div>
+        </div>
+        <div
+          className="dashboard__calendar__detail__overlay"
+          onClick={closeFn}
+          aria-hidden="true"
+        />
+      </>
     );
   }
   return <div className="dashboard__calendar__detail-hidden" />;
@@ -204,7 +221,7 @@ export function Dashboard({
     <section className="dashboard">
       <PredictionComponent prediction={prediction} insertFn={goToInsert} />
       <section className="dashboard__calendar">
-        {renderDetailCollapsable(activeMenstruation)}
+        {renderDetailModal(activeMenstruation, () => selectMenstruation(null))}
         <div className="dashboard__calendar__data">
           <Calendar
             currentDate={new Date()}

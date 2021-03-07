@@ -6,6 +6,13 @@ val akkaVersion     = "2.6.13"
 val akkaHttpVersion = "10.2.4"
 val circeVersion    = "0.13.0"
 
+assemblyMergeStrategy in assembly := {
+  case "module-info.class" => MergeStrategy.discard
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}
+
 lazy val app = (project in file("."))
   .configs(IntegrationTest)
   .settings(

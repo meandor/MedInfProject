@@ -7,7 +7,7 @@
     display: flex;
     flex-wrap: wrap;
     width: 30rem;
-    margin: auto;
+    margin: 0 auto $space;
     justify-content: space-evenly;
 
     &__label {
@@ -20,6 +20,21 @@
       width: 60%;
       text-align: left;
     }
+  }
+
+  &__actions {
+    text-align: right;
+    align-self: flex-end;
+    padding-top: 1rem;
+    border-top: 0.1rem solid #dfdfdf;
+
+    .button {
+      margin-right: 0;
+    }
+  }
+
+  &__error {
+    color: $error;
   }
 
   h3 {

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { get, post } from './menstruationClient';
+import { deleteMenstruationDTO, get, post } from './menstruationClient';
 
 jest.mock('axios');
 
@@ -42,6 +42,22 @@ describe('menstruationClient', () => {
     await expect(actual).resolves.toStrictEqual(expected);
     await expect(axiosMock.get).toHaveBeenCalledWith(
       'backend/menstruation',
+      AXIOS_CONFIG
+    );
+  });
+
+  it('should delete menstruation from backend', async () => {
+    const menstruationDTO = {
+      start: '2020-01-01',
+      end: '2020-01-01',
+    };
+    axiosMock.delete.mockResolvedValue({ data: undefined });
+
+    const actual = deleteMenstruationDTO(menstruationDTO);
+
+    await expect(actual).resolves.toBeUndefined();
+    await expect(axiosMock.delete).toHaveBeenCalledWith(
+      'backend/menstruation?start=2020-01-01&end=2020-01-01',
       AXIOS_CONFIG
     );
   });

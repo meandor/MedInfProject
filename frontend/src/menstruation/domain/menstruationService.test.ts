@@ -1,5 +1,15 @@
-import { get, MenstruationDTO, post } from '../data/menstruationClient';
-import { createMenstruation, find } from './menstruationService';
+import {
+  get,
+  MenstruationDTO,
+  post,
+  deleteMenstruationDTO,
+} from '../data/menstruationClient';
+import {
+  createMenstruation,
+  deleteMenstruation,
+  find,
+  Menstruation,
+} from './menstruationService';
 import { authenticatedUser, IDToken } from '../../user/domain/loginService';
 
 jest.mock('../../user/domain/loginService');
@@ -10,6 +20,7 @@ const authenticatedUserMock = authenticatedUser as jest.Mock<
 >;
 const postMock = post as jest.Mock<Promise<MenstruationDTO>>;
 const getMock = get as jest.Mock<Promise<MenstruationDTO[]>>;
+const deleteMock = deleteMenstruationDTO as jest.Mock<Promise<void>>;
 
 describe('createMenstruation', () => {
   it('should take a menstruation and create it', () => {
@@ -76,6 +87,42 @@ describe('find', () => {
     authenticatedUserMock.mockReturnValue(undefined);
 
     const actual = find();
+
+    return expect(actual).rejects.toBeTruthy();
+  });
+});
+
+describe('deleteMenstruation', () => {
+  it('should delete given menstruation', () => {
+    authenticatedUserMock.mockReturnValue({
+      name: 'foo bar',
+      email: 'foo@bar.com',
+      email_verified: true,
+      sub: 'foo-bar-000',
+    });
+    deleteMock.mockResolvedValue();
+    const menstruation: Menstruation = {
+      start: new Date(2020, 0, 1),
+      end: new Date(2020, 0, 5),
+    };
+
+    const actual = deleteMenstruation(menstruation);
+
+    expect(deleteMock).toHaveBeenCalledWith({
+      start: '2020-01-01',
+      end: '2020-01-05',
+    });
+    return expect(actual).resolves.toBeUndefined();
+  });
+
+  it('should reject for not authenticated user', () => {
+    authenticatedUserMock.mockReturnValue(undefined);
+    const menstruation: Menstruation = {
+      start: new Date(2020, 0, 1),
+      end: new Date(2020, 0, 5),
+    };
+
+    const actual = deleteMenstruation(menstruation);
 
     return expect(actual).rejects.toBeTruthy();
   });

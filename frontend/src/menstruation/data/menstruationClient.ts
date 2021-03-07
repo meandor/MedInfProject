@@ -21,3 +21,13 @@ export function get(): Promise<MenstruationDTO[]> {
     .then(({ data }) => data)
     .catch(errorLogging);
 }
+
+export function deleteMenstruationDTO(dto: MenstruationDTO): Promise<void> {
+  return axios
+    .delete(
+      `${baseUrl}menstruation?start=${dto.start}&end=${dto.end}`,
+      withTokenConfig
+    )
+    .then(({ data }) => data)
+    .catch(errorLogging);
+}

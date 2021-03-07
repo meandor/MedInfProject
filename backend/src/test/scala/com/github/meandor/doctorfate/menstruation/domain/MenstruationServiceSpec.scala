@@ -1,4 +1,5 @@
 package com.github.meandor.doctorfate.menstruation.domain
+import akka.Done
 import com.github.meandor.doctorfate.UnitSpec
 import com.github.meandor.doctorfate.menstruation.data.{MenstruationEntity, MenstruationRepository}
 import org.mockito.ArgumentMatchers.any
@@ -82,6 +83,39 @@ class MenstruationServiceSpec extends UnitSpec with ScalaFutures {
       val expected = Seq(
         Menstruation(start = menstruationEntity.start, end = menstruationEntity.end)
       )
+
+      actual.futureValue shouldBe expected
+    }
+  }
+
+  Feature("delete") {
+    val menstruationRepository = mock[MenstruationRepository]
+    val menstruationService    = new MenstruationService(menstruationRepository)
+
+    Scenario("should delete menstruation for user") {
+      val userId = UUID.randomUUID()
+      val menstruation = Menstruation(
+        start = LocalDate.now(),
+        end = LocalDate.now()
+      )
+      menstruationRepository.delete(any[MenstruationEntity]) shouldReturn Future.successful(1)
+
+      val actual   = menstruationService.delete(userId, menstruation)
+      val expected = Some(Done)
+
+      actual.futureValue shouldBe expected
+    }
+
+    Scenario("should return None when repository returns 0") {
+      val userId = UUID.randomUUID()
+      val menstruation = Menstruation(
+        start = LocalDate.now(),
+        end = LocalDate.now()
+      )
+      menstruationRepository.delete(any[MenstruationEntity]) shouldReturn Future.successful(0)
+
+      val actual   = menstruationService.delete(userId, menstruation)
+      val expected = None
 
       actual.futureValue shouldBe expected
     }

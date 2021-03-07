@@ -1,4 +1,5 @@
 package com.github.meandor.doctorfate.menstruation.domain
+import akka.Done
 import com.github.meandor.doctorfate.menstruation.data.{MenstruationEntity, MenstruationRepository}
 import com.typesafe.scalalogging.LazyLogging
 
@@ -34,5 +35,13 @@ class MenstruationService(menstruationRepository: MenstruationRepository)(
         existingMenstruationEntity
       )
     } yield createdMenstruationEntity.map(toMenstruation)
+  }
+
+  def delete(userId: UUID, menstruation: Menstruation): Future[Option[Done]] = {
+    val menstruationEntity = MenstruationEntity(userId, menstruation.start, menstruation.end)
+    menstruationRepository.delete(menstruationEntity).map {
+      case 0 => None
+      case _ => Some(Done)
+    }
   }
 }

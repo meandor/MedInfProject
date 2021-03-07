@@ -1,4 +1,5 @@
 package com.github.meandor.doctorfate.menstruation.data
+import akka.Done
 import com.typesafe.scalalogging.LazyLogging
 import scalikejdbc.{DB, WrappedResultSet, scalikejdbcSQLInterpolationImplicitDef}
 
@@ -76,4 +77,21 @@ class MenstruationRepository(executionContext: ExecutionContext) extends LazyLog
       throw new NoSuchElementException("Menstruation was not created")
     )
   }
+
+  def delete(menstruationEntity: MenstruationEntity): Future[Int] = Future {
+    blocking {
+      DB localTx { implicit session =>
+        sql"""
+            DELETE FROM
+            "menstruation"
+            WHERE menstruation.user_id = ${menstruationEntity.userId}
+            AND menstruation.start_date = ${menstruationEntity.start}
+            AND menstruation.end_date = ${menstruationEntity.end}
+          """
+          .update()
+          .apply()
+      }
+    }
+  }
+
 }

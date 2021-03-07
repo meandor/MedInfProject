@@ -1,4 +1,5 @@
 package com.github.meandor.doctorfate.menstruation.presentation
+import akka.Done
 import akka.http.scaladsl.model.{HttpEntity, MediaTypes, StatusCodes}
 import akka.http.scaladsl.model.headers.OAuth2BearerToken
 import akka.http.scaladsl.server.Route
@@ -61,6 +62,39 @@ class MenstruationControllerSpec extends UnitSpec with ScalatestRouteTest {
 
     Scenario("should return 400 for invalid dates and valid user") {
       Post("/menstruation", MenstruationDTO(fifthOfJanuary, firstOfJanuary)) ~>
+        addCredentials(OAuth2BearerToken("accessToken")) ~>
+        Route.seal(controller.routes) ~>
+        check {
+          status shouldBe StatusCodes.BadRequest
+        }
+    }
+  }
+
+  Feature("DELETE /") {
+    Scenario("should return 204 and delete menstruation for valid user") {
+      serviceMock.delete(any[UUID], any[Menstruation]) shouldReturn Future.successful(Some(Done))
+
+      Delete("/menstruation?start=2021-01-01&end=2021-01-05") ~>
+        addCredentials(OAuth2BearerToken("accessToken")) ~>
+        Route.seal(controller.routes) ~>
+        check {
+          status shouldBe StatusCodes.NoContent
+        }
+    }
+
+    Scenario("should return 404 for valid user when deleted menstruation is None") {
+      serviceMock.delete(any[UUID], any[Menstruation]) shouldReturn Future.successful(None)
+
+      Delete("/menstruation?start=2021-01-01&end=2021-01-05") ~>
+        addCredentials(OAuth2BearerToken("accessToken")) ~>
+        Route.seal(controller.routes) ~>
+        check {
+          status shouldBe StatusCodes.NotFound
+        }
+    }
+
+    Scenario("should return 400 for invalid dates and valid user") {
+      Delete("/menstruation?start=&end=2021-1-1") ~>
         addCredentials(OAuth2BearerToken("accessToken")) ~>
         Route.seal(controller.routes) ~>
         check {

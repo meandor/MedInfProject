@@ -222,7 +222,11 @@ export function Dashboard({
     <section className="dashboard">
       <PredictionComponent prediction={prediction} insertFn={goToInsert} />
       <section className="dashboard__calendar">
-        {renderDetailModal(activeMenstruation, () => selectMenstruation(null), history)}
+        {renderDetailModal(
+          activeMenstruation,
+          () => selectMenstruation(null),
+          history
+        )}
         <div className="dashboard__calendar__data">
           <Calendar
             currentDate={new Date()}

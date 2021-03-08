@@ -15,11 +15,12 @@ function deleteWithErrorHandler(
 ) {
   return () => {
     setErrorFn(false);
-    deleteMenstruation(menstruation).catch((error) => {
-      logger.error('Was not able to delete Period', error);
-      setErrorFn(true);
-      deleteSuccessFn();
-    });
+    deleteMenstruation(menstruation)
+      .then((_) => deleteSuccessFn())
+      .catch((error) => {
+        logger.error('Was not able to delete Period', error);
+        setErrorFn(true);
+      });
   };
 }
 

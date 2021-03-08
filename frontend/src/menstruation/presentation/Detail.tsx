@@ -64,7 +64,7 @@ export function Detail({
           className="button button-secondary"
           onClick={deleteWithErrorHandler(
             setError,
-            () => history.push('/dashboard'),
+            () => history.push('/'),
             menstruation
           )}
         >
@@ -73,7 +73,7 @@ export function Detail({
         <button
           type="submit"
           className="button button-primary"
-          onClick={() => history.push('/dashboard')}
+          onClick={() => history.push('/')}
         >
           Cancel
         </button>

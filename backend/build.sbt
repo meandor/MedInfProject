@@ -3,7 +3,7 @@ ThisBuild / organization := "com.github.meandor"
 ThisBuild / scapegoatVersion := "1.3.11"
 
 val akkaVersion     = "2.6.13"
-val akkaHttpVersion = "10.2.4"
+val akkaHttpVersion = "10.2.2"
 val circeVersion    = "0.13.0"
 
 assemblyMergeStrategy in assembly := {

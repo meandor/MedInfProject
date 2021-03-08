@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { logger } from '../../logger';
 import {
   deleteMenstruation,
   Menstruation,
 } from '../domain/menstruationService';
 import './detail.scss';
-import { logger } from '../../logger';
 
 function deleteWithErrorHandler(
   setErrorFn: (errorState: boolean) => void,
+  deleteSuccessFn: () => void,
   menstruation: Menstruation
 ) {
   return () => {
@@ -17,6 +18,7 @@ function deleteWithErrorHandler(
     deleteMenstruation(menstruation).catch((error) => {
       logger.error('Was not able to delete Period', error);
       setErrorFn(true);
+      deleteSuccessFn();
     });
   };
 }
@@ -35,8 +37,10 @@ function renderError(error: boolean): JSX.Element {
 
 export function Detail({
   menstruation,
+  history,
 }: {
   menstruation: Menstruation;
+  history: { push: (_: string) => any };
 }): JSX.Element {
   const [error, setError] = useState<boolean>(false);
 
@@ -58,9 +62,20 @@ export function Detail({
         <button
           type="submit"
           className="button button-secondary"
-          onClick={deleteWithErrorHandler(setError, menstruation)}
+          onClick={deleteWithErrorHandler(
+            setError,
+            () => history.push('/dashboard'),
+            menstruation
+          )}
         >
           <FontAwesomeIcon icon={faTrash} /> Delete
+        </button>
+        <button
+          type="submit"
+          className="button button-primary"
+          onClick={() => history.push('/dashboard')}
+        >
+          Cancel
         </button>
       </section>
     </section>

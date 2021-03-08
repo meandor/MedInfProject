@@ -11,13 +11,18 @@ jest.mock('../domain/menstruationService');
 
 describe('Detail component', () => {
   const deleteMenstruationMock = deleteMenstruation as jest.Mock<Promise<void>>;
+  const historyMock = {
+    push: jest.fn(),
+  };
 
   it('should render given day', () => {
     const start = new Date(2021, 1, 1);
     const end = new Date(2021, 1, 5);
     const menstruation: Menstruation = { start, end };
 
-    const { getByText } = render(<Detail menstruation={menstruation} />);
+    const { getByText } = render(
+      <Detail menstruation={menstruation} history={historyMock} />
+    );
 
     expect(getByText(/period/i)).toBeInTheDocument();
     expect(getByText(/start/i)).toBeInTheDocument();
@@ -29,7 +34,9 @@ describe('Detail component', () => {
     const end = new Date(2021, 1, 5);
     const menstruation: Menstruation = { start, end };
     deleteMenstruationMock.mockResolvedValue();
-    const { getByText } = render(<Detail menstruation={menstruation} />);
+    const { getByText } = render(
+      <Detail menstruation={menstruation} history={historyMock} />
+    );
 
     const deleteButton = getByText(/delete/i);
 
@@ -44,7 +51,9 @@ describe('Detail component', () => {
     const end = new Date(2021, 1, 5);
     const menstruation: Menstruation = { start, end };
     deleteMenstruationMock.mockRejectedValue(new Error('foo'));
-    const { getByText } = render(<Detail menstruation={menstruation} />);
+    const { getByText } = render(
+      <Detail menstruation={menstruation} history={historyMock} />
+    );
 
     const deleteButton = getByText(/delete/i);
 

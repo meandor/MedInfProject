@@ -148,13 +148,14 @@ function PredictionComponent({
 
 function renderDetailModal(
   activeMenstruation: Menstruation | null,
-  closeFn: () => void
+  closeFn: () => void,
+  history: { push: (_: string) => any }
 ): JSX.Element {
   if (activeMenstruation) {
     return (
       <>
         <div className="dashboard__calendar__detail">
-          <Detail menstruation={activeMenstruation} />
+          <Detail menstruation={activeMenstruation} history={history} />
           <div
             className="dashboard__calendar__detail__close"
             onClick={closeFn}
@@ -221,7 +222,7 @@ export function Dashboard({
     <section className="dashboard">
       <PredictionComponent prediction={prediction} insertFn={goToInsert} />
       <section className="dashboard__calendar">
-        {renderDetailModal(activeMenstruation, () => selectMenstruation(null))}
+        {renderDetailModal(activeMenstruation, () => selectMenstruation(null), history)}
         <div className="dashboard__calendar__data">
           <Calendar
             currentDate={new Date()}

@@ -13,6 +13,10 @@ export interface IDToken {
 }
 
 export function isAuthenticated(): boolean {
+  if (process.env.REACT_APP_LOCAL) {
+    return true;
+  }
+
   const idToken = localStorage.getItem(ID_TOKEN_KEY) || '';
   if (idToken === '') {
     return false;
@@ -29,6 +33,14 @@ export function isAuthenticated(): boolean {
 }
 
 export function authenticatedUser(): IDToken | undefined {
+  if (process.env.REACT_APP_LOCAL) {
+    return {
+      name: "foo bar",
+      email: "foo@bar.com",
+      email_verified: true,
+      sub: "fooooasdasd"
+    }
+  }
   if (!isAuthenticated()) {
     return undefined;
   }

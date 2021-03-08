@@ -1,8 +1,10 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { ProfileMenu } from './ProfileMenu';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router';
 import '@testing-library/jest-dom/extend-expect';
 import { authenticatedUser, IDToken } from '../domain/loginService';
+import { ProfileMenu } from './ProfileMenu';
 
 jest.mock('../domain/loginService');
 
@@ -26,7 +28,11 @@ describe('ProfileMenu', () => {
       name: 'foo bar',
       sub: '1337',
     });
-    const { getByText } = render(<ProfileMenu />);
+    const { getByText } = render(
+      <Router history={createMemoryHistory()}>
+        <ProfileMenu />
+      </Router>
+    );
     const userName = getByText(/foo bar/i);
 
     expect(userName).toBeInTheDocument();
@@ -39,7 +45,11 @@ describe('ProfileMenu', () => {
       name: '',
       sub: '1337',
     });
-    const { queryByText, getAllByText } = render(<ProfileMenu />);
+    const { queryByText, getAllByText } = render(
+      <Router history={createMemoryHistory()}>
+        <ProfileMenu />
+      </Router>
+    );
     const userName = queryByText(/foo bar/i);
     const email = getAllByText(/foo@bar.com/i);
 

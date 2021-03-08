@@ -4,8 +4,10 @@ import {
   faEnvelope,
   faCheckCircle,
   faSignOutAlt,
+  faUserTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 import {
   authenticatedUser,
   IDToken,
@@ -62,11 +64,17 @@ export function ProfileMenu(_props: any): JSX.Element {
         <FontAwesomeIcon icon={faCaretDown} />
       </section>
       <section className={infoClassName(isOpen)}>
-        <p>
+        <p className="profile_menu__info__item">
           <FontAwesomeIcon icon={faEnvelope} className="right_space" />{' '}
           {idToken.email}
         </p>
-        <p>
+        <hr />
+        <Link to="/profile/delete">
+          <FontAwesomeIcon icon={faUserTimes} className="right_space" /> Delete
+          Account
+        </Link>
+        <hr />
+        <p className="profile_menu__info__actions">
           <button
             type="submit"
             className="button button-primary"

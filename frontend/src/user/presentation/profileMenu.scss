@@ -8,6 +8,11 @@
 
   .right_space {
     margin-right: 1rem;
+    width: $space;
+  }
+
+  .separator {
+    border-top: 1px solid $secondary;
   }
 
   &__username {
@@ -34,7 +39,30 @@
     position: absolute;
     right: 0;
     width: 30rem;
-    padding: 0 $space;
+
+    hr {
+      border: none;
+      border-top: 1px solid $primary;
+      margin: 0;
+    }
+
+    a {
+      color: $white;
+      display: block;
+      padding: 1rem $space;
+
+      &:hover {
+        background: $primary;
+      }
+    }
+
+    &__item {
+      margin: 1rem $space;
+    }
+
+    &__actions {
+      margin: $space;
+    }
 
     &-hidden {
       display: none;

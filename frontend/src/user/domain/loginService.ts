@@ -35,11 +35,11 @@ export function isAuthenticated(): boolean {
 export function authenticatedUser(): IDToken | undefined {
   if (process.env.REACT_APP_LOCAL) {
     return {
-      name: "foo bar",
-      email: "foo@bar.com",
+      name: 'foo bar',
+      email: 'foo@bar.com',
       email_verified: true,
-      sub: "fooooasdasd"
-    }
+      sub: 'fooooasdasd',
+    };
   }
   if (!isAuthenticated()) {
     return undefined;

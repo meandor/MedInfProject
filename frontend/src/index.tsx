@@ -16,6 +16,7 @@ import { Confirm } from './user/presentation/Confirm';
 import { Dashboard } from './menstruation/presentation/Dashboard';
 import { Create } from './menstruation/presentation/Create';
 import { ProfileMenu } from './user/presentation/ProfileMenu';
+import { Delete } from './user/presentation/Delete';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -38,6 +39,7 @@ ReactDOM.render(
           component={withRouter(Dashboard)}
         />
         <PrivateRoute path="/create" exact component={withRouter(Create)} />
+        <PrivateRoute path="/profile/delete" exact component={Delete} />
         <PublicRoute path="/login" exact component={Login} />
         <PublicRoute path="/register" exact component={withRouter(Register)} />
         <PublicRoute

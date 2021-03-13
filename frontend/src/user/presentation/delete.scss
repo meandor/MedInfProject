@@ -1,2 +1,24 @@
-.delete-account {
+@import '../../variables';
+
+.delete_account {
+  margin: $space;
+  padding: 0 $space $space;
+  background-color: $surface;
+
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  &__action {
+    width: 10%;
+    text-align: right;
+    margin-bottom: $space;
+  }
+
+  &__description {
+    width: 88%;
+    margin-bottom: $space;
+  }
 }

@@ -15,7 +15,11 @@ sbt test
 Make sure you have a postgres database running in the background for example with:
 ```bash
 docker run -d -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 postgres:latest
+```
 
+Then you can run the integration tests with:
+```bash
+sbt it:test
 ```
 
 ## Running locally

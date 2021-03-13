@@ -16,10 +16,22 @@
     text-align: right;
     margin-bottom: $space;
   }
+  @media only screen and (max-device-width: $smartphone-breakpoint) {
+    &__action {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+  }
 
   &__description {
     width: 88%;
     margin-bottom: $space;
+  }
+  @media only screen and (max-device-width: $smartphone-breakpoint) {
+    &__description {
+      width: 100%;
+    }
   }
 
   &__infobox {

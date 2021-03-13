@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { deleteAccount, deleteData, unlinkData } from '../domain/userService';
 import './delete.scss';
 import { logger } from '../../logger';
+import { signOutUser } from '../domain/loginService';
 
 enum Indication {
   SUCCESS = 0,
@@ -66,7 +67,11 @@ function deleteAccountFn(setInfoBoxStateFn: any): () => void {
           message:
             'Successfully deleted all your account. You will need to login now.',
         };
-        return setInfoBoxStateFn(infoBoxState);
+        setInfoBoxStateFn(infoBoxState);
+        setTimeout(() => '', 1000);
+        signOutUser();
+        window.location.href = '/';
+        return undefined;
       })
       .catch((error) => {
         logger.error('Was not able to delete account', error);

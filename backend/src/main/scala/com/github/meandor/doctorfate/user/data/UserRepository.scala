@@ -110,7 +110,7 @@ class UserRepository(executionContext: ExecutionContext) extends LazyLogging {
         sql"""
             DELETE FROM
             "users"
-            WHERE user_id = $userId
+            WHERE id = $userId
           """
           .update()
           .apply()

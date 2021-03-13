@@ -21,11 +21,12 @@ final case class MenstruationModule(
 )(
     implicit executionContext: ExecutionContext
 ) extends Module {
+  val menstruationRepository = new MenstruationRepository(databaseModule.executionContext)
+  val menstruationService    = new MenstruationService(menstruationRepository)
+
   override def start(): Option[Controller] = {
     logger.info("Start loading MenstruationModule")
-    val predictionController   = new PredictionController(authModule.accessTokenAuthenticator)
-    val menstruationRepository = new MenstruationRepository(databaseModule.executionContext)
-    val menstruationService    = new MenstruationService(menstruationRepository)
+    val predictionController = new PredictionController(authModule.accessTokenAuthenticator)
     val menstruationController = new MenstruationController(
       authModule.accessTokenAuthenticator,
       menstruationService

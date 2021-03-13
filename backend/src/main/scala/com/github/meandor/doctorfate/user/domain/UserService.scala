@@ -1,5 +1,6 @@
 package com.github.meandor.doctorfate.user.domain
 import akka.Done
+import com.github.meandor.doctorfate.menstruation.domain.MenstruationService
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -17,7 +18,8 @@ class UserService(
     userRepository: UserRepository,
     mailClient: MailClient,
     confirmationSecret: String,
-    confirmationLinkTemplate: String
+    confirmationLinkTemplate: String,
+    menstruationService: MenstruationService
 )(
     implicit ec: ExecutionContext
 ) extends LazyLogging {
@@ -106,7 +108,18 @@ class UserService(
 
   def delete(userId: UUID): Future[Done] = ???
 
-  def anonymize(uuid: UUID): Future[Done] = ???
+  def anonymize(userId: UUID): Future[Done] = {
+    val eventualUserId = userRepository
+      .find(userId)
+      .map {
+        case None                         => throw new IllegalArgumentException("User does not exist")
+        case Some(userEntity: UserEntity) => userEntity.id
+      }
+    for {
+      userId <- eventualUserId
+      _      <- menstruationService.changeOwner(userId)
+    } yield Done
+  }
 
   def deleteData(userId: UUID): Future[Done] = ???
 }

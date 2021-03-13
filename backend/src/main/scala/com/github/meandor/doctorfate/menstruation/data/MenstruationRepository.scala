@@ -7,6 +7,8 @@ import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future, blocking}
 
 class MenstruationRepository(executionContext: ExecutionContext) extends LazyLogging {
+  implicit val ec: ExecutionContext = executionContext
+
   def findByUser(userId: UUID): Future[Seq[MenstruationEntity]] = Future {
     blocking {
       DB localTx { implicit session =>
@@ -21,8 +23,6 @@ class MenstruationRepository(executionContext: ExecutionContext) extends LazyLog
       }
     }
   }
-
-  implicit val ec: ExecutionContext = executionContext
 
   def toEntity(result: WrappedResultSet): MenstruationEntity = {
     MenstruationEntity(
@@ -94,4 +94,20 @@ class MenstruationRepository(executionContext: ExecutionContext) extends LazyLog
     }
   }
 
+  def saveWithNewUserId(menstruationEntity: MenstruationEntity, newUserId: UUID): Future[Int] =
+    Future {
+      blocking {
+        DB localTx { implicit session =>
+          sql"""
+            UPDATE "menstruation"
+            SET menstruation.user_id = $newUserId
+            WHERE menstruation.user_id = ${menstruationEntity.userId}
+            AND menstruation.start_date = ${menstruationEntity.start}
+            AND menstruation.end_date = ${menstruationEntity.end}
+          """
+            .update()
+            .apply()
+        }
+      }
+    }
 }

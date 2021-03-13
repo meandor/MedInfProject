@@ -29,15 +29,15 @@ object DoctorFate extends LazyLogging {
       .start()
       .getOrElse(throw new NoSuchElementException("TokenController"))
 
-    val userModule = UserModule(config, databaseModule, authModule)
-    val userController = userModule
-      .start()
-      .getOrElse(throw new NoSuchElementException("UserController"))
-
     val menstruationModule = MenstruationModule(config, authModule, databaseModule)
     val menstruationController = menstruationModule
       .start()
       .getOrElse(throw new NoSuchElementException("MenstruationController"))
+
+    val userModule = UserModule(config, databaseModule, authModule, menstruationModule)
+    val userController = userModule
+      .start()
+      .getOrElse(throw new NoSuchElementException("UserController"))
 
     WebServer(
       config,

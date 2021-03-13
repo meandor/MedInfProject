@@ -87,4 +87,20 @@ class UserRepository(executionContext: ExecutionContext) extends LazyLogging {
       }
     }
   }
+
+  def find(userId: UUID): Future[Option[UserEntity]] = Future {
+    blocking {
+      DB localTx { implicit session =>
+        logger.info("found one user by mail")
+        sql"""
+            SELECT *
+            FROM users
+            WHERE users.id = $userId
+          """
+          .map(toEntity)
+          .single()
+          .apply()
+      }
+    }
+  }
 }

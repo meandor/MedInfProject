@@ -120,4 +120,26 @@ class MenstruationServiceSpec extends UnitSpec with ScalaFutures {
       actual.futureValue shouldBe expected
     }
   }
+
+  Feature("changeOwner") {
+    val menstruationRepository = mock[MenstruationRepository]
+    val menstruationService    = new MenstruationService(menstruationRepository)
+
+    Scenario("should change owner of one menstruation") {
+      val userId = UUID.randomUUID()
+      val menstruation = MenstruationEntity(
+        userId,
+        LocalDate.now(),
+        LocalDate.now()
+      )
+      menstruationRepository.findByUser(userId) shouldReturn Future.successful(Seq(menstruation))
+      menstruationRepository.saveWithNewUserId(any[MenstruationEntity], any[UUID]) shouldReturn Future
+        .successful(1)
+
+      val actual   = menstruationService.changeOwner(userId)
+      val expected = Done
+
+      actual.futureValue shouldBe expected
+    }
+  }
 }

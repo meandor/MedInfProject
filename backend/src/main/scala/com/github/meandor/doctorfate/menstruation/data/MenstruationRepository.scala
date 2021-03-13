@@ -100,7 +100,7 @@ class MenstruationRepository(executionContext: ExecutionContext) extends LazyLog
         DB localTx { implicit session =>
           sql"""
             UPDATE "menstruation"
-            SET menstruation.user_id = $newUserId
+            SET user_id = $newUserId
             WHERE menstruation.user_id = ${menstruationEntity.userId}
             AND menstruation.start_date = ${menstruationEntity.start}
             AND menstruation.end_date = ${menstruationEntity.end}

@@ -21,4 +21,18 @@
     width: 88%;
     margin-bottom: $space;
   }
+
+  &__infobox {
+    &-success {
+      color: $success;
+      border: 1px solid $success;
+      padding: 1rem;
+    }
+
+    &-error {
+      color: $error;
+      border: 1px solid $error;
+      padding: 1rem;
+    }
+  }
 }

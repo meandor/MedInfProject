@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { unlinkData } from '../domain/userService';
+import { deleteAccount, deleteData, unlinkData } from '../domain/userService';
 import './delete.scss';
 import { logger } from '../../logger';
 
@@ -13,7 +13,7 @@ interface InfoBoxState {
   message: string;
 }
 
-function unlinkAccountData(setInfoBoxStateFn: any): () => void {
+function unlinkDataFn(setInfoBoxStateFn: any): () => void {
   return () =>
     unlinkData()
       .then((_data) => {
@@ -30,6 +30,50 @@ function unlinkAccountData(setInfoBoxStateFn: any): () => void {
           indicator: Indication.ERROR,
           message:
             'There was an error while anonymizing your data. Please try again.',
+        };
+        return setInfoBoxStateFn(infoBoxState);
+      });
+}
+
+function deleteDataFn(setInfoBoxStateFn: any): () => void {
+  return () =>
+    deleteData()
+      .then((_data) => {
+        const infoBoxState: InfoBoxState = {
+          indicator: Indication.SUCCESS,
+          message:
+            'Successfully deleted all your data. Your calendar should be empty now.',
+        };
+        return setInfoBoxStateFn(infoBoxState);
+      })
+      .catch((error) => {
+        logger.error('Was not able to delete data', error);
+        const infoBoxState: InfoBoxState = {
+          indicator: Indication.ERROR,
+          message:
+            'There was an error while deleting your data. Please try again.',
+        };
+        return setInfoBoxStateFn(infoBoxState);
+      });
+}
+
+function deleteAccountFn(setInfoBoxStateFn: any): () => void {
+  return () =>
+    deleteAccount()
+      .then((_data) => {
+        const infoBoxState: InfoBoxState = {
+          indicator: Indication.SUCCESS,
+          message:
+            'Successfully deleted all your account. You will need to login now.',
+        };
+        return setInfoBoxStateFn(infoBoxState);
+      })
+      .catch((error) => {
+        logger.error('Was not able to delete account', error);
+        const infoBoxState: InfoBoxState = {
+          indicator: Indication.ERROR,
+          message:
+            'There was an error while deleting your account. Please try again.',
         };
         return setInfoBoxStateFn(infoBoxState);
       });
@@ -76,7 +120,7 @@ export function Delete(_props: any): JSX.Element {
             type="button"
             className="button button-primary"
             data-testid="unlink-data"
-            onClick={unlinkAccountData(setInfoBoxState)}
+            onClick={unlinkDataFn(setInfoBoxState)}
           >
             Anonymize Data
           </button>
@@ -95,6 +139,7 @@ export function Delete(_props: any): JSX.Element {
             className="button button-primary"
             data-testid="delete-data"
             type="button"
+            onClick={deleteDataFn(setInfoBoxState)}
           >
             Delete Data
           </button>
@@ -116,6 +161,7 @@ export function Delete(_props: any): JSX.Element {
             type="button"
             className="button button-secondary"
             data-testid="delete-account"
+            onClick={deleteAccountFn(setInfoBoxState)}
           >
             Delete Account
           </button>

@@ -101,9 +101,9 @@ class MenstruationRepository(executionContext: ExecutionContext) extends LazyLog
           sql"""
             UPDATE "menstruation"
             SET user_id = $newUserId
-            WHERE menstruation.user_id = ${menstruationEntity.userId}
-            AND menstruation.start_date = ${menstruationEntity.start}
-            AND menstruation.end_date = ${menstruationEntity.end}
+            WHERE user_id = ${menstruationEntity.userId}
+            AND start_date = ${menstruationEntity.start}
+            AND end_date = ${menstruationEntity.end}
           """
             .update()
             .apply()

@@ -103,4 +103,19 @@ class UserRepository(executionContext: ExecutionContext) extends LazyLogging {
       }
     }
   }
+
+  def delete(userId: UUID): Future[Int] = Future {
+    blocking {
+      DB localTx { implicit session =>
+        sql"""
+            DELETE FROM
+            "users"
+            WHERE users.user_id = $userId
+          """
+          .update()
+          .apply()
+      }
+    }
+  }
+
 }

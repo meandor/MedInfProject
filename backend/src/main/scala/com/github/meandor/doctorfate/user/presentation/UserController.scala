@@ -19,16 +19,19 @@ class UserController(salt: String, userService: UserService, authenticator: Auth
     authenticateOAuth2("menstra", authenticator) { userId =>
       pathEndOrSingleSlash {
         delete {
+          logger.info("Got user delete request")
           val deletionProcess = userService.delete(userId)
           onSuccess(deletionProcess) { _ => complete(StatusCodes.NoContent) }
         }
       } ~ path("identifiable-data") {
         delete {
+          logger.info("Got user anonymization request")
           val anonymizationProcess = userService.anonymize(userId)
           onSuccess(anonymizationProcess) { _ => complete(StatusCodes.NoContent) }
         }
       } ~ path("data") {
         delete {
+          logger.info("Got user data deletion request")
           val anonymizationProcess = userService.deleteData(userId)
           onSuccess(anonymizationProcess) { _ => complete(StatusCodes.NoContent) }
         }

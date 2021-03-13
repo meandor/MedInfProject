@@ -46,12 +46,14 @@ class MenstruationService(menstruationRepository: MenstruationRepository)(
   }
 
   def changeOwner(userId: UUID): Future[Done] = {
+    logger.info("Changing owner for user")
     for {
       menstruation <- menstruationRepository.findByUser(userId)
       newUserId = UUID.randomUUID()
       _ <- Future.sequence(
         menstruation.map(m => menstruationRepository.saveWithNewUserId(m, newUserId))
       )
+      _ = logger.info("Successfully changed owner of menstruation")
     } yield Done
   }
 }

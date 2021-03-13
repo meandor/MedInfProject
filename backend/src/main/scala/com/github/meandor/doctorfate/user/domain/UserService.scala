@@ -1,15 +1,14 @@
 package com.github.meandor.doctorfate.user.domain
 import akka.Done
 import com.github.meandor.doctorfate.menstruation.domain.MenstruationService
+import com.github.meandor.doctorfate.user.data.{MailClient, UserEntity, UserRepository}
+import com.typesafe.scalalogging.LazyLogging
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util
 import java.util.{Base64, UUID}
-import com.github.meandor.doctorfate.user.data.{MailClient, UserEntity, UserRepository}
-import com.typesafe.scalalogging.LazyLogging
-
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 import scala.concurrent.{ExecutionContext, Future}
@@ -106,20 +105,41 @@ class UserService(
       }
   }
 
-  def delete(userId: UUID): Future[Done] = ???
-
-  def anonymize(userId: UUID): Future[Done] = {
-    val eventualUserId = userRepository
+  private def findUser(userId: UUID): Future[UUID] = {
+    userRepository
       .find(userId)
       .map {
-        case None                         => throw new IllegalArgumentException("User does not exist")
+        case None =>
+          logger.error("Failed to anonymize for non existing user")
+          throw new IllegalArgumentException("User does not exist")
         case Some(userEntity: UserEntity) => userEntity.id
       }
+  }
+
+  def delete(userId: UUID): Future[Done] = {
+    logger.info("Deleting user")
     for {
-      userId <- eventualUserId
-      _      <- menstruationService.changeOwner(userId)
+      userId <- findUser(userId)
+      _      <- userRepository.delete(userId)
+      _ = logger.info("Done deleting user")
     } yield Done
   }
 
-  def deleteData(userId: UUID): Future[Done] = ???
+  def anonymize(userId: UUID): Future[Done] = {
+    logger.info("Anonymizing user data")
+    for {
+      userId            <- findUser(userId)
+      changeOwnerResult <- menstruationService.changeOwner(userId)
+      _ = logger.info("Done anonymizing user data")
+    } yield changeOwnerResult
+  }
+
+  def deleteData(userId: UUID): Future[Done] = {
+    logger.info("Deleting user data")
+    for {
+      userId       <- findUser(userId)
+      menstruation <- menstruationService.find(userId)
+      _            <- Future.sequence(menstruation.map(m => menstruationService.delete(userId, m)))
+    } yield Done
+  }
 }

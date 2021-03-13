@@ -2,11 +2,13 @@ package com.github.meandor.doctorfate.user.domain
 import java.util.UUID
 import akka.Done
 import com.github.meandor.doctorfate.UnitSpec
-import com.github.meandor.doctorfate.menstruation.domain.MenstruationService
+import com.github.meandor.doctorfate.menstruation.data.MenstruationEntity
+import com.github.meandor.doctorfate.menstruation.domain.{Menstruation, MenstruationService}
 import com.github.meandor.doctorfate.user.data.{MailClient, UserEntity, UserRepository}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.ScalaFutures
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -200,6 +202,128 @@ class UserServiceSpec extends UnitSpec with ScalaFutures {
       )
 
       val actual = service.anonymize(userId)
+
+      actual.failed.futureValue shouldBe a[RuntimeException]
+    }
+  }
+
+  Feature("deleteData") {
+    val userRepositoryMock      = mock[UserRepository]
+    val mailClientMock          = mock[MailClient]
+    val menstruationServiceMock = mock[MenstruationService]
+    val service = new UserService(
+      userRepositoryMock,
+      mailClientMock,
+      "salt",
+      "http://",
+      menstruationServiceMock
+    )
+
+    Scenario("should return done when removing all events for user") {
+      val userId = UUID.randomUUID()
+      val userEntity = UserEntity(
+        userId,
+        "email",
+        "secret",
+        Some("name"),
+        emailIsVerified = true
+      )
+      userRepositoryMock.find(userId) shouldReturn Future.successful(Some(userEntity))
+      val menstruation = Menstruation(LocalDate.now(), LocalDate.now())
+      menstruationServiceMock.find(userId) shouldReturn Future.successful(Seq(menstruation))
+      menstruationServiceMock.delete(userId, menstruation) shouldReturn Future.successful(
+        Some(Done)
+      )
+
+      val actual   = service.deleteData(userId)
+      val expected = Done
+
+      actual.futureValue shouldBe expected
+    }
+
+    Scenario("should return fail when user does not exist") {
+      val userId = UUID.randomUUID()
+      userRepositoryMock.find(userId) shouldReturn Future.successful(None)
+
+      val actual = service.deleteData(userId)
+
+      actual.failed.futureValue shouldBe a[IllegalArgumentException]
+    }
+
+    Scenario("should return fail when deleting all existing period events for user fails") {
+      val userId = UUID.randomUUID()
+      val userEntity = UserEntity(
+        userId,
+        "email",
+        "secret",
+        Some("name"),
+        emailIsVerified = true
+      )
+      userRepositoryMock.find(userId) shouldReturn Future.successful(Some(userEntity))
+      val menstruation = Menstruation(LocalDate.now(), LocalDate.now())
+      menstruationServiceMock.find(userId) shouldReturn Future.successful(Seq(menstruation))
+      menstruationServiceMock.delete(userId, menstruation) shouldReturn Future.failed(
+        new RuntimeException("foo")
+      )
+
+      val actual = service.deleteData(userId)
+
+      actual.failed.futureValue shouldBe a[RuntimeException]
+    }
+  }
+
+  Feature("delete") {
+    val userRepositoryMock      = mock[UserRepository]
+    val mailClientMock          = mock[MailClient]
+    val menstruationServiceMock = mock[MenstruationService]
+    val service = new UserService(
+      userRepositoryMock,
+      mailClientMock,
+      "salt",
+      "http://",
+      menstruationServiceMock
+    )
+
+    Scenario("should return done when removing user succeeds") {
+      val userId = UUID.randomUUID()
+      val userEntity = UserEntity(
+        userId,
+        "email",
+        "secret",
+        Some("name"),
+        emailIsVerified = true
+      )
+      userRepositoryMock.find(userId) shouldReturn Future.successful(Some(userEntity))
+      userRepositoryMock.delete(userId) shouldReturn Future.successful(1)
+
+      val actual   = service.delete(userId)
+      val expected = Done
+
+      actual.futureValue shouldBe expected
+    }
+
+    Scenario("should return fail when user does not exist") {
+      val userId = UUID.randomUUID()
+      userRepositoryMock.find(userId) shouldReturn Future.successful(None)
+
+      val actual = service.delete(userId)
+
+      actual.failed.futureValue shouldBe a[IllegalArgumentException]
+    }
+
+    Scenario("should return fail when deleting fails") {
+      val userId = UUID.randomUUID()
+      val userEntity = UserEntity(
+        userId,
+        "email",
+        "secret",
+        Some("name"),
+        emailIsVerified = true
+      )
+      userRepositoryMock.find(userId) shouldReturn Future.successful(Some(userEntity))
+      userRepositoryMock.delete(userId) shouldReturn Future.failed(new RuntimeException("foo"))
+
+      val actual = service.deleteData(userId)
 
       actual.failed.futureValue shouldBe a[RuntimeException]
     }

@@ -1,4 +1,5 @@
 package com.github.meandor.doctorfate.user.presentation
+
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
@@ -8,18 +9,42 @@ import com.typesafe.scalalogging.LazyLogging
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 
-class UserController(salt: String, userService: UserService)
+import java.util.UUID
+
+class UserController(salt: String, userService: UserService, authenticator: Authenticator[UUID])
     extends Controller
     with PasswordEncryption
     with LazyLogging {
   override def routes: Route = pathPrefix("user") {
-    path("confirm") {
-      post {
-        entity(as[ConfirmationDTO]) { handleConfirmationRequest }
+    authenticateOAuth2("menstra", authenticator) { userId =>
+      pathEndOrSingleSlash {
+        delete {
+          val deletionProcess = userService.delete(userId)
+          onSuccess(deletionProcess) { _ => complete(StatusCodes.NoContent) }
+        }
+      } ~ path("identifiable-data") {
+        delete {
+          val anonymizationProcess = userService.anonymize(userId)
+          onSuccess(anonymizationProcess) { _ => complete(StatusCodes.NoContent) }
+        }
+      } ~ path("data") {
+        delete {
+          val anonymizationProcess = userService.deleteData(userId)
+          onSuccess(anonymizationProcess) { _ => complete(StatusCodes.NoContent) }
+        }
       }
     } ~
+      path("confirm") {
+        post {
+          entity(as[ConfirmationDTO]) {
+            handleConfirmationRequest
+          }
+        }
+      } ~
       post {
-        entity(as[UserDTO]) { handleRegisterRequest }
+        entity(as[UserDTO]) {
+          handleRegisterRequest
+        }
       }
   }
 

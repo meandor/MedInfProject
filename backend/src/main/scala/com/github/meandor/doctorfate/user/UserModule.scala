@@ -1,5 +1,6 @@
 package com.github.meandor.doctorfate.user
 
+import com.github.meandor.doctorfate.auth.AuthModule
 import com.github.meandor.doctorfate.core.{DatabaseModule, Module}
 import com.github.meandor.doctorfate.core.presentation.Controller
 import com.github.meandor.doctorfate.user.data.{MailClient, UserRepository}
@@ -9,7 +10,7 @@ import com.typesafe.config.Config
 
 import scala.concurrent.ExecutionContext
 
-final case class UserModule(config: Config, databaseModule: DatabaseModule)(
+final case class UserModule(config: Config, databaseModule: DatabaseModule, authModule: AuthModule)(
     implicit ec: ExecutionContext
 ) extends Module {
   override def start(): Option[Controller] = {
@@ -27,7 +28,11 @@ final case class UserModule(config: Config, databaseModule: DatabaseModule)(
       confirmationSecret,
       confirmationLinkTemplate
     )
-    val userController = new UserController(userPasswordSalt, userService)
+    val userController = new UserController(
+      userPasswordSalt,
+      userService,
+      authModule.accessTokenAuthenticator
+    )
     logger.info("Done loading UserModule")
     Option(userController)
   }

@@ -1,15 +1,16 @@
 package com.github.meandor.doctorfate.user.domain
+import akka.Done
+
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util
 import java.util.{Base64, UUID}
-
 import com.github.meandor.doctorfate.user.data.{MailClient, UserEntity, UserRepository}
 import com.typesafe.scalalogging.LazyLogging
+
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserService(
@@ -102,4 +103,10 @@ class UserService(
         )
       }
   }
+
+  def delete(userId: UUID): Future[Done] = ???
+
+  def anonymize(uuid: UUID): Future[Done] = ???
+
+  def deleteData(userId: UUID): Future[Done] = ???
 }

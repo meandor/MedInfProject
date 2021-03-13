@@ -1,7 +1,10 @@
 package com.github.meandor.doctorfate.user.presentation
 
+import akka.Done
 import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.headers.OAuth2BearerToken
 import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.directives.Credentials
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.github.meandor.doctorfate.UnitSpec
 import com.github.meandor.doctorfate.core.presentation.ErrorDTO
@@ -10,12 +13,17 @@ import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
 import org.mockito.ArgumentMatchers.any
 
+import java.util.UUID
 import scala.concurrent.Future
 
 class UserControllerSpec extends UnitSpec with ScalatestRouteTest {
+  val authenticator: Credentials => Option[UUID] = {
+    case _ @Credentials.Provided("accessToken") => Some(UUID.randomUUID())
+    case _                                      => None
+  }
   val userServiceMock: UserService = mock[UserService]
   val salt: String                 = "salt"
-  val controller: UserController   = new UserController(salt, userServiceMock)
+  val controller: UserController   = new UserController(salt, userServiceMock, authenticator)
 
   Feature("POST /user") {
     val path = "/user"
@@ -177,6 +185,48 @@ class UserControllerSpec extends UnitSpec with ScalatestRouteTest {
       ) ~> check {
         status shouldBe StatusCodes.InternalServerError
         userServiceMock.confirm(id) was called
+      }
+    }
+  }
+
+  Feature("DELETE /user") {
+    val path = "/user"
+
+    Scenario("should return 204 for deleted user") {
+      userServiceMock.delete(any[UUID]) shouldReturn Future.successful(Done)
+
+      Delete(path) ~> addCredentials(OAuth2BearerToken("accessToken")) ~> Route.seal(
+        controller.routes
+      ) ~> check {
+        status shouldBe StatusCodes.NoContent
+      }
+    }
+  }
+
+  Feature("DELETE /user/identifiable-data") {
+    val path = "/user/identifiable-data"
+
+    Scenario("should return 204 for deleted identifiable user data") {
+      userServiceMock.anonymize(any[UUID]) shouldReturn Future.successful(Done)
+
+      Delete(path) ~> addCredentials(OAuth2BearerToken("accessToken")) ~> Route.seal(
+        controller.routes
+      ) ~> check {
+        status shouldBe StatusCodes.NoContent
+      }
+    }
+  }
+
+  Feature("DELETE /user/data") {
+    val path = "/user/data"
+
+    Scenario("should return 204 for deleted user data") {
+      userServiceMock.deleteData(any[UUID]) shouldReturn Future.successful(Done)
+
+      Delete(path) ~> addCredentials(OAuth2BearerToken("accessToken")) ~> Route.seal(
+        controller.routes
+      ) ~> check {
+        status shouldBe StatusCodes.NoContent
       }
     }
   }

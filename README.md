@@ -13,6 +13,20 @@ This is a project for the Medical Computer Science major at the Beuth Hochschule
 
 The deployed version can be found here: https://menstra.herokuapp.com
 
+![screenshot of menstra](docs/example-screenshot.png)
+
+## Prerequisites
+### Frontend
+* [Node.js / npm](https://nodejs.org/en/download/)
+
+### Backend
+* [JDK 8 or JDK 11](https://adoptopenjdk.net/installation.html)
+* [SBT](https://www.scala-sbt.org/1.x/docs/Setup.html)
+* [Docker](https://docs.docker.com/desktop/) (if you want to run integration tests)
+
+### E2E Tests
+* [Node.js / npm](https://nodejs.org/en/download/)
+
 ## Pipeline
 The project was built with [CI](https://martinfowler.com/articles/continuousIntegration.html) / [CD](https://azure.microsoft.com/en-us/overview/continuous-delivery-vs-continuous-deployment/). For this project we are using continuous deployment.
 There is a [circle-ci pipeline](https://app.circleci.com/pipelines/github/meandor/tower-of-fate) that takes care of most
@@ -24,8 +38,6 @@ It is using the free tier, which means that initially the project might load a b
 The frontend and the backend are deployed via [docker](https://www.docker.com). You can find a Dockerfile in the
 corresponding folder.
 
-![screenshot of menstra](docs/example-screenshot.png)
-
 ### Staging
 Both frontend and backend are deployed on the staging environment (please check Heroku).
 To visit staging: https://menstra-staging.herokuapp.com/
@@ -34,11 +46,6 @@ To visit staging: https://menstra-staging.herokuapp.com/
 Both frontend and backend are deployed on the production environment (please check Heroku).
 To visit production: https://menstra.herokuapp.com/
 
-## Prerequisites
-### Frontend
-* [Node.js / npm](https://nodejs.org/en/download/)
-
-### Backend
-* [JDK 8 or JDK 11](https://adoptopenjdk.net/installation.html)
-* [SBT](https://www.scala-sbt.org/1.x/docs/Setup.html)
-* [Docker](https://docs.docker.com/desktop/) (if you want to run integration tests)
+## E2E Tests
+The e2e tests are developed using [cypress](https://www.cypress.io) and are using the staging environment deployed
+services.

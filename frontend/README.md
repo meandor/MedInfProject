@@ -2,7 +2,7 @@
 > A truly wise and incredibly powerful sorcerer from ancient Egypt. Nabu's soul resides within the helm of Doctor Fate,
 > granting the wearer great magical power over the forces of Order and Chaos.
 
-A _Typescript_ base _React_ SPA for Doctor Fate.
+A _Typescript_ based _React_ SPA for Doctor Fate.
 
 ## Install
 ```bash

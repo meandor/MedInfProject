@@ -21,6 +21,8 @@ of the automation. To learn more about delivery pipelines please visit: https://
 ## Deployment
 The project is deployed in the AWS Cloud with [Heroku](https://dashboard.heroku.com/pipelines/d2d0bc61-3d2d-452a-824a-45daa4ed3a11).
 It is using the free tier, which means that initially the project might load a bit but should then work as expected.
+The frontend and the backend are deployed via [docker](https://www.docker.com). You can find a Dockerfile in the
+corresponding folder.
 
 ![screenshot of menstra](docs/example-screenshot.png)
 
